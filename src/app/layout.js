@@ -9,6 +9,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs/Breadcrumbs";
 // CSS
 import "./globals.css";
 import "slick-carousel/slick/slick.css";
+import TanstackProvider from "@/providers/TanstackProvider";
 
 export const metadata = {
   title: "Tobibi Store",
@@ -22,16 +23,18 @@ export default function RootLayout({ children }) {
         <link rel="icon" type="image/png" href="/images/LOGO.png" />
       </head>
       <body className="antialiased">
-        <header>
-          <Header />
-          <NavigationBar />
-        </header>
-        <main>
-          <Breadcrumbs />
-          {children}
-        </main>
-        <Footer />
-        <Special />
+        <TanstackProvider>
+          <header>
+            <Header />
+            <NavigationBar />
+          </header>
+          <main>
+            <Breadcrumbs />
+            {children}
+          </main>
+          <Footer />
+          <Special />
+        </TanstackProvider>
       </body>
     </html>
   );
