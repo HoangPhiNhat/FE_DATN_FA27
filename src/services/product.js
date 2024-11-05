@@ -1,6 +1,4 @@
-/* eslint-disable no-useless-catch */
 import instance from "../configs/axios";
-import Author from "../services/baseApi/AuthorApi";
 
 let size = 5;
 
@@ -16,10 +14,10 @@ export const getProductAll = async (page, name) => {
   }
 };
 
-export const removeProduct = async (id) => {
+export const getProductById = async (id) => {
   try {
     console.log(id);
-    const response = await Author.delete(`/products/${id}`);
+    const response = await instance.get(`/products/${id}/show`);
     return response.data;
   } catch (error) {
     throw error;

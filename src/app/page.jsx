@@ -3,8 +3,11 @@ import ServiceHighlights from "@/components/UI/Service/ServiceHighlights";
 import { products } from "../../data.example";
 import ProductSlider from "./products/_components/ProductSlider";
 import ProductGrid from "./products/_components/ProductGrid";
+import useProductQuery from "@/hooks/useProduct/useProductQuery";
 
 export default function Home() {
+  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1);
+  console.log(data);
   const features = [
     {
       image: "/images/shipping.webp",

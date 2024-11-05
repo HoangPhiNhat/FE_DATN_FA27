@@ -9,7 +9,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs/Breadcrumbs";
 // CSS
 import "./globals.css";
 import "slick-carousel/slick/slick.css";
-import TanstackProvider from "@/providers/TanstackProvider";
+import { TanstackProvider } from "@/providers/TanstackProvider";
 
 export const metadata = {
   title: "Tobibi Store",
