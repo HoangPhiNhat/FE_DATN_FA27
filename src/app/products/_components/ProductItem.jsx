@@ -12,6 +12,7 @@ const ProductItem = ({ product }) => {
   const handleVariantClick = (index) => {
     setSelectedVariantIndex(index);
   };
+  console.log(product);
 
   return (
     <div
@@ -20,17 +21,18 @@ const ProductItem = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative w-full overflow-hidden">
-        <Link href={"product/san-pham-1"}>
+        <Link href={`products/${product.id}`}>
           <Image
-            src={product.variants[selectedVariantIndex].images[0]}
+            src={product.thumbnail}
             width={334}
             height={425}
             alt="Hình ảnh sản phẩm"
-            className={`transition-opacity duration-500 ease-in-out rounded-t-lg w-full ${
-              isHovered ? "opacity-0" : "opacity-100"
-            }`}
+            className={`transition-opacity duration-500 ease-in-out rounded-t-lg w-full $`}
           />
-          <Image
+          {
+            // isHovered ? "opacity-0" : "opacity-100"
+          }
+          {/* <Image
             src={product.variants[selectedVariantIndex].images[1]}
             width={334}
             height={425}
@@ -38,7 +40,7 @@ const ProductItem = ({ product }) => {
             className={`transition-opacity duration-500 ease-in-out rounded-t-lg w-full ${
               isHovered ? "opacity-100" : "opacity-0"
             } absolute top-0 left-0`}
-          />
+          /> */}
         </Link>
 
         {isHovered && (
@@ -59,12 +61,13 @@ const ProductItem = ({ product }) => {
       </div>
       <div className="  p-2">
         <div className="mt-2">
-          <Link href="/" className="font-semibold text-xl">
+          <Link href={`products/${product.id}`}
+            className="font-semibold text-xl">
             {product.name}
           </Link>
           <p className="text-primary text-lg mt-1">{product.price}₫</p>
         </div>
-        <div className="flex space-x-2 mt-2">
+        {/* <div className="flex space-x-2 mt-2">
           {product.variants.map((variant, index) => (
             <button
               key={index}
@@ -84,7 +87,7 @@ const ProductItem = ({ product }) => {
               />
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
       {/* {isQuickView && (
         <PreviewProduct

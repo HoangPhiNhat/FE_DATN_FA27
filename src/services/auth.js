@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import UnAuthor from "../services/baseApi/UnAuthorApi";
+import instance from "@/configs/axios";
 // import instance from "../configs/axios";
 // import axios from "axios";
 // import Author from "../services/baseApi/AuthorApi";
@@ -7,14 +7,14 @@ import UnAuthor from "../services/baseApi/UnAuthorApi";
 
 export const signIn = async (user) => {
   try {
-    return await UnAuthor.post("/login", user);
+    return await instance.post("/login", user);
   } catch (error) {
     throw error;
   }
 };
 
 export const signUp = (user) => {
-  return UnAuthor.post(`/register`, user);
+  return instance.post(`/register`, user);
 };
 
 export const refreshToken = async () => {
@@ -24,6 +24,7 @@ export const refreshToken = async () => {
     });
     localStorage.setItem("access", data.access_token);
     localStorage.setItem("refresh", data.refresh_token);
+    
   } catch (error) {
     // refresh token is expired
     if (error.response.status === 400) {

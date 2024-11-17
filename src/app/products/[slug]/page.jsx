@@ -3,8 +3,16 @@
 import Image from "next/image";
 import { useState } from "react";
 import ProductImageSlider from "../_components/ProductImageSlider";
+import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
+import useProductQuery from "@/hooks/useProduct/useProductQuery";
 
 const ProductDetail = () => {
+  const { slug } = useParams();
+  console.log(slug);
+  const { data, isLoading } = useProductQuery("GET_PRODUCT_BY_SLUG", slug);
+  console.log(data);
+
   const imagesPr = [
     { url: "/images/product1_1.webp" },
     { url: "/images/product1.jpg" },

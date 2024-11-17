@@ -1,48 +1,38 @@
 "use client";
+
+import Input from "@/components/common/Input/Input";
+import { signIn } from "@/services/auth";
 import Link from "next/link";
 import { useState } from "react";
-// import { logoLight } from "../../assets/images";
+import { useForm } from "react-hook-form";
 
 const SignIn = () => {
-  // ============= Initial State Start here =============
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  // ============= Initial State End here ===============
-  // ============= Error Msg Start here =================
-  const [errEmail, setErrEmail] = useState("");
-  const [errPassword, setErrPassword] = useState("");
-
-  // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
-  // ============= Event Handler Start here =============
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-    setErrEmail("");
-  };
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
-    setErrPassword("");
-  };
-  // ============= Event Handler End here ===============
-  const handleSignUp = (e) => {
-    e.preventDefault();
 
-    if (!email) {
-      setErrEmail("Enter your email");
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "hoangnhat27122004@gmail.com",
+      password: "quancunho",
+    },
+  });
 
-    if (!password) {
-      setErrPassword("Create a password");
-    }
-    // ============== Getting the value ==============
-    if (email && password) {
-      setSuccessMsg(
-        `Hello dear, Thank you for your attempt. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-      );
-      setEmail("");
-      setPassword("");
+  const onSubmit = async (data) => {
+    try {
+      const res = await signIn(data);
+      if (res) {
+        setSuccessMsg(
+          `Hello dear, Thank you for your attempt. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${data.email}`
+        );
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
+
   return (
     <div className="w-full h-full flex items-center justify-center">
       {successMsg ? (
@@ -51,67 +41,56 @@ const SignIn = () => {
             {successMsg}
           </p>
           <Link href="/authentication/sign-up">
-            <button
-              className="w-full h-10 bg-primary text-gray-200 rounded-md text-base font-titleFont font-semibold
-            tracking-wide hover:bg-black hover:text-white duration-300"
-            >
+            <button className="w-full h-10 bg-primary text-gray-200 rounded-md text-base font-titleFont font-semibold tracking-wide hover:bg-black hover:text-white duration-300">
               Sign Up
             </button>
           </Link>
         </div>
       ) : (
-        <form className="w-full lgl:w-[450px] flex items-center justify-center">
-          <div className="px-6 py-4 w-full  flex flex-col justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-primary">
+        <form
+          className="w-full lgl:w-[450px] flex items-center justify-center"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="px-6 py-4 w-full flex flex-col justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-primary">
             <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-3xl mdl:text-4xl mb-4">
               Sign in
             </h1>
             <div className="flex flex-col gap-3">
-              {/* Email */}
-              <div className="flex flex-col gap-.5">
-                <p className="font-titleFont text-base font-semibold text-gray-600">
-                  Work Email
-                </p>
-                <input
-                  onChange={handleEmail}
-                  value={email}
-                  className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
-                  type="email"
-                  placeholder="john@workemail.com"
-                />
-                {errEmail && (
-                  <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
-                    <span className="font-bold italic mr-1">!</span>
-                    {errEmail}
-                  </p>
-                )}
-              </div>
+              <Input
+                label="Work Email"
+                type="email"
+                placeholder="john@workemail.com"
+                error={errors.email?.message}
+                {...register("email", {
+                  required: "Enter your email",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
+              />
 
-              {/* Password */}
-              <div className="flex flex-col gap-.5">
-                <p className="font-titleFont text-base font-semibold text-gray-600">
-                  Password
-                </p>
-                <input
-                  onChange={handlePassword}
-                  value={password}
-                  className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
-                  type="password"
-                  placeholder="Create password"
-                />
-                {errPassword && (
-                  <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
-                    <span className="font-bold italic mr-1">!</span>
-                    {errPassword}
-                  </p>
-                )}
-              </div>
+              <Input
+                label="Password"
+                type="password"
+                placeholder="Create password"
+                error={errors.password?.message}
+                {...register("password", {
+                  required: "Create a password",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+              />
 
               <button
-                onClick={handleSignUp}
-                className="bg-primary hover:bg-black text-gray-200 hover:text-white cursor-pointer w-full text-base font-medium h-10 rounded-md  duration-300"
+                type="submit"
+                className="bg-primary hover:bg-black text-gray-200 hover:text-white cursor-pointer w-full text-base font-medium h-10 rounded-md duration-300"
               >
                 Sign In
               </button>
+
               <p className="text-sm text-center font-titleFont font-medium">
                 Don't have an Account?{" "}
                 <Link href="/sign-up">
