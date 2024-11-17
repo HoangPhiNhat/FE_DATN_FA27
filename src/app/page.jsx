@@ -1,12 +1,14 @@
+"use client";
 import Banner from "@/components/UI/Banner/Banner";
 import ServiceHighlights from "@/components/UI/Service/ServiceHighlights";
 import { products } from "../../data.example";
 import ProductSlider from "./products/_components/ProductSlider";
 import ProductGrid from "./products/_components/ProductGrid";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
+import Loading from "@/components/base/Loading/Loading";
 
 export default function Home() {
-  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1);
+  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, 10);
   console.log(data);
   const features = [
     {
@@ -42,12 +44,20 @@ export default function Home() {
           </div>
         </div>
         <div className="container">
-          <ProductSlider title="New Arrivals" href="/" data={products} />
-          <ProductGrid
-            title="Best Sellers"
-            href="/"
-            data={products.slice(0, 4)}
-          />
+          {isLoading ? (
+            <div className="mt-20">
+              <Loading />
+            </div>
+          ) : (
+            <>
+              <ProductSlider title="New Arrivals" href="/" data={data} />
+              <ProductGrid
+                title="Best Sellers"
+                href="/"
+                data={data.slice(0, 4)}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

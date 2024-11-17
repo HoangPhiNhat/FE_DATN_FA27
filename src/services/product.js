@@ -5,7 +5,7 @@ let size = 5;
 export const getProductAll = async (page, name) => {
   try {
     const response = await instance.get(
-      `/products?name=${name}&page=${page}&size=${size}&sort=DESC`
+      `/products?page=${page}&size=${size}&sort=DESC`
     );
     console.log(response);
     return response.data;
@@ -14,11 +14,13 @@ export const getProductAll = async (page, name) => {
   }
 };
 
-export const getProductById = async (id) => {
+export const getProductBySlug = async (slug) => {
   try {
-    console.log(id);
-    const response = await instance.get(`/products/${id}/show`);
-    return response.data;
+    console.log(slug);
+    // const response = await instance.get(`/products/${slug}`);
+    const response = await instance.get(`/products/${slug}/productAtts`);
+
+    return response;
   } catch (error) {
     throw error;
   }

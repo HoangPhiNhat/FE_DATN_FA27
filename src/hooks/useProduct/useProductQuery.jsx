@@ -1,17 +1,19 @@
 "use client";
-import { getProductAll, getProductById } from "@/services/product";
+import { getProductAll, getProductBySlug } from "@/services/product";
 import { useQuery } from "@tanstack/react-query";
 
-const useProductQuery = (action, id, page, name) => {
-  const queryKey = id ? ["PRODUCT_KEY", id] : ["PRODUCT_KEY", page, name];
+const useProductQuery = (action, slug, page, name) => {
+  console.log(slug);
+
+  const queryKey = slug ? ["PRODUCT_KEY", slug] : ["PRODUCT_KEY", page, name];
   const { data, ...rest } = useQuery({
     queryKey,
     queryFn: async () => {
       switch (action) {
         case "GET_ALL_PRODUCT":
           return await getProductAll(page, name);
-        case "GET_PRODUCT_BY_ID":
-          return await getProductById(id);
+        case "GET_PRODUCT_BY_SLUG":
+          return await getProductBySlug(slug);
         default:
           return null;
       }
