@@ -12,7 +12,6 @@ const ProductItem = ({ product }) => {
   const handleVariantClick = (index) => {
     setSelectedVariantIndex(index);
   };
-  console.log(product);
 
   return (
     <div
@@ -21,7 +20,18 @@ const ProductItem = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative w-full overflow-hidden">
-        <Link href={`products/${product.id}`}>
+        {product.reduced_price && (
+          <div className="absolute top-0 right-0 bg-red-600 text-white px-2 py-1 rounded-bl-lg z-10">
+            Sale off{" "}
+            {Math.round(
+              ((product.regular_price - product.reduced_price) /
+                product.regular_price) *
+                100
+            )}
+            %
+          </div>
+        )}
+        <Link href={`products/${product.slug}`}>
           <Image
             src={product.thumbnail}
             width={334}
@@ -61,11 +71,28 @@ const ProductItem = ({ product }) => {
       </div>
       <div className="  p-2">
         <div className="mt-2">
-          <Link href={`products/${product.id}`}
-            className="font-semibold text-xl">
+          <Link
+            href={`products/${product.slug}`}
+            className="font-semibold text-xl"
+          >
             {product.name}
           </Link>
-          <p className="text-primary text-lg mt-1">{product.price}₫</p>
+          <div className="flex items-center gap-2 mt-1">
+            {product.reduced_price ? (
+              <>
+                <p className="text-primary text-lg">
+                  {product.reduced_price.toLocaleString()}₫
+                </p>
+                <p className="text-gray-500 line-through">
+                  {product.regular_price.toLocaleString()}₫
+                </p>
+              </>
+            ) : (
+              <p className="text-primary text-lg">
+                {product.regular_price.toLocaleString()}₫
+              </p>
+            )}
+          </div>
         </div>
         {/* <div className="flex space-x-2 mt-2">
           {product.variants.map((variant, index) => (

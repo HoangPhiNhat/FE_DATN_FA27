@@ -1,13 +1,12 @@
-import instance from "../configs/axios";
+import UnAuthor from "./baseApi/UnAuthorApi";
 
 let size = 5;
 
 export const getProductAll = async (page, name) => {
   try {
-    const response = await instance.get(
+    const response = await UnAuthor.get(
       `/products?page=${page}&size=${size}&sort=DESC`
     );
-    console.log(response);
     return response.data;
   } catch (error) {
     throw error;
@@ -16,9 +15,7 @@ export const getProductAll = async (page, name) => {
 
 export const getProductBySlug = async (slug) => {
   try {
-    console.log(slug);
-    // const response = await instance.get(`/products/${slug}`);
-    const response = await instance.get(`/products/${slug}/productAtts`);
+    const response = await UnAuthor.get(`/products/${slug}`);
 
     return response;
   } catch (error) {

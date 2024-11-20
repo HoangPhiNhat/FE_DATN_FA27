@@ -5,6 +5,7 @@ import { FaCaretDown, FaSearch, FaShoppingCart, FaUser } from "react-icons/fa";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { category } from "../../../../data.example";
 import { usePathname } from "next/navigation";
+import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
 
 const NavigationBar = () => {
   const pathname = usePathname();
@@ -13,6 +14,11 @@ const NavigationBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [animationDone, setAnimationDone] = useState(false); // Theo dõi trạng thái animation
 
+  const {
+    data: category,
+    isLoading,
+    isError,
+  } = useCategoryQuery("GET_ALL_CATEGORY");
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -75,7 +81,7 @@ const NavigationBar = () => {
                   </ul>
                 )}
               </div>
-              <div className="flex items-center gap-6">
+              {/* <div className="flex items-center gap-6">
                 {category.map((v, i) => (
                   <Link
                     key={i}
@@ -85,7 +91,7 @@ const NavigationBar = () => {
                     {v.name}
                   </Link>
                 ))}
-              </div>
+              </div> */}
 
               {/* Search Bar (commented out, can enable if needed) */}
               {/* <div className="relative w-full lg:w-[600px] h-[50px] text-base text-primary bg-white flex items-center gap-2 justify-between px-6 rounded-xl">
@@ -100,7 +106,7 @@ const NavigationBar = () => {
             </div> */}
 
               <div className="flex gap-4 mt-2 lg:mt-0 items-center cursor-pointer relative">
-                <div onClick={() => setShowUser(!showUser)} className="flex">
+                {/* <div onClick={() => setShowUser(!showUser)} className="flex">
                   <FaUser />
                   <FaCaretDown />
                 </div>
@@ -123,7 +129,7 @@ const NavigationBar = () => {
                       Others
                     </li>
                   </ul>
-                )}
+                )} */}
 
                 <Link href="/cart">
                   <div className="relative">

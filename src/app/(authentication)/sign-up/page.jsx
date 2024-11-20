@@ -1,5 +1,6 @@
 "use client";
 
+import messageService from "@/components/base/Message/Message";
 import Input from "@/components/common/Input/Input";
 import { signUp } from "@/services/auth";
 import Link from "next/link";
@@ -27,7 +28,6 @@ const SignUp = () => {
   });
 
   const password = watch("password");
-
   const onSubmit = async (data) => {
     if (!checked) {
       return;
@@ -37,11 +37,11 @@ const SignUp = () => {
       const res = await signUp(data);
       if (res) {
         setSuccessMsg(
-          `Hello dear ${data.name}, Welcome you to OREBI Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${data.email}`
+          `Xin chào ${data.name} thân mến, Chào mừng bạn đến với NovaThreads. Chúng tôi đã nhận được yêu cầu đăng ký của bạn. Chúng tôi đã gửi link xác nhận đăng ký tài khoản vào email ${data.email} của bạn. Vui lòng xác nhận đăng ký tài khoản email của bạn để xác thực đăng ký tài khoản, cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Trân trọng`
         );
       }
     } catch (error) {
-      console.log(error);
+      messageService.error("Đăng ký tài khoản thất bại");
     }
   };
 
@@ -50,7 +50,7 @@ const SignUp = () => {
       <div className="w-full h-full flex flex-col items-center justify-center">
         {successMsg ? (
           <div className="w-[500px]">
-            <p className="w-full px-4 py-10 text-green-500 font-medium font-titleFont">
+            <p className="w-full px-4 py-10 text-green-500 font-medium font-titleFont text-justify">
               {successMsg}
             </p>
             <Link href="/sign-in">

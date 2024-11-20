@@ -3,8 +3,6 @@ import { getProductAll, getProductBySlug } from "@/services/product";
 import { useQuery } from "@tanstack/react-query";
 
 const useProductQuery = (action, slug, page, name) => {
-  console.log(slug);
-
   const queryKey = slug ? ["PRODUCT_KEY", slug] : ["PRODUCT_KEY", page, name];
   const { data, ...rest } = useQuery({
     queryKey,

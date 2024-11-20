@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-catch */
 import instance from "../configs/axios";
-import Author from "../services/baseApi/AuthorApi";
 let size = 5;
 
 export const getAllCategoryForProduct = async () => {
@@ -16,7 +15,7 @@ export const getAllCategory = async (page) => {
   try {
     let queryCategory = `/categories?sort=DESC&size=${size}`;
     if (page) queryCategory += `&page=${page}`;
-    return await instance.get(queryCategory);
+    return await Unauthor.get(queryCategory);
   } catch (error) {
     throw error;
   }

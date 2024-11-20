@@ -9,7 +9,6 @@ import Loading from "@/components/base/Loading/Loading";
 
 export default function Home() {
   const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, 10);
-  console.log(data);
   const features = [
     {
       image: "/images/shipping.webp",
