@@ -95,17 +95,27 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
             width={104}
             height={104}
             className="aspect-square object-cover"
-            src={`${data.product_att.image}`}
-            alt={data.name}
+            src={data.product_att.color_image.image}
+            alt={data.product_att.product.name}
           />
-          <h1 className="font-titleFont font-semibold">{data.name}</h1>
+          <div>
+            <h1 className="font-titleFont font-semibold">
+              {data.product_att.product.name}
+            </h1>
+            <p className="text-sm text-gray-500">
+              {data.product_att.size.name} - {data.product_att.color.name}
+            </p>
+          </div>
         </div>
         <div className="col-span-3 mdl:col-span-3 grid grid-cols-3">
           <div className="flex items-center text-lg font-semibold">
             {new Intl.NumberFormat("vi-VN", {
               style: "currency",
               currency: "VND",
-            }).format(data.reduced_price ?? data.regular_price)}
+            }).format(
+              data.product_att.product.regular_price ??
+                data.product_att.product.reduced_price
+            )}
           </div>
           <div className="flex items-center gap-6 text-lg">
             <span
@@ -127,7 +137,11 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
               {new Intl.NumberFormat("vi-VN", {
                 style: "currency",
                 currency: "VND",
-              }).format(quantity * data.reduced_price ?? data.regular_price)}
+              }).format(
+                quantity *
+                  (data.product_att.product.regular_price ??
+                    data.product_att.product.reduced_price)
+              )}
             </p>
           </div>
         </div>
@@ -138,7 +152,7 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={() => deleteCartItem(data.id)}
         title="Xác nhận xóa sản phẩm"
-        message={`Bạn có chắc chắn muốn xóa sản phẩm "${data.name}" khỏi giỏ hàng?`}
+        message={`Bạn có chắc chắn muốn xóa sản phẩm "${data.product_att.product.name}" khỏi giỏ hàng?`}
         label="Xóa"
       />
     </>

@@ -5,7 +5,7 @@ import Input from "@/components/common/Input/Input";
 import { signIn } from "@/services/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const SignIn = () => {
@@ -22,6 +22,12 @@ const SignIn = () => {
       password: "password",
     },
   });
+  useEffect(() => {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
+      router.push("/");
+    }
+  }, [router]);
 
   const onSubmit = async (data) => {
     if (isLoading) return;
@@ -60,34 +66,34 @@ const SignIn = () => {
       >
         <div className="px-6 py-4 w-full flex flex-col justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-primary">
           <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-3xl mdl:text-4xl mb-4">
-            Sign in
+            Đăng nhập
           </h1>
           <div className="flex flex-col gap-3">
             <Input
-              label="Work Email"
+              label="Email"
               type="email"
               placeholder="john@workemail.com"
               error={errors.email?.message}
               {...register("email", {
-                required: "Enter your email",
+                required: "Vui lòng nhập email",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
+                  message: "Email không hợp lệ",
                 },
               })}
             />
 
             <Input
-              label="Password"
+              label="Mật khẩu"
               type="password"
-              placeholder="Create password"
+              placeholder="Nhập mật khẩu"
               error={errors.password?.message}
               {...register("password", {
-                required: "Create a password",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters",
-                },
+                required: "Vui lòng nhập mật khẩu",
+                // minLength: {
+                //   value: 6,
+                //   message: "Mật khẩu phải có ít nhất 6 ký tự",
+                // },
               })}
             />
 
@@ -106,6 +112,13 @@ const SignIn = () => {
               <Link href="/sign-up">
                 <span className="hover:text-blue-600 duration-300">
                   Đăng ký
+                </span>
+              </Link>
+            </p>
+            <p className="text-sm text-center font-titleFont font-medium">
+              <Link href="/forgot-password">
+                <span className="hover:text-blue-600 duration-300">
+                  Quên mật khẩu
                 </span>
               </Link>
             </p>

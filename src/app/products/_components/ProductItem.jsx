@@ -20,7 +20,7 @@ const ProductItem = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative w-full overflow-hidden">
-        {product.reduced_price && (
+        {product.reduced_price ? (
           <div className="absolute top-0 right-0 bg-red-600 text-white px-2 py-1 rounded-bl-lg z-10">
             Sale off{" "}
             {Math.round(
@@ -30,7 +30,7 @@ const ProductItem = ({ product }) => {
             )}
             %
           </div>
-        )}
+        ) : null}
         <Link href={`products/${product.slug}`}>
           <Image
             src={product.thumbnail}

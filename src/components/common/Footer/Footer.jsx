@@ -32,7 +32,7 @@ const Footer = () => {
       <div className="container grid grid-cols-1 md:grid-cols-2  xl:grid-cols-6 px-4 gap-10">
         <div className="col-span-2">
           <h3 className="text-xl font-bodyFont font-semibold mb-6">
-            More about Orebi Shop
+            More about NovaThreads Shop
           </h3>
 
           <div className="flex flex-col gap-6">
@@ -102,7 +102,7 @@ const Footer = () => {
                 </button>
               </div>
             )}
-
+            {/*
             <Image
               className={`w-[80%] lg:w-[60%] mx-auto ${
                 subscription ? "mt-2" : "mt-6"
@@ -111,7 +111,7 @@ const Footer = () => {
               width={215}
               height={64}
               alt="payment method supported"
-            />
+            /> */}
           </div>
         </div>
       </div>

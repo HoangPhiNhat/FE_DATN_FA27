@@ -7,13 +7,16 @@ import { products } from "../../../data.example";
 import Alert from "@/components/base/Alert";
 import useCartQuery from "@/hooks/useCart/useCartQuery";
 import Loading from "@/components/base/Loading/Loading";
+import messageService from "@/components/base/Message/Message";
+import ConfirmModal from "@/components/base/Confirm/Confirm";
+import { useRouter } from "next/navigation";
+import useCartMutation from "@/hooks/useCart/useCartMutation";
 
 const Cart = () => {
-  const [totalAmt, setTotalAmt] = useState(0);
-  const [shippingCharge, setShippingCharge] = useState(0);
+  const router = useRouter();
   const [selectedItems, setSelectedItems] = useState([]);
-  const [alert, setAlert] = useState({ visible: false, message: "" });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -24,12 +27,18 @@ const Cart = () => {
     enabled: isAuthenticated,
   });
 
-  const showAlert = (message) => {
-    setAlert({ visible: true, message });
-    setTimeout(() => {
-      setAlert({ visible: false, message: "" });
-    }, 2000);
-  };
+  const { mutate: deleteCartItem } = useCartMutation({
+    action: "DELETE",
+    onSuccess: () => {
+      messageService.success("Xóa sản phẩm thành công");
+    },
+    onError: (error) => {
+      messageService.error(
+        error?.response?.data?.message || "Có lỗi xảy ra khi xóa sản phẩm"
+      );
+    },
+  });
+
   const handleToggleSelect = (id) => {
     setSelectedItems((prevSelected) =>
       prevSelected.includes(id)
@@ -38,38 +47,54 @@ const Cart = () => {
     );
   };
 
-  const handleSelectAll = (event) => {
-    if (event.target.checked) {
-      setSelectedItems(products.map((item) => item.id));
-    } else {
+  const handleSelectAll = () => {
+    if (cartData?.length === selectedItems.length) {
       setSelectedItems([]);
+    } else {
+      setSelectedItems(cartData?.map((item) => item.id) || []);
     }
   };
 
   const handleRemoveSelected = () => {
-    if (selectedItems.length > 0) {
-      console.log("Remove selected items:", selectedItems);
-    } else {
-      showAlert("Vui lòng chọn sản phẩm");
+    if (selectedItems.length === 0) {
+      messageService.warning("Vui lòng chọn sản phẩm");
+      return;
     }
+    selectedItems.map((id) => deleteCartItem(id));
+    setShowConfirmModal(true);
   };
-  //   useEffect(() => {
-  //     let price = 0;
-  //     products.forEach((item) => {
-  //       price += item.price * item.quantity;
-  //     });
-  //     setTotalAmt(price);
-  //   }, [products]);
 
-  useEffect(() => {
-    if (totalAmt <= 200) {
-      setShippingCharge(30);
-    } else if (totalAmt <= 400) {
-      setShippingCharge(25);
-    } else {
-      setShippingCharge(20);
+  const onConfirmRemove = () => {
+    console.log("Remove selected items:", selectedItems);
+    messageService.success("Đã xóa sản phẩm thành công");
+    setShowConfirmModal(false);
+  };
+
+  const totalAmount = useMemo(() => {
+    if (!cartData?.length || !selectedItems.length) return 0;
+
+    return cartData
+      .filter((item) => selectedItems.includes(item.id))
+      .reduce((total, item) => {
+        const price = item.regular_price ?? item.reduced_price;
+        return total + price * item.quantity;
+      }, 0);
+  }, [cartData, selectedItems]);
+
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      messageService.warning("Vui lòng chọn sản phẩm để mua hàng");
+      return;
     }
-  }, [totalAmt]);
+
+    const selectedProducts = cartData.filter((item) =>
+      selectedItems.includes(item.id)
+    );
+
+    localStorage.setItem("checkoutItems", JSON.stringify(selectedProducts));
+
+    router.push("/checkout");
+  };
 
   if (isLoading) return <Loading />;
 
@@ -99,15 +124,27 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto">
-      {/* <Breadcrumbs title="Cart" /> */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={onConfirmRemove}
+        title="Xác nhận xóa"
+        message={`${
+          selectedItems.length > 1
+            ? "Bạn có chắc chắn muốn xóa những sản phẩm đã chọn?"
+            : "Bạn có chắc chắn muốn xóa sản phẩm đã chọn?"
+        }`}
+        label="Xóa"
+      />
       <>
         <div className="w-full h-20 bg-[#F5F7F7] text-primary lg:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold relative mt-10">
           <h2 className="col-span-2">
             <input
               type="checkbox"
-              checked={products.every((product) =>
-                selectedItems.includes(product.id)
-              )}
+              checked={
+                cartData?.length > 0 &&
+                cartData?.length === selectedItems.length
+              }
               onChange={handleSelectAll}
               className="mr-2"
             />
@@ -119,27 +156,6 @@ const Cart = () => {
             <h2>Số tiền</h2>
           </div>
         </div>
-        {/* <div className="flex items-center justify-between my-4">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={products.every((product) =>
-                  selectedItems.includes(product.id)
-                )}
-                onChange={handleSelectAll}
-                className="mr-2"
-              />
-              <label>Chọn tất cả</label>
-            </div>
-            {selectedItems.length > 0 && (
-              <button
-                onClick={handleRemoveSelected}
-                className="ml-4 p-2 bg-red-500 text-white rounded animate-fade"
-              >
-                Xóa đã chọn
-              </button>
-            )}
-          </div> */}
         <div className="mt-5">
           {cartData.map((v) => (
             <div key={v.id}>
@@ -157,9 +173,10 @@ const Cart = () => {
           <div className="flex items-center">
             <input
               type="checkbox"
-              checked={products.every((product) =>
-                selectedItems.includes(product.id)
-              )}
+              checked={
+                cartData?.length > 0 &&
+                cartData?.length === selectedItems.length
+              }
               onChange={handleSelectAll}
               className="mr-2"
             />
@@ -167,14 +184,23 @@ const Cart = () => {
             <button
               onClick={handleRemoveSelected}
               className="ml-4 p-2 text-black rounded animate-fade"
-              disabled={alert.visible}
             >
               Xóa
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <p>Tổng thanh toán ({selectedItems.length} sản phẩm): 0đ</p>
-            <button className="bg-primary text-white px-5 py-2 hover:bg-white hover:text-primary border-primary border-1">
+            <p>
+              Tổng thanh toán ({selectedItems.length} sản phẩm):{" "}
+              {totalAmount.toLocaleString()}đ
+            </p>
+            <button
+              onClick={handleCheckout}
+              className={`px-5 py-2 border-primary border-1 ${
+                selectedItems.length > 0
+                  ? "bg-primary text-white hover:bg-white hover:text-primary cursor-pointer"
+                  : "bg-gray-400 text-gray-200 cursor-not-allowed"
+              }`}
+            >
               Mua hàng
             </button>
           </div>

@@ -74,6 +74,10 @@ const ProductDetail = () => {
 
     setSelectedColor(color);
 
+    if (color && color.sizes.length > 0) {
+      setSelectedSize(color.sizes[0]);
+    }
+
     setColorImages((prevImages) =>
       prevImages.map((img) =>
         img.colorId === colorId
@@ -120,7 +124,7 @@ const ProductDetail = () => {
 
     addToCart(cartData);
   };
-
+  console.log(selectedSize);
   if (isLoading) return <Loading />;
   if (isError || !data) return <p>Lỗi tải dữ liệu</p>;
   if (!selectedColor) return <Loading />;
@@ -140,12 +144,20 @@ const ProductDetail = () => {
 
           <div className="mb-4">
             <p className="text-xl">
-              <span className="line-through text-gray-500 mr-2">
-                ₫{data.regular_price.toLocaleString()}
-              </span>
-              <span className="text-red-600 font-bold">
-                ₫{data.reduced_price.toLocaleString()}
-              </span>
+              {data.reduced_price ? (
+                <>
+                  <span className="line-through text-gray-500 mr-2">
+                    ₫{data.regular_price.toLocaleString()}
+                  </span>
+                  <span className="text-red-600 font-bold">
+                    ₫{data.reduced_price.toLocaleString()}
+                  </span>
+                </>
+              ) : (
+                <span className="text-black font-bold">
+                  ₫{data.regular_price.toLocaleString()}
+                </span>
+              )}
             </p>
           </div>
 
@@ -187,7 +199,7 @@ const ProductDetail = () => {
                     className={`
                       px-3 py-1 border rounded
                       ${
-                        selectedSize.size_id === size.id
+                        selectedSize?.size_id === size.id
                           ? "bg-black text-white"
                           : "bg-white"
                       }

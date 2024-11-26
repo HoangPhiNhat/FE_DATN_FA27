@@ -9,142 +9,70 @@ import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
 
 const NavigationBar = () => {
   const pathname = usePathname();
-  const [showCollection, setShowCollection] = useState(false);
-  const [showUser, setShowUser] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [animationDone, setAnimationDone] = useState(false); // Theo dõi trạng thái animation
-
+  const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [animationDone, setAnimationDone] = useState(false);
   const {
-    data: category,
+    data: categories,
     isLoading,
     isError,
   } = useCategoryQuery("GET_ALL_CATEGORY");
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
 
   return (
-    <>
-      <div className="w-full bg-[#F5F5F3] relative">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full px-10 pb-4 lg:pb-0 h-full lg:h-24">
-          {pathname === "/cart" ? (
-            <div className="container ">
-              {!animationDone ? (
-                <div
-                  className="effect-gif-ltr"
-                  onAnimationEnd={() => setAnimationDone(true)}
-                >
-                  <img
-                    src="/gif/shopping-cart.gif"
-                    alt="Sample GIF"
-                    style={{ width: "30px", height: "auto" }}
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center gap-4 animate-fade-right">
-                  <img
-                    src="/gif/shopping-cart.gif"
-                    alt="Sample GIF"
-                    style={{ width: "30px", height: "auto" }}
-                  />
-                  <h1 className="text-xl">Giỏ hàng của bạn</h1>
-                </div>
+    <div className="w-full bg-[#F5F5F3] relative">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-center w-full px-10 pb-4 lg:pb-0 h-full lg:h-24">
+        {pathname === "/cart" ? (
+          <div className="container ">
+            <div
+              className="effect-gif-ltr flex items-center gap-2"
+              onAnimationEnd={() => setAnimationDone(true)}
+            >
+              <img
+                src="/gif/shopping-cart.gif"
+                alt="Sample GIF"
+                style={{ width: "30px", height: "auto" }}
+              />
+              {animationDone && (
+                <span className="text-sm text-gray-500 animate-fade-right">Giỏ hàng của bạn</span>
               )}
             </div>
-          ) : (
-            <>
+          </div>
+        ) : (
+          <div className="flex items-center gap-6">
+            {categories?.data?.map((category) => (
               <div
-                onMouseEnter={() => setShowCollection(true)}
-                onMouseLeave={() => setShowCollection(false)}
-                className="relative flex h-14 cursor-pointer items-center gap-2 z-10"
+                key={category.id}
+                className="relative group"
+                onMouseEnter={() => setHoveredCategory(category.id)}
+                onMouseLeave={() => setHoveredCategory(null)}
               >
-                <HiOutlineMenuAlt4 className="w-5 h-5" />
-                <p className="text-[14px] font-normal">Collections</p>
-
-                {showCollection && (
-                  <ul className="bg-white absolute top-full left-0 w-fit text-[#767676] p-4 pb-6 shadow-md rounded-lg">
-                    {[
-                      "Accessories",
-                      "Furniture",
-                      "Electronics",
-                      "Clothes",
-                      "Bags",
-                      "Home appliances",
-                    ].map((item, index) => (
-                      <li
-                        key={index}
-                        className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:bg-gray-200 hover:text-black duration-300 cursor-pointer whitespace-nowrap"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              {/* <div className="flex items-center gap-6">
-                {category.map((v, i) => (
-                  <Link
-                    key={i}
-                    href={v.name}
-                    className="hover:text-primary hover:font-bold"
-                  >
-                    {v.name}
-                  </Link>
-                ))}
-              </div> */}
-
-              {/* Search Bar (commented out, can enable if needed) */}
-              {/* <div className="relative w-full lg:w-[600px] h-[50px] text-base text-primary bg-white flex items-center gap-2 justify-between px-6 rounded-xl">
-              <input
-                className="flex-1 h-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
-                type="text"
-                onChange={handleSearch}
-                value={searchQuery}
-                placeholder="Search your products here"
-              />
-              <FaSearch className="w-5 h-5" />
-            </div> */}
-
-              <div className="flex gap-4 mt-2 lg:mt-0 items-center cursor-pointer relative">
-                {/* <div onClick={() => setShowUser(!showUser)} className="flex">
-                  <FaUser />
-                  <FaCaretDown />
-                </div>
-                {showUser && (
-                  <ul className="absolute top-6 left-0 z-50 bg-primary w-44 text-[#767676] h-auto p-4 pb-6">
-                    <Link href="/signin">
-                      <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                        Login
-                      </li>
-                    </Link>
-                    <Link onClick={() => setShowUser(false)} href="/signup">
-                      <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                        Sign Up
-                      </li>
-                    </Link>
-                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                      Profile
-                    </li>
-                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                      Others
-                    </li>
-                  </ul>
-                )} */}
-
-                <Link href="/cart">
-                  <div className="relative">
-                    <FaShoppingCart />
-                    <span className="absolute font-titleFont top-3 -right-2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primary text-white">
-                      2
-                    </span>
-                  </div>
+                <Link
+                  href={`/${category.slug}`}
+                  className="hover:text-primary hover:font-bold"
+                >
+                  {category.name}
                 </Link>
+
+                {/* Submenu */}
+                {category.children.length > 0 &&
+                  hoveredCategory === category.id && (
+                    <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50">
+                      {category.children.map((subCategory) => (
+                        <Link
+                          key={subCategory.id}
+                          href={`/${category.slug}/${subCategory.slug}`}
+                          className="block px-4 py-2 hover:bg-gray-100 text-gray-700 hover:text-primary"
+                        >
+                          {subCategory.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
               </div>
-            </>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

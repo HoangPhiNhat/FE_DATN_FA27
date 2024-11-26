@@ -1,9 +1,9 @@
 "use client";
-import { getCart } from "@/services/cart";
+import { profile } from "@/services/auth";
 import { useQuery } from "@tanstack/react-query";
 
-const useCartQuery = () => {
-  const queryKey = ["CART_KEY"];
+const useProfileQuery = () => {
+  const queryKey = ["PROFILE_KEY"];
   const { data, ...rest } = useQuery({
     queryKey,
     queryFn: async () => {
@@ -11,10 +11,10 @@ const useCartQuery = () => {
       if (!access_token) {
         return [];
       }
-      return await getCart();
+      return await profile();
     },
   });
   return { data, ...rest };
 };
 
-export default useCartQuery;
+export default useProfileQuery;

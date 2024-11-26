@@ -4,12 +4,21 @@ import messageService from "@/components/base/Message/Message";
 import Input from "@/components/common/Input/Input";
 import { signUp } from "@/services/auth";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
+  const router = useRouter();
   const [successMsg, setSuccessMsg] = useState("");
   const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
+      router.push("/");
+    }
+  }, [router]);
 
   const {
     register,
@@ -55,7 +64,7 @@ const SignUp = () => {
             </p>
             <Link href="/sign-in">
               <button className="w-full h-10 bg-primary rounded-md text-gray-200 text-base font-titleFont font-semibold tracking-wide hover:bg-black hover:text-white duration-300">
-                Sign in
+                Đăng nhập
               </button>
             </Link>
           </div>
@@ -66,73 +75,73 @@ const SignUp = () => {
           >
             <div className="px-6 py-4 w-full h-full flex flex-col justify-start overflow-y-scroll scrollbar-thin scrollbar-thumb-primary">
               <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-2xl mdl:text-3xl mb-4">
-                Create your account
+                Tạo tài khoản của bạn
               </h1>
               <div className="flex flex-col gap-3">
                 <Input
-                  label="Full Name"
+                  label="Họ và tên"
                   placeholder="eg. John Doe"
                   error={errors.name?.message}
                   {...register("name", {
-                    required: "Enter your name",
+                    required: "Nhập tên của bạn",
                   })}
                 />
 
                 <Input
-                  label="Work Email"
+                  label="Email"
                   type="email"
                   placeholder="john@workemail.com"
                   error={errors.email?.message}
                   {...register("email", {
-                    required: "Enter your email",
+                    required: "Nhập email của bạn",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "Enter a Valid email",
+                      message: "Nhập email hợp lệ",
                     },
                   })}
                 />
 
                 <Input
-                  label="Phone Number"
+                  label="Số điện thoại"
                   placeholder="008801234567891"
                   error={errors.phone?.message}
                   {...register("phone", {
-                    required: "Enter your phone number",
+                    required: "Nhập số điện thoại của bạn",
                   })}
                 />
 
                 <Input
-                  label="Password"
+                  label="Mật khẩu"
                   type="password"
-                  placeholder="Create password"
+                  placeholder="Tạo mật khẩu"
                   error={errors.password?.message}
                   {...register("password", {
-                    required: "Create a password",
+                    required: "Tạo mật khẩu",
                     minLength: {
                       value: 6,
-                      message: "Passwords must be at least 6 characters",
+                      message: "Mật khẩu phải có ít nhất 6 ký tự",
                     },
                   })}
                 />
 
                 <Input
-                  label="Password Confirmation"
+                  label="Nhập lại mật khẩu"
                   type="password"
                   placeholder="Confirm password"
                   error={errors.password_confirmation?.message}
                   {...register("password_confirmation", {
-                    required: "Confirm your password",
+                    required: "Nhập lại mật khẩu",
                     validate: (value) =>
-                      value === password || "Passwords do not match",
+                      value === password || "Mật khẩu không khớp",
                   })}
                 />
 
                 <Input
-                  label="Address"
+                  label="Địa chỉ"
                   placeholder="road-001, house-115, example area"
                   error={errors.address?.message}
                   {...register("address", {
-                    required: "Enter your address",
+                    required: "Nhập địa chỉ của bạn",
                   })}
                 />
 
@@ -143,9 +152,10 @@ const SignUp = () => {
                     type="checkbox"
                   />
                   <p className="text-sm text-primary">
-                    I agree to the OREBI{" "}
-                    <span className="text-blue-500">Terms of Service </span>and{" "}
-                    <span className="text-blue-500">Privacy Policy</span>.
+                    Tôi đồng ý với điều khoản dịch vụ của NovaThreads{" "}
+                    <span className="text-blue-500">Điều khoản dịch vụ </span>
+                    và <span className="text-blue-500">Chính sách bảo mật</span>
+                    .
                   </p>
                 </div>
 
@@ -158,14 +168,21 @@ const SignUp = () => {
                   } w-full text-gray-200 text-base font-medium h-10 rounded-md hover:text-white duration-300`}
                   disabled={!checked}
                 >
-                  Create Account
+                  Tạo tài khoản
                 </button>
 
                 <p className="text-sm text-center font-titleFont font-medium">
-                  Don't have an Account?{" "}
+                  Bạn chưa có tài khoản?
                   <Link href="/sign-in">
                     <span className="hover:text-blue-600 duration-300">
-                      Sign in
+                      Đăng nhập
+                    </span>
+                  </Link>
+                </p>
+                <p className="text-sm text-center font-titleFont font-medium">
+                  <Link href="/forgot-password">
+                    <span className="hover:text-blue-600 duration-300">
+                      Quên mật khẩu
                     </span>
                   </Link>
                 </p>

@@ -8,7 +8,7 @@ import useProductQuery from "@/hooks/useProduct/useProductQuery";
 import Loading from "@/components/base/Loading/Loading";
 
 export default function Home() {
-  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, 10);
+  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, "");
   const features = [
     {
       image: "/images/shipping.webp",
@@ -49,11 +49,11 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <ProductSlider title="New Arrivals" href="/" data={data} />
+              <ProductSlider title="New Arrivals" href="/" data={data.data} />
               <ProductGrid
                 title="Best Sellers"
                 href="/"
-                data={data.slice(0, 4)}
+                data={data.data.slice(0, 4)}
               />
             </>
           )}
