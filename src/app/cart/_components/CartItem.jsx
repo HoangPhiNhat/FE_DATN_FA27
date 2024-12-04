@@ -73,6 +73,8 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
       setShouldUpdate(true);
+    } else if (quantity === 1) {
+      setIsConfirmOpen(true);
     }
   };
 
@@ -95,12 +97,12 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
             width={104}
             height={104}
             className="aspect-square object-cover"
-            src={data.product_att.color_image.image}
-            alt={data.product_att.product.name}
+            src={data.product_att.image ?? "/images/default-image.jpg"}
+            alt={data.name}
           />
           <div>
             <h1 className="font-titleFont font-semibold">
-              {data.product_att.product.name}
+              {data.name}
             </h1>
             <p className="text-sm text-gray-500">
               {data.product_att.size.name} - {data.product_att.color.name}
@@ -108,13 +110,29 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
           </div>
         </div>
         <div className="col-span-3 mdl:col-span-3 grid grid-cols-3">
-          <div className="flex items-center text-lg font-semibold">
-            {new Intl.NumberFormat("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            }).format(
-              data.product_att.product.regular_price ??
-                data.product_att.product.reduced_price
+          <div className="flex items-center text-lg font-semibold gap-2">
+            {data.product_att.reduced_price ? (
+              <>
+                <span className="line-through text-gray-500 text-base">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(data.product_att.regular_price)}
+                </span>
+                <span className="text-red-500">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(data.product_att.reduced_price)}
+                </span>
+              </>
+            ) : (
+              <span>
+                {new Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(data.product_att.regular_price)}
+              </span>
             )}
           </div>
           <div className="flex items-center gap-6 text-lg">
@@ -139,8 +157,8 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
                 currency: "VND",
               }).format(
                 quantity *
-                  (data.product_att.product.regular_price ??
-                    data.product_att.product.reduced_price)
+                  (data.product_att.reduced_price ??
+                    data.product_att.regular_price)
               )}
             </p>
           </div>
@@ -152,7 +170,7 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={() => deleteCartItem(data.id)}
         title="Xác nhận xóa sản phẩm"
-        message={`Bạn có chắc chắn muốn xóa sản phẩm "${data.product_att.product.name}" khỏi giỏ hàng?`}
+        message={`Bạn có chắc chắn muốn xóa sản phẩm "${data.name}" khỏi giỏ hàng?`}
         label="Xóa"
       />
     </>

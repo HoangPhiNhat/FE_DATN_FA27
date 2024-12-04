@@ -28,7 +28,6 @@ axiosClient.interceptors.response.use(
     // Nếu token đã hết hạn
     if (response && response.status === 401) {
       try {
-        console.log("Refresh token");
         await refreshToken(); // Gọi hàm refreshToken từ AuthApi
         return axiosClient(config); // Thực hiện lại yêu cầu gốc
       } catch (refreshError) {
@@ -40,9 +39,9 @@ axiosClient.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     } else if (response && response.status === 403) {
-      window.location.href = "/admin/page403";
+      // window.location.href = "/admin/page403";
     } else if (response && response.status === 500) {
-      window.location.href = "/page500";
+      // window.location.href = "/page500";
     }
     return Promise.reject(error);
   }

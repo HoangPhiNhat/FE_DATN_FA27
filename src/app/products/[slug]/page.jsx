@@ -22,24 +22,6 @@ const ProductDetail = () => {
   const [colorImages, setColorImages] = useState([]);
   const [quantity, setQuantity] = useState(1);
 
-  const colors = [
-    { id: 1, name: "Red" },
-    { id: 2, name: "Blue" },
-    { id: 3, name: "Green" },
-    { id: 4, name: "Yellow" },
-    { id: 5, name: "Black" },
-    { id: 6, name: "White" },
-  ];
-
-  const sizes = [
-    { id: 1, name: "XS" },
-    { id: 2, name: "S" },
-    { id: 3, name: "M" },
-    { id: 4, name: "L" },
-    { id: 5, name: "XL" },
-    { id: 6, name: "XXL" },
-  ];
-
   const { mutate: addToCart, isLoading: isAddingToCart } = useCartMutation({
     action: "CREATE",
     onSuccess: () => {
@@ -61,7 +43,7 @@ const ProductDetail = () => {
       const images = data.product_att.map((attr, index) => ({
         url: `https://via.placeholder.com/740x740.png?text=${attr.image}`,
         colorId: attr.color_id,
-        color: colors.find((c) => c.id === attr.color_id)?.name,
+        color: attr.color_name,
         active: index === 0,
       }));
 
@@ -124,7 +106,6 @@ const ProductDetail = () => {
 
     addToCart(cartData);
   };
-  console.log(selectedSize);
   if (isLoading) return <Loading />;
   if (isError || !data) return <p>Lỗi tải dữ liệu</p>;
   if (!selectedColor) return <Loading />;
@@ -144,18 +125,18 @@ const ProductDetail = () => {
 
           <div className="mb-4">
             <p className="text-xl">
-              {data.reduced_price ? (
+              {selectedSize.reduced_price ? (
                 <>
                   <span className="line-through text-gray-500 mr-2">
-                    ₫{data.regular_price.toLocaleString()}
+                    ₫{selectedSize.regular_price.toLocaleString()}
                   </span>
                   <span className="text-red-600 font-bold">
-                    ₫{data.reduced_price.toLocaleString()}
+                    ₫{selectedSize.reduced_price.toLocaleString()}
                   </span>
                 </>
               ) : (
                 <span className="text-black font-bold">
-                  ₫{data.regular_price.toLocaleString()}
+                  ₫{selectedSize.regular_price.toLocaleString()}
                 </span>
               )}
             </p>
@@ -164,22 +145,18 @@ const ProductDetail = () => {
           <p className="mb-4">{data.short_description}</p>
           <h3 className="font-semibold mb-2">Màu</h3>
           <div className="flex space-x-2">
-            {colors.map((color) => (
+            {data.product_att.map((color) => (
               <button
-                key={color.id}
-                onClick={() => handleColorChange(color.id)}
+                key={color.color_id}
+                onClick={() => handleColorChange(color.color_id)}
                 className={`w-8 h-8 rounded-full border-2 ${
-                  selectedColor.color_id === color.id
+                  selectedColor.color_id === color.color_id
                     ? "border-black"
                     : "border-gray-300"
                 }`}
                 style={{
-                  backgroundColor: color.name.toLowerCase(),
-                  opacity: data.product_att.some(
-                    (attr) => attr.color_id === color.id
-                  )
-                    ? 1
-                    : 0.3,
+                  backgroundColor: color.color_name.toLowerCase(),
+                  opacity: 1,
                 }}
               />
             ))}
@@ -187,33 +164,28 @@ const ProductDetail = () => {
           <div className="my-4">
             <h3 className="font-semibold mb-2">Sizes</h3>
             <div className="flex space-x-2">
-              {sizes.map((size) => {
-                const sizeStock = selectedColor.sizes.find(
-                  (s) => s.size_id === size.id
-                );
-                return (
-                  <button
-                    key={size.id}
-                    onClick={() => handleSizeChange(size.id)}
-                    disabled={!sizeStock || sizeStock.stock_quantity === 0}
-                    className={`
-                      px-3 py-1 border rounded
-                      ${
-                        selectedSize?.size_id === size.id
-                          ? "bg-black text-white"
-                          : "bg-white"
-                      }
-                      ${
-                        !sizeStock || sizeStock.stock_quantity === 0
-                          ? "opacity-30 cursor-not-allowed"
-                          : "hover:bg-gray-100"
-                      }
-                    `}
-                  >
-                    {size.name} ({sizeStock ? sizeStock.stock_quantity : 0})
-                  </button>
-                );
-              })}
+              {selectedColor.sizes.map((size) => (
+                <button
+                  key={size.size_id}
+                  onClick={() => handleSizeChange(size.size_id)}
+                  disabled={size.stock_quantity === 0}
+                  className={`
+                    px-3 py-1 border rounded
+                    ${
+                      selectedSize?.size_id === size.size_id
+                        ? "bg-black text-white"
+                        : "bg-white"
+                    }
+                    ${
+                      size.stock_quantity === 0
+                        ? "opacity-30 cursor-not-allowed"
+                        : "hover:bg-gray-100"
+                    }
+                  `}
+                >
+                  {size.size_name} ({size.stock_quantity})
+                </button>
+              ))}
             </div>
           </div>
           <div className="my-4">

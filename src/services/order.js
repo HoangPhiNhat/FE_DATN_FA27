@@ -10,7 +10,7 @@ export const createOrder = async (data) => {
 
 export const createOnlinePayment = async (data) => {
   try {
-    const response = await Author.post("/orders/online-payment", data);
+    const response = await Author.post("/momo/payment", data);
     return response.data;
   } catch (error) {
     throw error;

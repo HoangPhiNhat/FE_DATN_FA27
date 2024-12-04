@@ -27,7 +27,6 @@ const UserAccountPage = () => {
   }, [router]);
 
   const { data: userProfile, isLoading } = useProfileQuery();
-  console.log(userProfile);
   const favoriteProducts = [
     {
       id: 1,

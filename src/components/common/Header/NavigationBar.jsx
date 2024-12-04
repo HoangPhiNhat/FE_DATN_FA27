@@ -6,6 +6,7 @@ import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { category } from "../../../../data.example";
 import { usePathname } from "next/navigation";
 import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
+import Image from "next/image";
 
 const NavigationBar = () => {
   const pathname = usePathname();
@@ -26,10 +27,11 @@ const NavigationBar = () => {
               className="effect-gif-ltr flex items-center gap-2"
               onAnimationEnd={() => setAnimationDone(true)}
             >
-              <img
+              <Image
                 src="/gif/shopping-cart.gif"
                 alt="Sample GIF"
-                style={{ width: "30px", height: "auto" }}
+                width={30}
+                height={30}
               />
               {animationDone && (
                 <span className="text-sm text-gray-500 animate-fade-right">Giỏ hàng của bạn</span>
@@ -52,8 +54,7 @@ const NavigationBar = () => {
                   {category.name}
                 </Link>
 
-                {/* Submenu */}
-                {category.children.length > 0 &&
+                {/* {category.children.length > 0 &&
                   hoveredCategory === category.id && (
                     <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50">
                       {category.children.map((subCategory) => (
@@ -66,7 +67,7 @@ const NavigationBar = () => {
                         </Link>
                       ))}
                     </div>
-                  )}
+                  )} */}
               </div>
             ))}
           </div>

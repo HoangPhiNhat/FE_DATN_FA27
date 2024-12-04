@@ -7,9 +7,10 @@ import { getDistrict, getWard, getProvince } from "@/services/address";
 import useAddressMutation from "@/hooks/useAddress/useAddressMutation";
 import messageService from "@/components/base/Message/Message";
 import Loading from "@/components/base/Loading/Loading";
+import { usePathname } from "next/navigation";
 
-const Address = () => {
-  const [isAddingNew, setIsAddingNew] = useState(false);
+const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
+  const [isAddingNew, setIsAddingNew] = useState(isAdding);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const { mutate: addNewAddress, isLoading: isAddingNewAddress } =
@@ -55,7 +56,6 @@ const Address = () => {
       is_default: false,
     },
   });
-  console.log(addresses);
 
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -66,6 +66,10 @@ const Address = () => {
   const [districtMap, setDistrictMap] = useState({});
   const [wardMap, setWardMap] = useState({});
 
+  const pathname = usePathname();
+  const isCheckoutPage = pathname?.includes('checkout');
+
+  console.log(isCheckoutPage)
   useEffect(() => {
     const fetchDistricts = async () => {
       const res = await getDistrict(201);
@@ -105,7 +109,6 @@ const Address = () => {
         addresses.map(async (address) => {
           const districtRes = await getDistrict(address.province_code);
           const wardRes = await getWard(address.district_code);
-          console.log(districtRes);
           return {
             ...address,
             province_name: "Hà Nội",
@@ -140,7 +143,9 @@ const Address = () => {
     });
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, event) => {
+    event.preventDefault();
+
     const formattedData = {
       ...data,
       province: {
@@ -157,11 +162,10 @@ const Address = () => {
       },
     };
 
-    console.log("Formatted Data:", formattedData);
-
     if (isEditing) {
       updateAddress({ id: selectedAddress.id, ...formattedData });
     } else {
+      onSubmitAddress && onSubmitAddress(formattedData);
       addNewAddress(formattedData);
     }
   };
@@ -171,26 +175,29 @@ const Address = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          Địa chỉ của tôi
-        </h2>
-        {addresses?.length > 0 && (
-          <button
-            onClick={() => setIsAddingNew(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            + Thêm địa chỉ mới
-          </button>
-        )}
-      </div>
+    <div className={`${!isCheckoutPage ? 'mt-4 max-w-4xl mx-auto p-4 ' : ''}`}>
+      {!isCheckoutPage && (
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Địa chỉ của tôi
+          </h2>
+          {addresses?.length > 0 && (
+            <button
+              onClick={() => setIsAddingNew(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              + Thêm địa chỉ mới
+            </button>
+          )}
+        </div>
+      )}
 
-      {addressDetails.length === 0 ? (
+      {addressDetails.length === 0 || isCheckout ? (
         isLoading ? (
-          <Loadingg />
+          <Loading />
         ) : (
-          <div className="text-center py-8">
+          !isCheckoutPage && (
+            <div className="text-center py-8">
             <p className="text-gray-500 mb-4">Bạn chưa có địa chỉ nào</p>
             <button
               onClick={() => setIsAddingNew(true)}
@@ -199,6 +206,7 @@ const Address = () => {
               Thêm địa chỉ mới
             </button>
           </div>
+          )
         )
       ) : (
         <div className="space-y-4">
@@ -245,13 +253,19 @@ const Address = () => {
         </div>
       )}
 
-      {(isAddingNew || isEditing) && (
+      {(isAddingNew || isEditing)  && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-lg">
             <h3 className="text-xl font-semibold mb-4">
               {isEditing ? "Sửa địa chỉ" : "Thêm địa chỉ mới"}
             </h3>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit(onSubmit)(e);
+              }}
+              className="space-y-4"
+            >
               <Input
                 label="Họ tên người nhận"
                 {...register("recipient_name", {
@@ -353,6 +367,7 @@ const Address = () => {
                     setIsAddingNew(false);
                     setIsEditing(false);
                     setSelectedAddress(null);
+                    onClose && onClose();
                     reset();
                   }}
                   className="px-4 py-2 border rounded-lg hover:bg-gray-50"

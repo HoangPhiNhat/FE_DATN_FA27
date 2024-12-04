@@ -13,15 +13,15 @@ instance.interceptors.response.use(
   },
   async (error) => {
     if (error.response.data.status === 401) {
-      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = localStorage.getItem("refresh_token");
       if (refreshToken) {
         return instance
           .post("/users/refresh-token", {
             refresh_token: refreshToken,
           })
           .then((response) => {
-            localStorage.setItem("token", response?.data?.access_token);
-            localStorage.setItem("refreshToken", response?.data?.refresh_token);
+            localStorage.setItem("access_token", response?.data?.access_token);
+            localStorage.setItem("refresh_token", response?.data?.refresh_token);
             error.config.headers.Authorization = `Bearer${response?.data?.refresh_token}`;
             return instance(error.config);
           })
@@ -36,7 +36,7 @@ instance.interceptors.response.use(
 );
 
 instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token") || null;
+  const token = localStorage.getItem("access_token") || null;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

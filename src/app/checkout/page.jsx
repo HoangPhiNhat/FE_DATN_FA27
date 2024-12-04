@@ -22,7 +22,6 @@ const Checkout = () => {
     districtName: "",
     wardName: "",
   });
-  console.log(addressDetails);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const {
     register,
@@ -54,14 +53,13 @@ const Checkout = () => {
         setCheckoutItems(parsedItems);
         const total = parsedItems.reduce((sum, item) => {
           const price =
-            item.product_att.product.regular_price ??
-            item.product_att.product.reduced_price;
+            item.product_att.reduced_price ??
+            item.product_att.regular_price;
           return sum + price * item.quantity;
         }, 0);
 
         setTotalAmount(total);
       } catch (error) {
-        console.error("Error validating checkout items:", error);
         messageService.error("Có lỗi xảy ra khi kiểm tra giỏ hàng");
         router.push("/cart");
       }
@@ -76,7 +74,6 @@ const Checkout = () => {
         addresses.map(async (address) => {
           const districtRes = await getDistrict(address.province_code);
           const wardRes = await getWard(address.district_code);
-          console.log(districtRes);
           return {
             ...address,
             province_name: "Hà Nội",
@@ -171,15 +168,15 @@ const Checkout = () => {
         product_att_id: item.product_att.id,
         size: item.product_att.size.name,
         color: item.product_att.color.name,
-        product_name: item.product_att.product.name,
+        product_name: item.name,
         unit_price:
-          item.product_att.product.regular_price ??
-          item.product_att.product.reduced_price,
+          item.product_att.regular_price ??
+          item.product_att.reduced_price,
         total_amount:
-          (item.product_att.product.regular_price ??
-            item.product_att.product.reduced_price) * item.quantity,
+          (item.product_att.regular_price ??
+            item.product_att.reduced_price) * item.quantity,
         quantity: item.quantity,
-        thumbnail: item.product_att.color_image.image,
+        thumbnail: item.image ?? "/images/default-image.jpg",
       }));
 
       const payload = {
@@ -189,8 +186,6 @@ const Checkout = () => {
         payment_method: paymentMethod,
         order_details: orderDetails,
       };
-
-      console.log("Order Payload:", payload);
 
       if (paymentMethod === "cod") {
         const response = await createOrder(payload);
@@ -206,10 +201,10 @@ const Checkout = () => {
         }
       }
     } catch (error) {
-      console.error("Error creating order:", error);
       messageService.error("Đặt hàng thất bại. Vui lòng thử lại");
     }
   };
+
 
   useEffect(() => {
     const fetchAddressNames = async () => {
@@ -244,6 +239,7 @@ const Checkout = () => {
     fetchAddressNames();
   }, [watch("district"), watch("ward")]);
 
+
   const AddressModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg">
@@ -258,17 +254,18 @@ const Checkout = () => {
         </div>
 
         {addresses?.length === 0 ? (
-          <div className="text-center py-4">
-            <p className="text-gray-500 mb-4">Bạn chưa có địa chỉ nào</p>
-            <button
+          <div className=" py-4">
+            <p className="text-gray-500 mb-4 text-center">Bạn chưa có địa chỉ nào</p>
+            {/* <button
               onClick={() => {
                 setIsAddingNew(true);
-                setShowAddressModal(false);
+                // setShowAddressModal(false);
               }}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg"
             >
               Thêm địa chỉ mới
-            </button>
+            </button> */}
+
           </div>
         ) : (
           <div className="space-y-4 max-h-[60vh] overflow-y-auto">
@@ -334,6 +331,7 @@ const Checkout = () => {
   if (isLoading) return <Loading />;
 
   return (
+    <>
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-center items-center 2xl:container 2xl:mx-auto px-4 md:px-6 lg:px-20 xl:px-44">
         <div className="flex w-full sm:w-9/12 lg:w-full flex-col lg:flex-row justify-center items-center lg:space-x-10 2xl:space-x-36 space-y-12 lg:space-y-0">
@@ -474,8 +472,8 @@ const Checkout = () => {
             <div className="mt-8 w-full">
               {checkoutItems.map((item) => {
                 const itemPrice =
-                  item.product_att.product.regular_price ??
-                  item.product_att.product.reduced_price;
+                  item.product_att.reduced_price ??
+                  item.product_att.regular_price;
                 const itemTotal = itemPrice * item.quantity;
 
                 return (
@@ -485,13 +483,13 @@ const Checkout = () => {
                   >
                     <div className="flex items-center gap-4">
                       <img
-                        src={item.product_att.color_image.image}
-                        alt={item.product_att.product.name}
+                        src={item.image ?? "/images/default-image.jpg"}
+                        alt={item.name}
                         className="w-16 h-16 object-cover"
                       />
                       <div>
                         <p className="text-lg dark:text-gray-300">
-                          {item.product_att.product.name}
+                          {item.name}
                         </p>
                         <p className="text-sm text-gray-500">
                           {item.product_att.size.name} -{" "}
@@ -569,17 +567,17 @@ const Checkout = () => {
         </div>
       </div>
 
-      {showAddressModal && <AddressModal />}
-      {isAddingNew && (
-        <Address
-          onClose={() => setIsAddingNew(false)}
-          onSuccess={(newAddress) => {
-            setIsAddingNew(false);
-            setSelectedAddressId(newAddress.id);
-          }}
-        />
-      )}
+
     </form>
+      {showAddressModal && <AddressModal />}
+     {isAddingNew && (
+      <Address
+        isAdding={isAddingNew}
+        isCheckout={true}
+        onClose={() => setIsAddingNew(false)}
+      />
+    )}
+    </>
   );
 };
 

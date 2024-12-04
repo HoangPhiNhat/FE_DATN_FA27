@@ -72,12 +72,14 @@ const Cart = () => {
 
   const totalAmount = useMemo(() => {
     if (!cartData?.length || !selectedItems.length) return 0;
-
     return cartData
       .filter((item) => selectedItems.includes(item.id))
       .reduce((total, item) => {
-        const price = item.regular_price ?? item.reduced_price;
-        return total + price * item.quantity;
+        const price =
+          item.product_att.reduced_price && item.product_att.reduced_price > 0
+            ? parseFloat(item.product_att.reduced_price)
+            : parseFloat(item.product_att.regular_price);
+        return total + (price * parseInt(item.quantity));
       }, 0);
   }, [cartData, selectedItems]);
 

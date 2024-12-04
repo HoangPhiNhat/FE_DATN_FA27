@@ -31,7 +31,6 @@ const EditForm = ({ data, onCancel }) => {
   });
 
   const onSubmit = (formData) => {
-    console.log("Form Data:", formData);
     updateProfile(formData);
   };
 

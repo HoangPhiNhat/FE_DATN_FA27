@@ -73,17 +73,18 @@ const MessageContainer = () => {
 const messageService = {
   show: (content, type = MessageTypes.INFO, duration = 3000) => {
     const message = { content, type, duration };
-    const container = document.getElementById("message-container");
+    let container = document.getElementById("message-container");
     if (!container) {
-      const div = document.createElement("div");
-      div.id = "message-container";
-      document.body.appendChild(div);
-      ReactDOM.render(
-        <MessageContainer />,
-        document.getElementById("message-container")
-      );
+      container = document.createElement("div");
+      container.id = "message-container";
+      document.body.appendChild(container);
+      ReactDOM.createRoot(container).render(<MessageContainer />);
     }
-    window.addMessage(message);
+    if (typeof window.addMessage === "function") {
+      window.addMessage(message);
+    } else {
+      console.error("addMessage function is not available.");
+    }
   },
   success: (content, duration) =>
     messageService.show(content, MessageTypes.SUCCESS, duration),
