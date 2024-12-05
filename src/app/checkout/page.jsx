@@ -205,8 +205,6 @@ const Checkout = () => {
           total_amount: resOrder.total_amount,
         };
 
-        console.log(data);
-
         const resOnlineVnPay = await createOnlinePaymentVNPay(data);
         if ((resOnlineVnPay.message = "success" && resOnlineVnPay.data)) {
           window.location.href = resOnlineVnPay.data;
