@@ -102,7 +102,7 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
           />
           <div>
             <h1 className="font-titleFont font-semibold">
-              {data.name}
+              {data.product_att.product.name}
             </h1>
             <p className="text-sm text-gray-500">
               {data.product_att.size.name} - {data.product_att.color.name}

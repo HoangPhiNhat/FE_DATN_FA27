@@ -168,7 +168,7 @@ const Checkout = () => {
         product_att_id: item.product_att.id,
         size: item.product_att.size.name,
         color: item.product_att.color.name,
-        product_name: item.name,
+        product_name: item.product_att.product.name,
         unit_price:
           item.product_att.regular_price ??
           item.product_att.reduced_price,
@@ -489,7 +489,7 @@ const Checkout = () => {
                       />
                       <div>
                         <p className="text-lg dark:text-gray-300">
-                          {item.name}
+                          {item.product_att.product.name}
                         </p>
                         <p className="text-sm text-gray-500">
                           {item.product_att.size.name} -{" "}
