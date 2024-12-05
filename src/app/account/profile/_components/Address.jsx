@@ -165,7 +165,6 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
     if (isEditing) {
       updateAddress({ id: selectedAddress.id, ...formattedData });
     } else {
-      onSubmitAddress && onSubmitAddress(formattedData);
       addNewAddress(formattedData);
     }
   };

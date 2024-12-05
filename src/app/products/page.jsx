@@ -1,17 +1,14 @@
 "use client";
-import React, { useState } from "react";
-import CategoryFilter from "./_components/Filters/CategoryFilter";
-import { MdCollections } from "react-icons/md";
-import CollectionFilter from "./_components/Filters/CollectionFilter";
-import ColorFilter from "./_components/Filters/ColorFilter";
-import ProductNav from "./_components/ProductNav";
-import useProductQuery from "@/hooks/useProduct/useProductQuery";
 import Loading from "@/components/base/Loading/Loading";
-import ProductGrid from "./_components/ProductGrid";
 import Pagination from "@/components/base/Pagination";
-import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
-import SizeFilter from "./_components/Filters/SizeFilter";
+import useProductQuery from "@/hooks/useProduct/useProductQuery";
+import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import CategoryFilter from "./_components/Filters/CategoryFilter";
+import ColorFilter from "./_components/Filters/ColorFilter";
 import PriceFilter from "./_components/Filters/PriceFilter";
+import ProductGrid from "./_components/ProductGrid";
+import ProductNav from "./_components/ProductNav";
 
 const Product = () => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
@@ -23,6 +20,15 @@ const Product = () => {
   const [page, setPage] = useState(1);
   const [searchName, setSearchName] = useState("");
   const [sort, setSort] = useState("DESC");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('category');
+    if (categoryFromUrl) {
+      setCategory(categoryFromUrl);
+    }
+  }, [searchParams]);
+
   const itemsPerPageFromBanner = (itemsPerPage) => {
     setItemsPerPage(itemsPerPage);
   };

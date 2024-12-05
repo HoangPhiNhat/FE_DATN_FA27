@@ -48,7 +48,7 @@ const NavigationBar = () => {
                 onMouseLeave={() => setHoveredCategory(null)}
               >
                 <Link
-                  href={`/${category.slug}`}
+                  href={`/products?category=${category.id}`}
                   className="hover:text-primary hover:font-bold"
                 >
                   {category.name}
