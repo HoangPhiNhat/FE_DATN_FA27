@@ -8,8 +8,11 @@ import Loading from "@/components/base/Loading/Loading";
 import Address from "../account/profile/_components/Address";
 import { getDistrict, getDistrict2, getWard } from "@/services/address";
 import messageService from "@/components/base/Message/Message";
-import { createOrder, createOnlinePayment } from "@/services/order";
-import useCartQuery from "@/hooks/useCart/useCartQuery";
+import {
+  createOrder,
+  createOnlinePayment,
+  createOnlinePaymentVNPay,
+} from "@/services/order";
 
 const Checkout = () => {
   const router = useRouter();
@@ -198,19 +201,23 @@ const Checkout = () => {
         }
       } else if (paymentMethod === "onlineVNPay") {
         const resOrder = await createOrder(payload);
-        refetchCart();
-        console.log(resOrder.order_code);
-        console.log(resOrder.total_amount);
+        const data = {
+          order_id: resOrder.order_id,
+          total_amount: resOrder.total_amount,
+        };
+
+        const resOnlineVnPay = await createOnlinePaymentVNPay(data);
+        if ((resOnlineVnPay.message = "success" && resOnlineVnPay.data)) {
+          window.location.href = resOnlineVnPay.data;
+        }
       } else {
         const response = await createOnlinePayment(payload);
         refetchCart();
-        if ( response.payUrl) {
+        if (response.payUrl) {
           window.location.href = response.payUrl;
         }
       }
     } catch (error) {
-      console.log();
-
       messageService.error(
         "Đặt hàng thất bại. " + error?.response.data.message
       );
