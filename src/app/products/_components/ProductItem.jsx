@@ -6,22 +6,32 @@ import { FaRegEye } from "react-icons/fa";
 import { BsFillCartPlusFill } from "react-icons/bs";
 
 const ProductItem = ({ product }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  // const [isHovered, setIsHovered] = useState(false);
   // const [isQuickView, setIsQuickView] = useState(false);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const handleVariantClick = (index) => {
     setSelectedVariantIndex(index);
   };
-  console.log(product);
 
   return (
     <div
       className="relative border flex flex-col bg-white rounded-lg"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      // onMouseEnter={() => setIsHovered(true)}
+      // onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative w-full overflow-hidden">
-        <Link href={`products/${product.id}`}>
+        {product.reduced_price ? (
+          <div className="absolute top-0 right-0 bg-red-600 text-white px-2 py-1 rounded-bl-lg z-10">
+            Sale off{" "}
+            {Math.round(
+              ((product.regular_price - product.reduced_price) /
+                product.regular_price) *
+                100
+            )}
+            %
+          </div>
+        ) : null}
+        <Link href={`products/${product.slug}`}>
           <Image
             src={product.thumbnail}
             width={334}
@@ -43,29 +53,46 @@ const ProductItem = ({ product }) => {
           /> */}
         </Link>
 
-        {isHovered && (
+        {/* {isHovered && (
           <div className="absolute bottom-2 flex justify-center items-center w-full animate-fade-up transition duration-300">
             <div className="flex justify-center items-center border rounded-lg w-fit bg-white shadow-md">
               <button className="hover:text-primary transition duration-300 p-2 flex justify-center items-center">
                 <BsFillCartPlusFill className="text-lg" />
               </button>
-              {/* <button
+              <button
                 className="hover:text-primary transition duration-300 p-2 flex justify-center items-center"
                 onClick={() => setIsQuickView(true)}
               >
                 <FaRegEye className="text-lg" />
-              </button> */}
+              </button>
             </div>
           </div>
-        )}
+        )} */}
       </div>
       <div className="  p-2">
         <div className="mt-2">
-          <Link href={`products/${product.id}`}
-            className="font-semibold text-xl">
+          <Link
+            href={`products/${product.slug}`}
+            className="font-semibold text-xl"
+          >
             {product.name}
           </Link>
-          <p className="text-primary text-lg mt-1">{product.price}₫</p>
+          <div className="flex items-center gap-2 mt-1">
+            {product.reduced_price ? (
+              <>
+                <p className="text-primary text-lg">
+                  {product.reduced_price.toLocaleString()}₫
+                </p>
+                <p className="text-gray-500 line-through">
+                  {product.regular_price.toLocaleString()}₫
+                </p>
+              </>
+            ) : (
+              <p className="text-primary text-lg">
+                {product.regular_price.toLocaleString()}₫
+              </p>
+            )}
+          </div>
         </div>
         {/* <div className="flex space-x-2 mt-2">
           {product.variants.map((variant, index) => (

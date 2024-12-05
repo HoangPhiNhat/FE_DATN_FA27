@@ -5,7 +5,7 @@ const OrderList = () => {
     <div>
       <div className="bg-white p-6 rounded-lg">
         <h2 className="text-2xl font-bold mb-4 flex items-center">
-          Lịch Sử Đơn Hàng
+          Danh sách đơn Hàng
         </h2>
         <table className="w-full text-left">
           <thead>
