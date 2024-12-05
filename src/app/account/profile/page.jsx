@@ -1,81 +1,44 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation"; // Import useSearchParams
 import { BsBox2, BsBox2Heart } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
 import { RiLockPasswordLine } from "react-icons/ri";
 import MyOrders from "../orders/_components/MyOrders";
 import UserInfo from "./_components/UserInfo";
-import WishList from "./_components/WishList";
 import useProfileQuery from "@/hooks/useProfile/useProfileQuery";
 import Loading from "@/components/base/Loading/Loading";
 import ChangePassword from "./_components/ChangePassword";
 import Address from "./_components/Address";
-import { useRouter } from "next/navigation";
 import messageService from "@/components/base/Message/Message";
 
 const UserAccountPage = () => {
-  const [activeTab, setActiveTab] = useState("profile");
   const router = useRouter();
+  const searchParams = useSearchParams(); // Hook để lấy query string từ URL
+  const [activeTab, setActiveTab] = useState("profile");
 
   useEffect(() => {
+    // Lấy token từ localStorage
     const token = localStorage.getItem("access_token");
     if (!token) {
       messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
       router.push("/sign-in");
     }
-  }, [router]);
+
+    // Cập nhật activeTab từ query string
+    const activeQueryParam = searchParams.get("active");
+    if (activeQueryParam) {
+      setActiveTab(activeQueryParam);
+    }
+  }, [router, searchParams]);
 
   const { data: userProfile, isLoading } = useProfileQuery();
-  const favoriteProducts = [
-    {
-      id: 1,
-      name: "Áo Sơ Mi Trắng",
-      price: 350000,
-      image: "/api/placeholder/200/250",
-    },
-    {
-      id: 2,
-      name: "Quần Jean Nam",
-      price: 450000,
-      image: "/api/placeholder/200/250",
-    },
-  ];
-
-  const orderHistory = [
-    {
-      id: "DH001",
-      date: "15/10/2024",
-      total: 800000,
-      status: "Đã Giao",
-    },
-    {
-      id: "DH002",
-      date: "20/10/2024",
-      total: 1200000,
-      status: "Đang Vận Chuyển",
-    },
-  ];
-
-  const addresses = [
-    {
-      id: 1,
-      label: "Nhà Riêng",
-      address: "123 Đường ABC, Phường XYZ, TP Hồ Chí Minh",
-    },
-    {
-      id: 2,
-      label: "Văn Phòng",
-      address: "456 Đường DEF, Quận GHI, TP Hà Nội",
-    },
-  ];
 
   const renderContent = () => {
     switch (activeTab) {
       case "profile":
         return <UserInfo data={userProfile?.data} />;
-      case "favorites":
-        return <WishList data={favoriteProducts} />;
       case "orders":
         return <MyOrders />;
       case "change-password":
@@ -121,15 +84,6 @@ const UserAccountPage = () => {
               }`}
             >
               <RiLockPasswordLine /> <p>Đổi Mật Khẩu</p>
-            </button>
-            <button
-              onClick={() => setActiveTab("favorites")}
-              className={`w-full text-left p-2 rounded ${
-                activeTab === "favorites" ? "bg-blue-100" : ""
-              }`}
-            >
-              <BsBox2Heart />
-              <p> Sản Phẩm Yêu Thích </p>
             </button>
             <button
               onClick={() => setActiveTab("orders")}

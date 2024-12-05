@@ -13,7 +13,7 @@ const OrderConfirmation = () => {
       </p> */}
       <div className="flex space-x-4 mt-6">
         <button
-          onClick={() => router.push("/account/profile")}
+          onClick={() => router.push("/account/profile?active=orders")}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
         >
           Xem lịch sử đơn hàng

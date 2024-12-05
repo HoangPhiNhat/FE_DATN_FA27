@@ -10,6 +10,7 @@ const ChangePassword = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    reset, // thêm reset để sử dụng
   } = useForm({
     defaultValues: {
       current_password: "",
@@ -22,6 +23,7 @@ const ChangePassword = () => {
     action: "CHANGE_PASSWORD",
     onSuccess: () => {
       messageService.success("Đổi mật khẩu thành công");
+      reset(); // Reset form về giá trị mặc định
     },
     onError: (error) => {
       messageService.error(error?.response?.data?.message || "Có lỗi xảy ra");
