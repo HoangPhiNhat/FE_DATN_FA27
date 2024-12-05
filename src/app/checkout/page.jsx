@@ -13,6 +13,7 @@ import {
   createOnlinePayment,
   createOnlinePaymentVNPay,
 } from "@/services/order";
+import useCartQuery from "@/hooks/useCart/useCartQuery";
 
 const Checkout = () => {
   const router = useRouter();
