@@ -190,13 +190,15 @@ const Checkout = () => {
       if (paymentMethod === "cod") {
         const response = await createOrder(payload);
         if (response.message == "Đặt hàng thành công") {
-          console.log("Success");
-
           messageService.success("Đặt hàng thành công");
           localStorage.removeItem("checkoutItems");
           router.push("/order-confirmation");
-          //Them chuyen trang
         }
+      } else if (paymentMethod === "onlineVNPay") {
+        const resOrder = await createOrder(payload);
+        console.log(resOrder.order_code);
+        console.log(resOrder.total_amount);
+        
       } else {
         const response = await createOnlinePayment(payload);
         if (response.success && response.paymentUrl) {
@@ -451,6 +453,31 @@ const Checkout = () => {
                       </label>
                       <p className="text-sm text-gray-500">
                         Thanh toán qua MoMo
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* VNPay */}
+                  <div
+                    className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:border-blue-500"
+                    onClick={() => setPaymentMethod("onlineVNPay")}
+                  >
+                    <input
+                      type="radio"
+                      id="onlineVNPay"
+                      checked={paymentMethod === "onlineVNPay"}
+                      onChange={() => setPaymentMethod("onlineVNPay")}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                    <div>
+                      <label
+                        htmlFor="onlineVNPay"
+                        className="font-medium cursor-pointer"
+                      >
+                        Thanh toán online
+                      </label>
+                      <p className="text-sm text-gray-500">
+                        Thanh toán qua VNPay
                       </p>
                     </div>
                   </div>
