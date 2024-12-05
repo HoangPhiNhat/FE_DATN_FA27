@@ -38,27 +38,17 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
   });
 
   useEffect(() => {
-    if (!shouldUpdate) return;
-
     if (timer) {
       clearTimeout(timer);
     }
-
     const newTimer = setTimeout(() => {
-      updateQuantity({
-        id: data.id,
-        quantity: quantity,
-      });
-    }, 1000);
-
+      updateQuantity(data.id, quantity);
+    }, 500);
     setTimer(newTimer);
-
     return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
+      if (timer) clearTimeout(timer);
     };
-  }, [quantity, shouldUpdate]);
+  }, [quantity, data.id, timer, updateQuantity]);
 
   const increaseQuantity = () => {
     if (quantity < data.product_att.stock_quantity) {

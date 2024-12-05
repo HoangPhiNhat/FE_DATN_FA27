@@ -3,7 +3,7 @@ import Loading from "@/components/base/Loading/Loading";
 import Pagination from "@/components/base/Pagination";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import CategoryFilter from "./_components/Filters/CategoryFilter";
 import ColorFilter from "./_components/Filters/ColorFilter";
 import PriceFilter from "./_components/Filters/PriceFilter";
@@ -87,4 +87,10 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Product />
+    </Suspense>
+  );
+}

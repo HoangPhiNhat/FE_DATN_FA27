@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; // Import useSearchParams
 import { BsBox2, BsBox2Heart } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
@@ -15,18 +15,26 @@ import messageService from "@/components/base/Message/Message";
 
 const UserAccountPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Hook để lấy query string từ URL
+
+  return (
+    <Suspense fallback={<Loading />}>
+      <UserAccountContent />
+    </Suspense>
+  );
+};
+
+const UserAccountContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("profile");
 
   useEffect(() => {
-    // Lấy token từ localStorage
     const token = localStorage.getItem("access_token");
     if (!token) {
       messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
       router.push("/sign-in");
     }
 
-    // Cập nhật activeTab từ query string
     const activeQueryParam = searchParams.get("active");
     if (activeQueryParam) {
       setActiveTab(activeQueryParam);

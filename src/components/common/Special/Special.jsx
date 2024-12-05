@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RiShoppingCart2Fill } from "react-icons/ri";
 import { MdSwitchAccount } from "react-icons/md";
 import Link from "next/link";
@@ -11,7 +11,7 @@ const Special = () => {
   const { data: cartData, refetch: refetchCart } = useCartQuery();
   const [cartCount, setCartCount] = useState(0);
 
-  const handleStorageChange = () => {
+  const handleStorageChange = useCallback(() => {
     const user = localStorage.getItem("user");
     if (user) {
       const userData = JSON.parse(user);
@@ -23,7 +23,7 @@ const Special = () => {
       setProfileLink("/sign-in");
       setCartCount(0);
     }
-  };
+  }, [refetchCart]);
 
   useEffect(() => {
     handleStorageChange();
@@ -39,7 +39,7 @@ const Special = () => {
       window.removeEventListener("checkoutSuccess", handleStorageChange);
       window.removeEventListener("checkoutItems", handleStorageChange);
     };
-  }, [refetchCart]);
+  }, [handleStorageChange, refetchCart]);
 
   useEffect(() => {
     if (cartData) {

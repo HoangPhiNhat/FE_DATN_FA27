@@ -28,10 +28,14 @@ export const getOrder = async () => {
 };
 
 export const cancelOrder = async (id) => {
-  const response = await Author.put(`orders/${id}/order-status`, {
-    order_status: "Đã hủy",
-  });
-  return response.data;
+  try {
+    const response = await Author.put(`orders/${id}/order-status`, {
+      order_status: "Đã hủy",
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 export const createOnlinePaymentVNPay = async (data) => {
   try {

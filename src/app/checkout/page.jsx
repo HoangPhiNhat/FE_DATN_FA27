@@ -14,6 +14,7 @@ import {
   createOnlinePaymentVNPay,
 } from "@/services/order";
 import useCartQuery from "@/hooks/useCart/useCartQuery";
+import Image from "next/image";
 
 const Checkout = () => {
   const router = useRouter();
@@ -256,7 +257,7 @@ const Checkout = () => {
     };
 
     fetchAddressNames();
-  }, [watch("district"), watch("ward")]);
+  }, [watch]);
 
   const AddressModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -540,7 +541,9 @@ const Checkout = () => {
                       className="flex justify-between items-center border-b py-4"
                     >
                       <div className="flex items-center gap-4">
-                        <img
+                        <Image
+                          width={100}
+                          height={100}
                           src={item.image ?? "/images/default-image.jpg"}
                           alt={item.name}
                           className="w-16 h-16 object-cover"

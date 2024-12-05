@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import messageService from "@/components/base/Message/Message";
 import { updateStatusPayment } from "@/services/order";
+import { Suspense } from 'react';
 
 const OrderConfirmation = () => {
   const router = useRouter();
@@ -81,4 +82,10 @@ const OrderConfirmation = () => {
   );
 };
 
-export default OrderConfirmation;
+export default function VNPayConfirmationPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OrderConfirmation />
+    </Suspense>
+  );
+}
