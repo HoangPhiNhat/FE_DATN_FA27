@@ -1,11 +1,10 @@
 "use client";
+import Loading from "@/components/base/Loading/Loading";
 import Banner from "@/components/UI/Banner/Banner";
 import ServiceHighlights from "@/components/UI/Service/ServiceHighlights";
-import { products } from "../../data.example";
-import ProductSlider from "./products/_components/ProductSlider";
-import ProductGrid from "./products/_components/ProductGrid";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
-import Loading from "@/components/base/Loading/Loading";
+import ProductGrid from "./products/_components/ProductGrid";
+import ProductSlider from "./products/_components/ProductSlider";
 
 export default function Home() {
   const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, "");

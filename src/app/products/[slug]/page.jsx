@@ -1,14 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
 import Loading from "@/components/base/Loading/Loading";
-import useProductQuery from "@/hooks/useProduct/useProductQuery";
-import ProductImageSlider from "../_components/ProductImageSlider";
-import { FaPlus } from "react-icons/fa6";
-import { FaMinus } from "react-icons/fa6";
-import Alert from "@/components/base/Alert";
 import messageService from "@/components/base/Message/Message";
 import useCartMutation from "@/hooks/useCart/useCartMutation";
+import useProductQuery from "@/hooks/useProduct/useProductQuery";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { FaMinus, FaPlus } from "react-icons/fa6";
+import ProductImageSlider from "../_components/ProductImageSlider";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -29,7 +27,8 @@ const ProductDetail = () => {
     },
     onError: (error) => {
       messageService.error(
-        error?.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
+        // error?.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
+        "Sản phẩm không tồn tại."
       );
     },
   });
@@ -107,69 +106,70 @@ const ProductDetail = () => {
     addToCart(cartData);
   };
   if (isLoading) return <Loading />;
-  if (isError || !data) return <p>Lỗi tải dữ liệu</p>;
+  if (isError || !data) return <p>Sản phẩm không tồn tại</p>;
   if (!selectedColor) return <Loading />;
 
   return (
     <div className="container mx-auto p-4">
-      <div className="grid grid-cols-2 gap-8">
-        <div>
-          <ProductImageSlider
-            images={colorImages}
-            handleChangeImage={handleColorChange}
-          />
-        </div>
+      {data ? (
+        <div className="grid grid-cols-2 gap-8">
+          <div>
+            <ProductImageSlider
+              images={colorImages}
+              handleChangeImage={handleColorChange}
+            />
+          </div>
 
-        <div>
-          <h1 className="text-3xl font-bold mb-4">{data.name}</h1>
+          <div>
+            <h1 className="text-3xl font-bold mb-4">{data.name}</h1>
 
-          <div className="mb-4">
-            <p className="text-xl">
-              {selectedSize.reduced_price ? (
-                <>
-                  <span className="line-through text-gray-500 mr-2">
+            <div className="mb-4">
+              <p className="text-xl">
+                {selectedSize.reduced_price ? (
+                  <>
+                    <span className="line-through text-gray-500 mr-2">
+                      ₫{selectedSize.regular_price.toLocaleString()}
+                    </span>
+                    <span className="text-red-600 font-bold">
+                      ₫{selectedSize.reduced_price.toLocaleString()}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-black font-bold">
                     ₫{selectedSize.regular_price.toLocaleString()}
                   </span>
-                  <span className="text-red-600 font-bold">
-                    ₫{selectedSize.reduced_price.toLocaleString()}
-                  </span>
-                </>
-              ) : (
-                <span className="text-black font-bold">
-                  ₫{selectedSize.regular_price.toLocaleString()}
-                </span>
-              )}
-            </p>
-          </div>
+                )}
+              </p>
+            </div>
 
-          <p className="mb-4">{data.short_description}</p>
-          <h3 className="font-semibold mb-2">Màu</h3>
-          <div className="flex space-x-2">
-            {data.product_att.map((color) => (
-              <button
-                key={color.color_id}
-                onClick={() => handleColorChange(color.color_id)}
-                className={`w-8 h-8 rounded-full border-2 ${
-                  selectedColor.color_id === color.color_id
-                    ? "border-black"
-                    : "border-gray-300"
-                }`}
-                style={{
-                  backgroundColor: color.color_name.toLowerCase(),
-                  opacity: 1,
-                }}
-              />
-            ))}
-          </div>
-          <div className="my-4">
-            <h3 className="font-semibold mb-2">Sizes</h3>
+            <p className="mb-4">{data.short_description}</p>
+            <h3 className="font-semibold mb-2">Màu</h3>
             <div className="flex space-x-2">
-              {selectedColor.sizes.map((size) => (
+              {data.product_att.map((color) => (
                 <button
-                  key={size.size_id}
-                  onClick={() => handleSizeChange(size.size_id)}
-                  disabled={size.stock_quantity === 0}
-                  className={`
+                  key={color.color_id}
+                  onClick={() => handleColorChange(color.color_id)}
+                  className={`w-8 h-8 rounded-full border-2 ${
+                    selectedColor.color_id === color.color_id
+                      ? "border-black"
+                      : "border-gray-300"
+                  }`}
+                  style={{
+                    backgroundColor: color.color_name.toLowerCase(),
+                    opacity: 1,
+                  }}
+                />
+              ))}
+            </div>
+            <div className="my-4">
+              <h3 className="font-semibold mb-2">Sizes</h3>
+              <div className="flex space-x-2">
+                {selectedColor.sizes.map((size) => (
+                  <button
+                    key={size.size_id}
+                    onClick={() => handleSizeChange(size.size_id)}
+                    disabled={size.stock_quantity === 0}
+                    className={`
                     px-3 py-1 border rounded
                     ${
                       selectedSize?.size_id === size.size_id
@@ -182,85 +182,88 @@ const ProductDetail = () => {
                         : "hover:bg-gray-100"
                     }
                   `}
+                  >
+                    {size.size_name} ({size.stock_quantity})
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="my-4">
+              <h3 className="font-semibold mb-2">Số lượng</h3>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={decrementQuantity}
+                  className="p-2 border rounded"
+                  disabled={quantity <= 1}
                 >
-                  {size.size_name} ({size.stock_quantity})
+                  <FaMinus size={16} />
                 </button>
-              ))}
+                <input
+                  type="text"
+                  min="0"
+                  max={selectedSize.stock_quantity}
+                  defaultValue={0}
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  className="w-20 pr-2 pl-3 py-1 border rounded text-center"
+                />
+                <button
+                  onClick={incrementQuantity}
+                  className="p-2 border rounded"
+                  disabled={quantity >= selectedSize.stock_quantity}
+                >
+                  <FaPlus size={16} />
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                Kho: {selectedSize.stock_quantity} sản phẩm
+              </p>
             </div>
-          </div>
-          <div className="my-4">
-            <h3 className="font-semibold mb-2">Số lượng</h3>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={decrementQuantity}
-                className="p-2 border rounded"
-                disabled={quantity <= 1}
-              >
-                <FaMinus size={16} />
-              </button>
-              <input
-                type="text"
-                min="0"
-                max={selectedSize.stock_quantity}
-                defaultValue={0}
-                value={quantity}
-                onChange={handleQuantityChange}
-                className="w-20 pr-2 pl-3 py-1 border rounded text-center"
-              />
-              <button
-                onClick={incrementQuantity}
-                className="p-2 border rounded"
-                disabled={quantity >= selectedSize.stock_quantity}
-              >
-                <FaPlus size={16} />
-              </button>
+            <div className="mt-4">
+              <p>
+                <strong>Chất liệu:</strong> {data.material}
+              </p>
+              <p>
+                <strong>Danh mục:</strong> {data.category_id}
+              </p>
+              <p>
+                <strong> SKU:</strong> {selectedSize.sku}
+              </p>
+              <p className="mt-2">{data.long_description}</p>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Kho: {selectedSize.stock_quantity} sản phẩm
-            </p>
+            <button
+              onClick={handleAddToCart}
+              className={`w-full py-3 rounded ${
+                !selectedSize ||
+                selectedSize.stock_quantity === 0 ||
+                quantity > selectedSize.stock_quantity ||
+                quantity === 0
+                  ? "bg-gray-400 cursor-not-allowed text-white"
+                  : "bg-primary text-white hover:opacity-80 transition-all duration-100"
+              }`}
+              disabled={
+                isAddingToCart ||
+                !selectedSize ||
+                selectedSize.stock_quantity === 0 ||
+                quantity > selectedSize.stock_quantity ||
+                quantity === 0
+              }
+            >
+              {isAddingToCart
+                ? "Đang thêm..."
+                : selectedSize && selectedSize.stock_quantity > 0
+                ? quantity > selectedSize.stock_quantity
+                  ? "Vượt quá số lượng tồn kho"
+                  : quantity === 0
+                  ? "Vui lòng chọn số lượng"
+                  : "Thêm vào giỏ hàng"
+                : "Hết hàng"}
+            </button>
           </div>
-          <div className="mt-4">
-            <p>
-              <strong>Chất liệu:</strong> {data.material}
-            </p>
-            <p>
-              <strong>Danh mục:</strong> {data.category_id}
-            </p>
-            <p>
-              <strong> SKU:</strong> {selectedSize.sku}
-            </p>
-            <p className="mt-2">{data.long_description}</p>
-          </div>
-          <button
-            onClick={handleAddToCart}
-            className={`w-full py-3 rounded ${
-              !selectedSize ||
-              selectedSize.stock_quantity === 0 ||
-              quantity > selectedSize.stock_quantity ||
-              quantity === 0
-                ? "bg-gray-400 cursor-not-allowed text-white"
-                : "bg-primary text-white hover:opacity-80 transition-all duration-100"
-            }`}
-            disabled={
-              isAddingToCart ||
-              !selectedSize ||
-              selectedSize.stock_quantity === 0 ||
-              quantity > selectedSize.stock_quantity ||
-              quantity === 0
-            }
-          >
-            {isAddingToCart
-              ? "Đang thêm..."
-              : selectedSize && selectedSize.stock_quantity > 0
-              ? quantity > selectedSize.stock_quantity
-                ? "Vượt quá số lượng tồn kho"
-                : quantity === 0
-                ? "Vui lòng chọn số lượng"
-                : "Thêm vào giỏ hàng"
-              : "Hết hàng"}
-          </button>
         </div>
-      </div>
+      ) : (
+        "Sản phẩm không tồn tại"
+      )}
     </div>
   );
 };
