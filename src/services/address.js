@@ -79,6 +79,11 @@ export const getDistrict = async (id) => {
   }
 };
 
+export const getDistrict2 = async (id) => {
+  const response = await Author.get(`districts/${id}`);
+  return response.data;
+};
+
 export const getWard = async (id) => {
   try {
     const response = await axios.get(

@@ -1,9 +1,9 @@
 "use client";
-import { getAddress } from "@/services/address";
+import { getAddress, getDistrict2 } from "@/services/address";
 import { useQuery } from "@tanstack/react-query";
 
-const useAddressQuery = () => {
-  const queryKey = ["ADDRESS_KEY"];
+const useAddressQuery = (id) => {
+  const queryKey = ["ADDRESS_KEY", id];
   const { data, ...rest } = useQuery({
     queryKey,
     queryFn: async () => {
@@ -11,7 +11,12 @@ const useAddressQuery = () => {
       if (!access_token) {
         return [];
       }
-      return await getAddress();
+      switch (id) {
+        case "district":
+          return await getDistrict2(id);
+        default:
+          return await getAddress();
+      }
     },
   });
   return { data, ...rest };

@@ -6,7 +6,7 @@ import Input from "@/components/common/Input/Input";
 import useAddressQuery from "@/hooks/useAddress/useAddressQuery";
 import Loading from "@/components/base/Loading/Loading";
 import Address from "../account/profile/_components/Address";
-import { getDistrict, getWard } from "@/services/address";
+import { getDistrict, getDistrict2, getWard } from "@/services/address";
 import messageService from "@/components/base/Message/Message";
 import { createOrder, createOnlinePayment } from "@/services/order";
 
@@ -15,9 +15,11 @@ const Checkout = () => {
   const [checkoutItems, setCheckoutItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [addressDetails, setAddressDetails] = useState([]);
+  const [shippingFee, setShippingFee] = useState(0);
   const [addressNames, setAddressNames] = useState({
     districtName: "",
     wardName: "",
@@ -31,9 +33,7 @@ const Checkout = () => {
     formState: { errors },
     watch,
   } = useForm();
-
-  const { data: addresses, isLoading } = useAddressQuery();
-
+  const { data: addresses, isLoading } = useAddressQuery("address");
   useEffect(() => {
     const validateAndFetchProducts = async () => {
       try {
@@ -96,9 +96,7 @@ const Checkout = () => {
   }, [addresses]);
 
   useEffect(() => {
-    // Tìm và set địa chỉ mặc định
     const setDefaultAddress = async () => {
-      // Lấy email từ localStorage
       const user = JSON.parse(localStorage.getItem("user"));
       if (user?.email) {
         setValue("email", user.email);
@@ -108,11 +106,13 @@ const Checkout = () => {
         const defaultAddress = addresses.find((addr) => addr.is_default === 1);
         if (defaultAddress) {
           setSelectedAddressId(defaultAddress.id);
+          setSelectedAddress(defaultAddress);
           setValue("name", defaultAddress.recipient_name);
           setValue("phone", defaultAddress.recipient_phone);
           setValue("address", defaultAddress.recipient_address);
         } else if (addresses[0]) {
           setSelectedAddressId(addresses[0].id);
+          setSelectedAddress(addresses[0]);
           setValue("name", addresses[0].recipient_name);
           setValue("phone", addresses[0].recipient_phone);
           setValue("address", addresses[0].recipient_address);
@@ -123,7 +123,6 @@ const Checkout = () => {
     setDefaultAddress();
   }, [addresses, setValue]);
 
-  // Thêm useEffect để fetch thông tin địa chỉ chi tiết khi có selectedAddressId
   useEffect(() => {
     const fetchAddressDetails = async () => {
       if (selectedAddressId && addresses) {
@@ -198,7 +197,7 @@ const Checkout = () => {
         const resOrder = await createOrder(payload);
         console.log(resOrder.order_code);
         console.log(resOrder.total_amount);
-        
+
       } else {
         const response = await createOnlinePayment(payload);
         if (response.success && response.paymentUrl) {
@@ -277,7 +276,7 @@ const Checkout = () => {
           </div>
         ) : (
           <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-            {addressDetails.map((address) => (
+            {addressDetails?.map((address) => (
               <div
                 key={address.id}
                 className={`border rounded-lg p-4 cursor-pointer hover:border-blue-500 ${
@@ -290,6 +289,7 @@ const Checkout = () => {
                   setValue("name", address.recipient_name);
                   setValue("phone", address.recipient_phone);
                   setValue("address", address.recipient_address);
+                  setSelectedAddress(address);
                   setShowAddressModal(false);
                 }}
               >
@@ -299,13 +299,13 @@ const Checkout = () => {
                     <p className="text-gray-600">{address.recipient_phone}</p>
                     <p className="text-gray-600">{address.recipient_address}</p>
                     <p className="text-gray-600">
-                      {addressNames.wardName && addressNames.districtName
-                        ? `${addressNames.wardName}, ${addressNames.districtName}, Hà Nội`
+                      {address.ward_name && address.district_name
+                        ? `${address.ward_name}, ${address.district_name}, Hà Nội`
                         : "Đang tải..."}
                     </p>
                   </div>
                   {address.is_default === 1 && (
-                    <span className="px-2 py-1 h-fit text-xs bg-blue-100 text-blue-600 rounded">
+                    <span className="px-2 py-1 h-fit w-[70px] text-center text-xs bg-blue-100 text-blue-600 rounded">
                       Mặc định
                     </span>
                   )}
@@ -336,7 +336,18 @@ const Checkout = () => {
     </div>
   );
 
+  useEffect(() => {
+    if (selectedAddress) {
+      const fetchShippingFee = async () => {
+        const response = await getDistrict2(selectedAddress.district_code);
+        setShippingFee(response.shipping_fee);
+      }
+      fetchShippingFee();
+    }
+  }, [selectedAddress]);
+
   if (isLoading) return <Loading />;
+
 
   return (
     <>
@@ -556,51 +567,47 @@ const Checkout = () => {
                 })}
               </div>
 
-              <div className="flex mt-7 flex-col items-end w-full space-y-6">
-                <div className="flex justify-between w-full items-center">
-                  <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
-                    Tổng số sản phẩm
-                  </p>
-                  <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                    {checkoutItems.reduce(
-                      (sum, item) => sum + item.quantity,
-                      0
-                    )}
-                  </p>
-                </div>
-                <div className="flex justify-between w-full items-center">
-                  <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
-                    Tổng tiền hàng
-                  </p>
-                  <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(totalAmount)}
-                  </p>
-                </div>
-                <div className="flex justify-between w-full items-center">
-                  <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
-                    Phí vận chuyển
-                  </p>
-                  <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(30000)}
-                  </p>
-                </div>
-                <div className="flex justify-between w-full items-center border-t pt-6">
-                  <p className="text-xl dark:text-white font-semibold leading-4 text-gray-800">
-                    Tổng thanh toán
-                  </p>
-                  <p className="text-xl dark:text-white font-semibold leading-4 text-red-600">
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(totalAmount + 30000)}
-                  </p>
-                </div>
+            <div className="flex mt-7 flex-col items-end w-full space-y-6">
+              <div className="flex justify-between w-full items-center">
+                <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
+                  Tổng số sản phẩm
+                </p>
+                <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
+                  {checkoutItems.reduce((sum, item) => sum + item.quantity, 0)}
+                </p>
+              </div>
+              <div className="flex justify-between w-full items-center">
+                <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
+                  Tổng tiền hàng
+                </p>
+                <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(totalAmount)}
+                </p>
+              </div>
+              <div className="flex justify-between w-full items-center">
+                <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
+                  Phí vận chuyển
+                </p>
+                <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(shippingFee)}
+                </p>
+              </div>
+              <div className="flex justify-between w-full items-center border-t pt-6">
+                <p className="text-xl dark:text-white font-semibold leading-4 text-gray-800">
+                  Tổng thanh toán
+                </p>
+                <p className="text-xl dark:text-white font-semibold leading-4 text-red-600">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(totalAmount + Number(shippingFee))}
+                </p>
               </div>
             </div>
           </div>

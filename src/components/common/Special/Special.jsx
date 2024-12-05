@@ -8,20 +8,24 @@ import useCartQuery from "@/hooks/useCart/useCartQuery";
 const Special = () => {
   const [userName, setUserName] = useState("Đăng nhập");
   const [profileLink, setProfileLink] = useState("/sign-in");
-  const { data: cartData } = useCartQuery();
-  const handleStorageChange = () => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const userData = JSON.parse(user);
-      setUserName(userData.name || "Đăng nhập");
-      setProfileLink("/account/profile");
-    } else {
-      setUserName("Đăng nhập");
-      setProfileLink("/sign-in");
-    }
-  };
+  const [cartCount, setCartCount] = useState(0);
+  const { data: cartData, refetch: refetchCart } = useCartQuery();
 
   useEffect(() => {
+    const handleStorageChange = () => {
+      const user = localStorage.getItem("user");
+      if (user) {
+        const userData = JSON.parse(user);
+        setUserName(userData.name || "Đăng nhập");
+        setProfileLink("/account/profile");
+        refetchCart();
+      } else {
+        setUserName("Đăng nhập");
+        setProfileLink("/sign-in");
+        refetchCart();
+      }
+    };
+
     handleStorageChange();
 
     window.addEventListener("storage", handleStorageChange);
@@ -32,6 +36,15 @@ const Special = () => {
       window.removeEventListener("loginSuccess", handleStorageChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const user = localStorage.getItem("user");
+      if (user && cartData?.length > 0) {
+        setCartCount(cartData.length);
+      }
+    }
+  }, [cartData]);
 
   return (
     <div className="fixed top-52 right-2 z-20 hidden md:flex flex-col gap-2">
@@ -53,9 +66,9 @@ const Special = () => {
             <RiShoppingCart2Fill className="text-2xl -translate-x-3 group-hover:translate-x-12 transition-transform duration-200" />
           </div>
           <p className="text-xs font-semibold font-titleFont">Giỏ hàng</p>
-          {cartData?.length > 0 && (
+          {cartCount > 0 && (
             <p className="absolute top-1 right-2 bg-primary text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-semibold">
-              {cartData?.length}
+              {cartCount}
             </p>
           )}
         </div>

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const useCartQuery = () => {
   const queryKey = ["CART_KEY"];
-  const { data, ...rest } = useQuery({
+  const { data, refetch, ...rest } = useQuery({
     queryKey,
     queryFn: async () => {
       const access_token = localStorage.getItem("access_token");
@@ -14,7 +14,7 @@ const useCartQuery = () => {
       return await getCart();
     },
   });
-  return { data, ...rest };
+  return { data, refetch, ...rest };
 };
 
 export default useCartQuery;
