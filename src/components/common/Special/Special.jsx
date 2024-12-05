@@ -8,41 +8,44 @@ import useCartQuery from "@/hooks/useCart/useCartQuery";
 const Special = () => {
   const [userName, setUserName] = useState("Đăng nhập");
   const [profileLink, setProfileLink] = useState("/sign-in");
-  const [cartCount, setCartCount] = useState(0);
   const { data: cartData, refetch: refetchCart } = useCartQuery();
+  const [cartCount, setCartCount] = useState(0);
+
+  const handleStorageChange = () => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserName(userData.name || "Đăng nhập");
+      setProfileLink("/account/profile");
+      refetchCart();
+    } else {
+      setUserName("Đăng nhập");
+      setProfileLink("/sign-in");
+      setCartCount(0);
+    }
+  };
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      const user = localStorage.getItem("user");
-      if (user) {
-        const userData = JSON.parse(user);
-        setUserName(userData.name || "Đăng nhập");
-        setProfileLink("/account/profile");
-        refetchCart();
-      } else {
-        setUserName("Đăng nhập");
-        setProfileLink("/sign-in");
-        refetchCart();
-      }
-    };
-
     handleStorageChange();
 
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("loginSuccess", handleStorageChange);
+    window.addEventListener("checkoutSuccess", handleStorageChange);
+    window.addEventListener("checkoutItems", handleStorageChange);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("loginSuccess", handleStorageChange);
+      window.removeEventListener("checkoutSuccess", handleStorageChange);
+      window.removeEventListener("checkoutItems", handleStorageChange);
     };
-  }, []);
+  }, [refetchCart]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const user = localStorage.getItem("user");
-      if (user && cartData?.length > 0) {
-        setCartCount(cartData.length);
-      }
+    if (cartData) {
+      setCartCount(cartData.length);
+    } else {
+      setCartCount(0);
     }
   }, [cartData]);
 

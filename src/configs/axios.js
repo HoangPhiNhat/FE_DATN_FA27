@@ -21,7 +21,10 @@ instance.interceptors.response.use(
           })
           .then((response) => {
             localStorage.setItem("access_token", response?.data?.access_token);
-            localStorage.setItem("refresh_token", response?.data?.refresh_token);
+            localStorage.setItem(
+              "refresh_token",
+              response?.data?.refresh_token
+            );
             error.config.headers.Authorization = `Bearer${response?.data?.refresh_token}`;
             return instance(error.config);
           })

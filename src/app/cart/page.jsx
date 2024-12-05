@@ -159,7 +159,7 @@ const Cart = () => {
           </div>
         </div>
         <div className="mt-5">
-          {cartData.map((v) => (
+          {cartData?.map((v) => (
             <div key={v.id}>
               <CartItem
                 key={v.id}

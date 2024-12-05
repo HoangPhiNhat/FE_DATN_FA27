@@ -39,11 +39,8 @@ const UserAccountPage = () => {
     switch (activeTab) {
       case "profile":
         return <UserInfo data={userProfile?.data} />;
-<<<<<<< HEAD
-=======
       // case "favorites":
       //   return <WishList data={favoriteProducts} />;
->>>>>>> 11d7708 (history order, shipping fee)
       case "orders":
         return <MyOrders />;
       case "change-password":
@@ -90,8 +87,6 @@ const UserAccountPage = () => {
             >
               <RiLockPasswordLine /> <p>Đổi Mật Khẩu</p>
             </button>
-<<<<<<< HEAD
-=======
             {/* <button
               onClick={() => setActiveTab("favorites")}
               className={`w-full text-left p-2 rounded ${
@@ -101,7 +96,6 @@ const UserAccountPage = () => {
               <BsBox2Heart />
               <p> Sản Phẩm Yêu Thích </p>
             </button> */}
->>>>>>> 11d7708 (history order, shipping fee)
             <button
               onClick={() => setActiveTab("orders")}
               className={`w-full text-left p-2 rounded ${

@@ -9,6 +9,7 @@ import Address from "../account/profile/_components/Address";
 import { getDistrict, getDistrict2, getWard } from "@/services/address";
 import messageService from "@/components/base/Message/Message";
 import { createOrder, createOnlinePayment } from "@/services/order";
+import useCartQuery from "@/hooks/useCart/useCartQuery";
 
 const Checkout = () => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const Checkout = () => {
     wardName: "",
   });
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const { data: cartData, refetch: refetchCart } = useCartQuery("CART_DATA");
 
   const {
     register,
@@ -179,7 +181,7 @@ const Checkout = () => {
       }));
 
       const payload = {
-        total_amount: totalAmount + 30000,
+        total_amount: Number(totalAmount) + Number(shippingFee),
         shipping_address_id: selectedAddressId,
         note: data.note || "",
         payment_method: paymentMethod,
@@ -190,18 +192,20 @@ const Checkout = () => {
         const response = await createOrder(payload);
         if (response.message == "Đặt hàng thành công") {
           messageService.success("Đặt hàng thành công");
+          refetchCart();
           localStorage.removeItem("checkoutItems");
           router.push("/order-confirmation");
         }
       } else if (paymentMethod === "onlineVNPay") {
         const resOrder = await createOrder(payload);
+        refetchCart();
         console.log(resOrder.order_code);
         console.log(resOrder.total_amount);
-
       } else {
         const response = await createOnlinePayment(payload);
-        if (response.success && response.paymentUrl) {
-          window.location.href = response.paymentUrl;
+        refetchCart();
+        if ( response.payUrl) {
+          window.location.href = response.payUrl;
         }
       }
     } catch (error) {
@@ -341,13 +345,12 @@ const Checkout = () => {
       const fetchShippingFee = async () => {
         const response = await getDistrict2(selectedAddress.district_code);
         setShippingFee(response.shipping_fee);
-      }
+      };
       fetchShippingFee();
     }
   }, [selectedAddress]);
 
   if (isLoading) return <Loading />;
-
 
   return (
     <>
@@ -567,47 +570,51 @@ const Checkout = () => {
                 })}
               </div>
 
-            <div className="flex mt-7 flex-col items-end w-full space-y-6">
-              <div className="flex justify-between w-full items-center">
-                <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
-                  Tổng số sản phẩm
-                </p>
-                <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                  {checkoutItems.reduce((sum, item) => sum + item.quantity, 0)}
-                </p>
-              </div>
-              <div className="flex justify-between w-full items-center">
-                <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
-                  Tổng tiền hàng
-                </p>
-                <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(totalAmount)}
-                </p>
-              </div>
-              <div className="flex justify-between w-full items-center">
-                <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
-                  Phí vận chuyển
-                </p>
-                <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(shippingFee)}
-                </p>
-              </div>
-              <div className="flex justify-between w-full items-center border-t pt-6">
-                <p className="text-xl dark:text-white font-semibold leading-4 text-gray-800">
-                  Tổng thanh toán
-                </p>
-                <p className="text-xl dark:text-white font-semibold leading-4 text-red-600">
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(totalAmount + Number(shippingFee))}
-                </p>
+              <div className="flex mt-7 flex-col items-end w-full space-y-6">
+                <div className="flex justify-between w-full items-center">
+                  <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
+                    Tổng số sản phẩm
+                  </p>
+                  <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
+                    {checkoutItems.reduce(
+                      (sum, item) => sum + item.quantity,
+                      0
+                    )}
+                  </p>
+                </div>
+                <div className="flex justify-between w-full items-center">
+                  <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
+                    Tổng tiền hàng
+                  </p>
+                  <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(totalAmount)}
+                  </p>
+                </div>
+                <div className="flex justify-between w-full items-center">
+                  <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
+                    Phí vận chuyển
+                  </p>
+                  <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(shippingFee)}
+                  </p>
+                </div>
+                <div className="flex justify-between w-full items-center border-t pt-6">
+                  <p className="text-xl dark:text-white font-semibold leading-4 text-gray-800">
+                    Tổng thanh toán
+                  </p>
+                  <p className="text-xl dark:text-white font-semibold leading-4 text-red-600">
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(totalAmount + Number(shippingFee))}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
