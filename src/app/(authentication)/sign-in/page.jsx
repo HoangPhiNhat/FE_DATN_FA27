@@ -18,8 +18,8 @@ const SignIn = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "phinhat.socialskid@gmail.com",
-      password: "password",
+      email: "",
+      password: "",
     },
   });
   useEffect(() => {

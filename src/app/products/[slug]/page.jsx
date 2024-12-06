@@ -91,11 +91,6 @@ const ProductDetail = () => {
     const user = localStorage.getItem("user");
     const userData = JSON.parse(user);
 
-    if (!userData) {
-      messageService.info("Vui lòng đăng nhập để thêm vào giỏ hàng");
-      return;
-    }
-
     const cartData = {
       product_id: data.id,
       product_att_id: selectedSize.id,

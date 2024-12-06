@@ -15,6 +15,7 @@ import {
 } from "@/services/order";
 import useCartQuery from "@/hooks/useCart/useCartQuery";
 import Image from "next/image";
+import { getProductAttById } from "@/services/product";
 
 const Checkout = () => {
   const router = useRouter();
@@ -57,8 +58,6 @@ const Checkout = () => {
         }
 
         const parsedItems = JSON.parse(items);
-        console.log("Parsed items:", parsedItems);
-
         setCheckoutItems(parsedItems);
         const total = parsedItems.reduce((sum, item) => {
           const price =
@@ -165,6 +164,7 @@ const Checkout = () => {
         (addr) => addr.id === selectedAddressId
       );
 
+
       if (!selectedAddress) {
         messageService.error("Vui lòng chọn địa chỉ giao hàng");
         return;
@@ -189,7 +189,6 @@ const Checkout = () => {
         total_amount: Number(totalAmount) + Number(shippingFee),
         shipping_address_id: selectedAddressId,
         note: data.note || "",
-        payment_method: paymentMethod,
         order_details: orderDetails,
       };
 
@@ -202,7 +201,10 @@ const Checkout = () => {
           router.push("/order-confirmation");
         }
       } else if (paymentMethod === "onlineVNPay") {
-        const resOrder = await createOrder(payload);
+        const resOrder = await createOrder({
+          ...payload,
+          payment_method: "VNPAY",
+        });
         const data = {
           order_id: resOrder.order_id,
           total_amount: resOrder.total_amount,
@@ -258,6 +260,7 @@ const Checkout = () => {
 
     fetchAddressNames();
   }, [watch]);
+
 
   const AddressModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -529,7 +532,7 @@ const Checkout = () => {
               </div>
 
               <div className="mt-8 w-full">
-                {checkoutItems.map((item) => {
+                {checkoutItems?.map((item) => {
                   const itemPrice =
                     item.product_att.reduced_price ??
                     item.product_att.regular_price;
@@ -587,7 +590,7 @@ const Checkout = () => {
                     Tổng số sản phẩm
                   </p>
                   <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                    {checkoutItems.reduce(
+                    {checkoutItems?.reduce(
                       (sum, item) => sum + item.quantity,
                       0
                     )}

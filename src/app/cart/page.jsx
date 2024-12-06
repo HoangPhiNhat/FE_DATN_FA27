@@ -11,6 +11,7 @@ import messageService from "@/components/base/Message/Message";
 import ConfirmModal from "@/components/base/Confirm/Confirm";
 import { useRouter } from "next/navigation";
 import useCartMutation from "@/hooks/useCart/useCartMutation";
+import { getProductAttById } from "@/services/product";
 
 const Cart = () => {
   const router = useRouter();
@@ -82,7 +83,7 @@ const Cart = () => {
       }, 0);
   }, [cartData, selectedItems]);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (selectedItems.length === 0) {
       messageService.warning("Vui lòng chọn sản phẩm để mua hàng");
       return;
@@ -92,9 +93,38 @@ const Cart = () => {
       selectedItems.includes(item.id)
     );
 
-    localStorage.setItem("checkoutItems", JSON.stringify(selectedProducts));
+    try {
 
-    router.push("/checkout");
+      const attFromAPI = await Promise.all(
+        selectedProducts.map(item => getProductAttById(item.product_att_id))
+      );
+
+      const invalidProducts = selectedProducts.filter(cartItem => {
+        const attData = attFromAPI.find(att => att.id === cartItem.product_att_id);
+
+        if (!attData) return true;
+
+        const isQuantityValid = cartItem.quantity <= attData.quantity;
+        const isPriceChanged =
+          Number(cartItem.product_att.regular_price) !== Number(attData.regular_price) ||
+          Number(cartItem.product_att.reduced_price) !== Number(attData.reduced_price);
+        console.log(isQuantityValid, isPriceChanged)
+        return !isQuantityValid && isPriceChanged;
+      });
+
+
+      if (invalidProducts.length > 0) {
+        messageService.error("Một số sản phẩm đã thay đổi thông tin. Vui lòng kiểm tra lại");
+        return;
+      }
+
+      localStorage.setItem("checkoutItems", JSON.stringify(selectedProducts));
+      router.push("/checkout");
+
+    } catch (error) {
+      console.log(error)
+      messageService.error("Không thể kiểm tra thông tin sản phẩm. Vui lòng thử lại");
+    }
   };
 
   if (isLoading) return <Loading />;

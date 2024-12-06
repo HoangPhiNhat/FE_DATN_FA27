@@ -21,7 +21,7 @@ export const navBarList = [
   },
   {
     _id: 1005,
-    title: "Chính sách đổi trả",
+    title: "Giới thiệu",
     link: "/about",
   },
 ];

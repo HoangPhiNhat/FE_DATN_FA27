@@ -88,7 +88,7 @@ const ForgotPassword = () => {
       />
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+        className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/80 transition-colors"
       >
         Gửi mã OTP
       </button>
@@ -137,7 +137,7 @@ const ForgotPassword = () => {
       />
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+        className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/80 transition-colors"
       >
         Đặt lại mật khẩu
       </button>

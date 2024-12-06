@@ -13,13 +13,17 @@ export const getProductAll = async (
   sort
 ) => {
   try {
-    let queryParams = `page=${page}&size=${limit}&sort=${sort || "DESC"}`;
+    let queryParams = '';
+
+    if (minPrice) queryParams += `minPrice=${minPrice}`;
+    if (maxPrice) queryParams += `${queryParams ? '&' : ''}maxPrice=${maxPrice}`;
+
+    queryParams += `${queryParams ? '&' : ''}sort=${sort || "DESC"}`;
+    queryParams += `&page=${page}&size=${limit}`;
 
     if (category) queryParams += `&categoryId=${category}`;
     if (color) queryParams += `&colorId=${color}`;
     if (size) queryParams += `&sizeId=${size}`;
-    if (minPrice) queryParams += `&minPrice=${minPrice}`;
-    if (maxPrice) queryParams += `&maxPrice=${maxPrice}`;
     if (name) queryParams += `&name=${name}`;
 
     const response = await UnAuthor.get(`/products?${queryParams}`);
@@ -41,8 +45,8 @@ export const getProductBySlug = async (slug) => {
 
 export const getProductAttById = async (id) => {
   try {
-    const response = await UnAuthor.get(`products/${id}/productAtts`);
-    return response.data;
+    const response = await UnAuthor.get(`/productAtts/${id}`);
+    return response;
   } catch (error) {
     throw error;
   }

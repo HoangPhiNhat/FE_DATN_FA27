@@ -27,12 +27,12 @@ const SignUp = () => {
     watch,
   } = useForm({
     defaultValues: {
-      name: "nhatdeptrai",
-      email: "hoangnhat27122004@gmail.com",
-      phone: "0987654321",
-      password: "quancunho",
-      password_confirmation: "quancunho",
-      address: "siu dep trai, vo dich, vu tru",
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      password_confirmation: "",
+      address: "",
     },
   });
 
