@@ -9,7 +9,7 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
   const [showArrows, setShowArrows] = useState(true);
   const sliderRefMain = useRef(null);
   const sliderRefThumbs = useRef(null);
-
+  console.log(images)
   useEffect(() => {
     setShowArrows(images.length > 5);
   }, [images]);
@@ -33,7 +33,7 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
         {images.map((image, index) => (
           <Image
             key={index}
-            alt={image.url}
+            alt={index}
             src={image.url}
             width={740}
             height={740}
@@ -61,7 +61,7 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
               >
                 <div className="aspect-square overflow-hidden">
                   <Image
-                    alt={image.url}
+                    alt={index}
                     src={image.url}
                     width={100}
                     height={100}

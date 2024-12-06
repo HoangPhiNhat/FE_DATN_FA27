@@ -40,7 +40,7 @@ const ProductDetail = () => {
       setSelectedSize(firstColor.sizes[0]);
 
       const images = data.product_att.map((attr, index) => ({
-        url: `https://via.placeholder.com/740x740.png?text=${attr.image}`,
+        url: attr.image,
         colorId: attr.color_id,
         color: attr.color_name,
         active: index === 0,

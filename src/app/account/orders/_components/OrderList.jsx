@@ -84,7 +84,7 @@ const OrderList = () => {
                         <div className="flex justify-between items-center mt-2">
                           <p>Số lượng: {item.quantity}</p>
                           <p className="font-medium">
-                            {parseInt(item.total_amount).toLocaleString()}đ
+                            {Number(item.total_amount).toLocaleString()}đ
                           </p>
                         </div>
                       </div>
@@ -105,7 +105,7 @@ const OrderList = () => {
                       </p>
                       <p className="font-bold text-lg">
                         Tổng cộng:{" "}
-                        {parseInt(order.total_amount).toLocaleString()}đ
+                        {(Number(order.total_product_amount) + Number(order.delivery_fee)).toLocaleString()}đ
                       </p>
                     </div>
                   </div>

@@ -176,20 +176,21 @@ const Checkout = () => {
         color: item.product_att.color.name,
         product_name: item.product_att.product.name,
         unit_price:
-          item.product_att.regular_price ?? item.product_att.reduced_price,
+          item.product_att.reduced_price ?? item.product_att.regular_price,
         total_amount:
-          (item.product_att.regular_price ?? item.product_att.reduced_price) *
+          (item.product_att.reduced_price ?? item.product_att.regular_price) *
           item.quantity,
         quantity: item.quantity,
         thumbnail: item.image ?? "/images/default-image.jpg",
       }));
 
       const payload = {
-        total_amount: Number(totalAmount),
+        total_amount: Number(totalAmount) + Number(shippingFee),
         delivery_fee: Number(shippingFee),
         shipping_address_id: selectedAddressId,
         note: data.note || "",
         order_details: orderDetails,
+        total_product_amount: Number(totalAmount)
       };
 
       if (paymentMethod === "cod") {
@@ -208,7 +209,7 @@ const Checkout = () => {
 
         const data = {
           order_id: resOrder.order_id,
-          total_amount: resOrder.total_amount + Number(shippingFee),
+          total_amount: resOrder.total_amount,
         };
 
         const resOnlineVnPay = await createOnlinePaymentVNPay(data);
