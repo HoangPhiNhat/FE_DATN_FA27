@@ -29,54 +29,47 @@ const Footer = () => {
 
   return (
     <div className="w-full bg-[#F5F5F3] py-20 mt-20">
-      <div className="container grid grid-cols-1 md:grid-cols-2  xl:grid-cols-6 px-4 gap-10">
+      <div className="container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 px-4 gap-10">
         <div className="col-span-2">
           <h3 className="text-xl font-bodyFont font-semibold mb-6">
-            More about NovaThreads Shop
+            Về NovaThreads Shop
           </h3>
-
           <div className="flex flex-col gap-6">
             <p className="text-base w-full xl:w-[80%]">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim sint
-              ab ullam, numquam nesciunt in.
+              Chúng tôi tự hào là điểm đến thời trang hàng đầu, mang đến những sản phẩm chất lượng cao với giá cả hợp lý.
             </p>
-            <ul className="flex items-center gap-2">
-              {blankItems.map((v, i) => (
-                <FooterItemLink key={i} href={v.href} icon={v.icon} target />
-              ))}
-            </ul>
           </div>
         </div>
         <div>
-          <h3 className="text-xl font-bodyFont font-semibold mb-6">Shop</h3>
-          <ul className="flex flex-col gap-2">
-            {shopItems.map((v, i) => (
-              <FooterItemLink key={i} href={v} />
-            ))}
-          </ul>
+          <h3 className="text-xl font-bodyFont font-semibold mb-6">Dịch vụ</h3>
+          <div className="flex flex-col gap-2">
+            <p>Giao hàng nhanh chóng</p>
+            <p>Đổi trả trong 30 ngày</p>
+            <p>Bảo hành sản phẩm</p>
+            <p>Tư vấn miễn phí</p>
+          </div>
         </div>
         <div>
           <h3 className="text-xl font-bodyFont font-semibold mb-6">
-            Your account
+            Liên hệ
           </h3>
-
-          <ul className="flex flex-col gap-2">
-            {accountItems.map((v, i) => (
-              <FooterItemLink key={i} href={v} />
-            ))}
-          </ul>
+          <div className="flex flex-col gap-2">
+            <p>Hotline: 1900 xxxx</p>
+            <p>Email: support@novathreads.com</p>
+            <p>Địa chỉ: 123 ABC, Quận X, TP.HCM</p>
+          </div>
         </div>
         <div className="col-span-2 flex flex-col items-center w-full px-4">
           <h3 className="text-xl font-bodyFont font-semibold mb-6">
-            Subscribe to our newsletter.
+            Đăng ký nhận bản tin
           </h3>
           <div className="w-full">
             <p className="text-center mb-4">
-              A at pellentesque et mattis porta enim elementum.
+              Nhận thông tin về sản phẩm mới và ưu đãi đặc biệt
             </p>
             {subscription ? (
               <p className="w-full text-center text-base font-semibold text-green-600">
-                Subscribed Successfully !
+                Đăng ký thành công!
               </p>
             ) : (
               <div className="w-full flex-col xl:flex-row flex justify-between items-center gap-4">
@@ -86,11 +79,13 @@ const Footer = () => {
                     value={emailInfo}
                     className="w-full h-12 border-b border-gray-400 bg-transparent px-4 text-primary text-lg placeholder:text-base outline-none"
                     type="text"
-                    placeholder="Insert your email ...*"
+                    placeholder="Nhập email của bạn...*"
                   />
                   {errMsg && (
                     <p className="text-red-600 text-sm font-semibold text-center animate-bounce mt-2">
-                      {errMsg}
+                      {errMsg === "Please provide an Email !"
+                        ? "Vui lòng nhập email!"
+                        : "Vui lòng nhập email hợp lệ!"}
                     </p>
                   )}
                 </div>
@@ -98,20 +93,10 @@ const Footer = () => {
                   onClick={handleSubscription}
                   className="bg-white text-lightText w-[30%] h-10 hover:bg-black hover:text-white duration-300 text-base tracking-wide"
                 >
-                  Subscribe
+                  Đăng ký
                 </button>
               </div>
             )}
-            {/*
-            <Image
-              className={`w-[80%] lg:w-[60%] mx-auto ${
-                subscription ? "mt-2" : "mt-6"
-              }`}
-              src={"/images/payment.png"}
-              width={215}
-              height={64}
-              alt="payment method supported"
-            /> */}
           </div>
         </div>
       </div>
