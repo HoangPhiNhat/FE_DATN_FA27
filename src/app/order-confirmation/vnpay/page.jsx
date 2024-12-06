@@ -11,7 +11,7 @@ const OrderConfirmation = () => {
 
   const vnp_TransactionStatus = searchParams.get("vnp_TransactionStatus");
   const vnp_ResponseCode = searchParams.get("vnp_ResponseCode");
-  const order_id = searchParams.get("vnp_TmnCode");
+  const order_id = searchParams.get("vnp_TxnRef");
 
   useEffect(() => {
     (async () => {
