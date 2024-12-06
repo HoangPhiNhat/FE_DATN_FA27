@@ -38,22 +38,21 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
   });
 
   useEffect(() => {
-    if (timer) {
-      clearTimeout(timer);
-    }
-    const newTimer = setTimeout(() => {
-      updateQuantity(data.id, quantity);
+    const debounceUpdate = setTimeout(() => {
+      if (quantity !== data.quantity) {
+        updateQuantity({
+          id: data.id,
+          quantity: quantity,
+        });
+      }
     }, 500);
-    setTimer(newTimer);
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [quantity, data.id, timer, updateQuantity]);
+
+    return () => clearTimeout(debounceUpdate);
+  }, [quantity, data.id, data.quantity, updateQuantity]);
 
   const increaseQuantity = () => {
     if (quantity < data.product_att.stock_quantity) {
-      setQuantity(quantity + 1);
-      setShouldUpdate(true);
+      setQuantity(prev => prev + 1);
     } else {
       messageService.warning("Số lượng trong kho không đủ");
     }
@@ -61,8 +60,7 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
-      setShouldUpdate(true);
+      setQuantity(prev => prev - 1);
     } else if (quantity === 1) {
       setIsConfirmOpen(true);
     }
