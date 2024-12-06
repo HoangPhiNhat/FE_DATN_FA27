@@ -164,7 +164,6 @@ const Checkout = () => {
         (addr) => addr.id === selectedAddressId
       );
 
-
       if (!selectedAddress) {
         messageService.error("Vui lòng chọn địa chỉ giao hàng");
         return;
@@ -186,7 +185,8 @@ const Checkout = () => {
       }));
 
       const payload = {
-        total_amount: Number(totalAmount) + Number(shippingFee),
+        total_amount: Number(totalAmount),
+        delivery_fee: Number(shippingFee),
         shipping_address_id: selectedAddressId,
         note: data.note || "",
         order_details: orderDetails,
@@ -205,9 +205,10 @@ const Checkout = () => {
           ...payload,
           payment_method: "VNPAY",
         });
+
         const data = {
           order_id: resOrder.order_id,
-          total_amount: resOrder.total_amount,
+          total_amount: resOrder.total_amount + Number(shippingFee),
         };
 
         const resOnlineVnPay = await createOnlinePaymentVNPay(data);
@@ -260,7 +261,6 @@ const Checkout = () => {
 
     fetchAddressNames();
   }, [watch]);
-
 
   const AddressModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
