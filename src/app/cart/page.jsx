@@ -60,13 +60,12 @@ const Cart = () => {
       messageService.warning("Vui lòng chọn sản phẩm");
       return;
     }
-    selectedItems.map((id) => deleteCartItem(id));
     setShowConfirmModal(true);
   };
 
   const onConfirmRemove = () => {
-    console.log("Remove selected items:", selectedItems);
-    messageService.success("Đã xóa sản phẩm thành công");
+    selectedItems.map((id) => deleteCartItem(id));
+    setSelectedItems([]);
     setShowConfirmModal(false);
   };
 

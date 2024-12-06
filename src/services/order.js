@@ -23,7 +23,7 @@ export const orderHistory = async () => {
 };
 
 export const getOrder = async () => {
-  const response = await Author.get(`/orders`);
+  const response = await Author.get(`/orders/user-id`);
   return response.data;
 };
 

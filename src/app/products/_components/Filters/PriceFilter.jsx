@@ -1,13 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const PriceFilter = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }) => {
+  const [localMinPrice, setLocalMinPrice] = useState(minPrice);
+  const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);
+
+  useEffect(() => {
+    setLocalMinPrice(minPrice);
+    setLocalMaxPrice(maxPrice);
+  }, [minPrice, maxPrice]);
+
   const handleMinPriceChange = (e) => {
-    const value = e.target.value;
-    setMinPrice(value);
+    setLocalMinPrice(e.target.value);
   };
 
   const handleMaxPriceChange = (e) => {
-    setMaxPrice(e.target.value);
+    setLocalMaxPrice(e.target.value);
+  };
+
+  const handleApplyFilter = () => {
+    setMinPrice(localMinPrice);
+    setMaxPrice(localMaxPrice);
   };
 
   return (
@@ -18,7 +30,7 @@ const PriceFilter = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }) => {
           type="number"
           min="0"
           placeholder="Giá thấp nhất"
-          value={minPrice}
+          value={localMinPrice === 0 ? "" : localMinPrice}
           onChange={handleMinPriceChange}
           className="w-full p-2 border rounded"
         />
@@ -26,10 +38,16 @@ const PriceFilter = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }) => {
           type="number"
           min="0"
           placeholder="Giá cao nhất"
-          value={maxPrice}
+          value={localMaxPrice === 0 ? "" : localMaxPrice}
           onChange={handleMaxPriceChange}
           className="w-full p-2 border rounded"
         />
+        <button
+          onClick={handleApplyFilter}
+          className="bg-primary text-white py-2 px-4 rounded hover:bg-opacity-90"
+        >
+          Áp dụng
+        </button>
       </div>
     </div>
   );
