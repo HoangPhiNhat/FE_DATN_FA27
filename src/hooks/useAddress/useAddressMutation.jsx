@@ -11,7 +11,6 @@ const useAddressMutation = ({ action, onSuccess, onError }) => {
         // case "DELETE":
         //   return await deleteAddress(data);
         case "UPDATE":
-          console.log(data);
           return await updateAddress(data);
         default:
           return null;

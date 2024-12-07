@@ -82,7 +82,6 @@ export const changePassword = (data) => {
     password: data.password,
     current_password: data.current_password,
   };
-  console.log(body);
   return Author.post(`/auth/changePassword`, body);
 };
 

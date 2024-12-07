@@ -27,7 +27,6 @@ export const getCart = async () => {
 
 export const addToCart = async (data) => {
   try {
-    console.log(data);
     const response = await Author.post(`/carts`, data);
     return response;
   } catch (error) {

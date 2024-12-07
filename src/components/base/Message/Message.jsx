@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
+"use client";
+import React, { useState, useEffect } from "react";
+import { createRoot } from "react-dom/client";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { FaExclamationCircle } from "react-icons/fa";
 import { FaInfoCircle } from "react-icons/fa";
@@ -42,24 +43,27 @@ const Message = ({ content, type }) => {
 const MessageContainer = () => {
   const [messages, setMessages] = useState([]);
 
-  const addMessage = (message) => {
-    const isDuplicate = messages.some(
-      (msg) => msg.content === message.content && msg.type === message.type
-    );
+  useEffect(() => {
+    window.addMessage = (message) => {
+      const isDuplicate = messages.some(
+        (msg) => msg.content === message.content && msg.type === message.type
+      );
 
-    if (!isDuplicate) {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      if (!isDuplicate) {
+        setMessages((prevMessages) => [...prevMessages, message]);
 
-      setTimeout(() => {
-        setMessages((prevMessages) =>
-          prevMessages.filter((msg) => msg !== message)
-        );
-      }, message.duration || 3000);
-    }
-  };
+        setTimeout(() => {
+          setMessages((prevMessages) =>
+            prevMessages.filter((msg) => msg !== message)
+          );
+        }, message.duration || 3000);
+      }
+    };
 
-  // Expose the addMessage function to the window object
-  window.addMessage = addMessage;
+    return () => {
+      window.addMessage = undefined;
+    };
+  }, [messages]);
 
   return (
     <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50">
@@ -74,12 +78,23 @@ const messageService = {
   show: (content, type = MessageTypes.INFO, duration = 3000) => {
     const message = { content, type, duration };
     let container = document.getElementById("message-container");
+
     if (!container) {
       container = document.createElement("div");
       container.id = "message-container";
       document.body.appendChild(container);
-      ReactDOM.createRoot(container).render(<MessageContainer />);
+
+      const root = createRoot(container);
+      root.render(<MessageContainer />);
+
+      setTimeout(() => {
+        if (typeof window.addMessage === "function") {
+          window.addMessage(message);
+        }
+      }, 0);
+      return;
     }
+
     if (typeof window.addMessage === "function") {
       window.addMessage(message);
     } else {

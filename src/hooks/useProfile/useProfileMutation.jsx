@@ -9,7 +9,6 @@ const useProfileMutation = ({ action, onSuccess, onError }) => {
         case "CHANGE_PASSWORD":
           return await changePassword(data);
         case "UPDATE_PROFILE":
-          console.log(data);
           return await updateProfile(data);
         // case "UPDATE_ADDRESS":
         //   return await updateAddress(data);

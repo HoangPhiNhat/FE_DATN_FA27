@@ -108,7 +108,6 @@ const Cart = () => {
         const isPriceChanged =
           Number(cartItem.product_att.regular_price) !== Number(attData.regular_price) ||
           Number(cartItem.product_att.reduced_price) !== Number(attData.reduced_price);
-        console.log(isQuantityValid, isPriceChanged)
         return !isQuantityValid && isPriceChanged;
       });
 
@@ -122,7 +121,6 @@ const Cart = () => {
       router.push("/checkout");
 
     } catch (error) {
-      console.log(error)
       messageService.error("Không thể kiểm tra thông tin sản phẩm. Vui lòng thử lại");
     }
   };

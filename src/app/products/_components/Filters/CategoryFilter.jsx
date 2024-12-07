@@ -2,11 +2,8 @@
 import NavTitle from "@/components/UI/NavTitle/NavTitle";
 import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
 import React, { useState } from "react";
-// import { FaPlus } from "react-icons/fa";
-import { ImPlus } from "react-icons/im";
 const CategoryFilter = ({ category, setCategory }) => {
   const { data: categories } = useCategoryQuery("GET_ALL_CATEGORY");
-  console.log(categories);
   return (
     <div className="w-full">
       <NavTitle title="Category" icons={false} />

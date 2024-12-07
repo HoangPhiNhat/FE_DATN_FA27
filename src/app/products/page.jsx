@@ -54,7 +54,6 @@ const Product = () => {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  console.log(products);
   return (
     <div className="container mx-auto">
       <div className="w-full h-full flex pb-20 gap-10">

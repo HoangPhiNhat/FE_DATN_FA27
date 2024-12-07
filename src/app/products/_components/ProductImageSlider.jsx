@@ -9,7 +9,6 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
   const [showArrows, setShowArrows] = useState(true);
   const sliderRefMain = useRef(null);
   const sliderRefThumbs = useRef(null);
-  console.log(images)
   useEffect(() => {
     setShowArrows(images.length > 5);
   }, [images]);

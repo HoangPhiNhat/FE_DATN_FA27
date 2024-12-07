@@ -69,7 +69,6 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
   const pathname = usePathname();
   const isCheckoutPage = pathname?.includes('checkout');
 
-  console.log(isCheckoutPage)
   useEffect(() => {
     const fetchDistricts = async () => {
       const res = await getDistrict(201);

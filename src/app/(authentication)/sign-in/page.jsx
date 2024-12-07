@@ -51,7 +51,7 @@ const SignIn = () => {
       } else if (error?.response?.status === 429) {
         messageService.error("Quá nhiều yêu cầu. Vui lòng thử lại sau ít phút");
       } else if (error?.response?.status === 401) {
-        messageService.error("Tài khoản đã bị khóa");
+        messageService.error("Tài khoản hoặc mật khẩu không chính xác");
       } else if (error?.response?.status === 404) {
         messageService.error("Tài khoản không tồn tại");
       } else {

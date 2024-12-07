@@ -23,7 +23,6 @@ export const getAllCategory = async (page) => {
 
 export const getCategoryById = async (category) => {
   try {
-    console.log(category);
     const response = await UnAuthor.get(`/categories/${category.id}`);
     return response;
   } catch (error) {

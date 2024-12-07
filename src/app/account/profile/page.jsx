@@ -14,7 +14,6 @@ import Address from "./_components/Address";
 import messageService from "@/components/base/Message/Message";
 
 const UserAccountPage = () => {
-  const router = useRouter();
 
   return (
     <Suspense fallback={<Loading />}>
@@ -28,18 +27,22 @@ const UserAccountContent = () => {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("profile");
 
-  useEffect(() => {
+  const checkAuth = () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
       messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
       router.push("/sign-in");
     }
+  };
+
+  useEffect(() => {
+    checkAuth();
 
     const activeQueryParam = searchParams.get("active");
     if (activeQueryParam) {
       setActiveTab(activeQueryParam);
     }
-  }, [router, searchParams]);
+  }, [searchParams]);
 
   const { data: userProfile, isLoading } = useProfileQuery();
 
