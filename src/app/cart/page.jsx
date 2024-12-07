@@ -112,7 +112,7 @@ const Cart = () => {
 
         const isQuantityValid = cartItem.quantity <= attData.quantity;
         const isPriceChanged =
-          Number(cartItem.product_att.regular_price + 1) !== Number(attData.regular_price) ||
+          Number(cartItem.product_att.regular_price ) !== Number(attData.regular_price) ||
           Number(cartItem.product_att.reduced_price) !== Number(attData.reduced_price);
         return !isQuantityValid && isPriceChanged;
       });

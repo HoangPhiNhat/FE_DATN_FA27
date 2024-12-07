@@ -16,6 +16,7 @@ import {
 import useCartQuery from "@/hooks/useCart/useCartQuery";
 import Image from "next/image";
 import { getProductAttById } from "@/services/product";
+import Link from "next/link";
 
 const Checkout = () => {
   const router = useRouter();
@@ -517,12 +518,12 @@ const Checkout = () => {
                 {paymentMethod === "cod" ? "Đặt hàng" : "Thanh toán"}
               </button>
               <div className="mt-4 flex justify-start items-center w-full">
-                <a
-                  href="#"
+                <Link
+                  href="/cart"
                   className="text-base leading-4 dark:text-gray-400 hover:underline focus:outline-none focus:text-gray-500 hover:text-gray-800 text-gray-600"
                 >
                   Quay lại giỏ hàng
-                </a>
+                </Link>
               </div>
             </div>
             <div className="flex flex-col justify-start items-start bg-gray-50 dark:bg-gray-800 w-full p-6 md:p-14">
@@ -548,7 +549,7 @@ const Checkout = () => {
                         <Image
                           width={100}
                           height={100}
-                          src={item.image ?? "/images/default-image.jpg"}
+                          src={item.product_att.image ?? "/images/default-image.jpg"}
                           alt={item.name}
                           className="w-16 h-16 object-cover"
                         />
