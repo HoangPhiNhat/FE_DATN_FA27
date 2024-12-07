@@ -27,8 +27,8 @@ const ProductDetail = () => {
     },
     onError: (error) => {
       messageService.error(
-        // error?.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
-        "Sản phẩm không tồn tại."
+        error?.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
+        // "Sản phẩm không tồn tại."
       );
     },
   });

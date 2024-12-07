@@ -18,7 +18,6 @@ export default function OrderConfirmation() {
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow">
-        {/* Icon thành công */}
         <div className="flex justify-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +26,6 @@ export default function OrderConfirmation() {
           </div>
         </div>
 
-        {/* Nội dung xác nhận */}
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Đặt hàng thành công!

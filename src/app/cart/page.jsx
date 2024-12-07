@@ -24,6 +24,12 @@ const Cart = () => {
     setIsAuthenticated(!!token);
   }, []);
 
+  useEffect(() => {
+    if (refetchCart > 0) {
+      messageService.error("Một số sản phẩm đã thay đổi thông tin. Vui lòng kiểm tra lại");
+    }
+  }, [refetchCart]);
+
   const { data: cartData, isLoading, refetch } = useCartQuery({
     enabled: isAuthenticated,
   });
@@ -106,16 +112,15 @@ const Cart = () => {
 
         const isQuantityValid = cartItem.quantity <= attData.quantity;
         const isPriceChanged =
-          Number(cartItem.product_att.regular_price ) !== Number(attData.regular_price) ||
+          Number(cartItem.product_att.regular_price + 1) !== Number(attData.regular_price) ||
           Number(cartItem.product_att.reduced_price) !== Number(attData.reduced_price);
         return !isQuantityValid && isPriceChanged;
       });
 
 
       if (invalidProducts.length > 0) {
-        setRefetchCart(prev => prev + 1);
         await refetch();
-        messageService.error("Một số sản phẩm đã thay đổi thông tin. Vui lòng kiểm tra lại");
+        setRefetchCart(prev => prev + 1);
         return;
       }
 
