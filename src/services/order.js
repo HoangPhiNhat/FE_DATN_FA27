@@ -17,13 +17,17 @@ export const createOnlinePayment = async (data) => {
   }
 };
 
-export const orderHistory = async () => {
-  const response = await Author.get("/orders/user-id?status=completed");
+export const orderHistory = async (page = 1, size = 4) => {
+  const response = await Author.get(
+    `/orders/user-id?status=completed&page=${Number(page)}&size=${Number(size)}`
+  );
   return response.data;
 };
 
-export const getOrder = async () => {
-  const response = await Author.get(`/orders/user-id`);
+export const getOrder = async (page = 1, size = 4) => {
+  const response = await Author.get(
+    `/orders/user-id?page=${Number(page)}&size=${Number(size)}`
+  );
   return response.data;
 };
 

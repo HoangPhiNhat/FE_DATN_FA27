@@ -4,19 +4,36 @@ import useOrderMutation from "@/hooks/useOrder/useOrderMutaion";
 import useOrderQuery from "@/hooks/useOrder/useOrderQuery";
 import React from "react";
 import Image from "next/image";
+import Pagination from "@/components/base/Pagination";
 
 const OrderList = () => {
-  const { data: orders } = useOrderQuery("ORDER");
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const pageSize = 4;
+
+  const { data: orderData, refetch } = useOrderQuery(
+    "ORDER",
+    currentPage,
+    pageSize
+  );
+  console.log(currentPage)
+  const orders = orderData?.data;
+  const totalPages = Math.ceil(orderData?.total / pageSize);
 
   const { mutate: cancelOrder } = useOrderMutation({
     action: "CANCEL_ORDER",
     onSuccess: () => {
       messageService.success("Đơn hàng đã hủy thành công");
+      refetch();
     },
     onError: (error) => {
       messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
     },
   });
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div>
       <div className="bg-white p-6 rounded-lg">
@@ -112,6 +129,14 @@ const OrderList = () => {
                 </div>
               </div>
             ))}
+
+            <div className="mt-6">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
           </>
         )}
       </div>
