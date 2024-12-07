@@ -59,13 +59,14 @@ const ProductDetail = () => {
       setSelectedSize(color.sizes[0]);
     }
 
-    setColorImages((prevImages) =>
-      prevImages.map((img) =>
-        img.colorId === colorId
-          ? { ...img, active: true }
-          : { ...img, active: false }
-      )
-    );
+    const updatedImages = data.product_att.map((attr) => ({
+      url: attr.image,
+      colorId: attr.color_id,
+      color: attr.color_name,
+      active: attr.color_id === colorId,
+    }));
+
+    setColorImages(updatedImages);
   };
 
   const handleSizeChange = (sizeId) => {

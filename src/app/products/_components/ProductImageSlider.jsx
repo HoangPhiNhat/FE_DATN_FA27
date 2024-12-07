@@ -9,9 +9,21 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
   const [showArrows, setShowArrows] = useState(true);
   const sliderRefMain = useRef(null);
   const sliderRefThumbs = useRef(null);
+
   useEffect(() => {
     setShowArrows(images.length > 5);
+    const activeIndex = images.findIndex(img => img.active);
+    if (activeIndex !== -1) {
+      setCurrentIndex(activeIndex);
+      if (sliderRefMain.current) {
+        sliderRefMain.current.slickGoTo(activeIndex);
+      }
+      if (sliderRefThumbs.current && images.length > 5) {
+        sliderRefThumbs.current.slickGoTo(Math.max(activeIndex - 2, 0));
+      }
+    }
   }, [images]);
+
   // Điều khiển thumbnail khi chuyển ảnh chính
   const handleMainSlideChange = (index) => {
     setCurrentIndex(index);

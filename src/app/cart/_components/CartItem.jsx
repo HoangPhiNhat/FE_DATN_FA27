@@ -158,7 +158,7 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={() => deleteCartItem(data.id)}
         title="Xác nhận xóa sản phẩm"
-        message={`Bạn có chắc chắn muốn xóa sản phẩm "${data.name}" khỏi giỏ hàng?`}
+        message={`Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng?`}
         label="Xóa"
       />
     </>
