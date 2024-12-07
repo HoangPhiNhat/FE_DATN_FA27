@@ -182,7 +182,7 @@ const Checkout = () => {
           (item.product_att.reduced_price ?? item.product_att.regular_price) *
           item.quantity,
         quantity: item.quantity,
-        thumbnail: item.image ?? "/images/default-image.jpg",
+        thumbnail: item.product_att.image ?? "/images/default-image.jpg",
       }));
 
       const payload = {
@@ -191,7 +191,7 @@ const Checkout = () => {
         shipping_address_id: selectedAddressId,
         note: data.note || "",
         order_details: orderDetails,
-        total_product_amount: Number(totalAmount)
+        total_product_amount: Number(totalAmount),
       };
 
       if (paymentMethod === "cod") {
@@ -549,7 +549,10 @@ const Checkout = () => {
                         <Image
                           width={100}
                           height={100}
-                          src={item.product_att.image ?? "/images/default-image.jpg"}
+                          src={
+                            item.product_att.image ??
+                            "/images/default-image.jpg"
+                          }
                           alt={item.name}
                           className="w-16 h-16 object-cover"
                         />
