@@ -461,7 +461,7 @@ const Checkout = () => {
                     </div>
                   </div>
 
-                  <div
+                  {/* <div
                     className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:border-blue-500"
                     onClick={() => setPaymentMethod("online")}
                   >
@@ -472,7 +472,7 @@ const Checkout = () => {
                       onChange={() => setPaymentMethod("online")}
                       className="w-4 h-4 text-blue-600"
                     />
-                    {/* <div>
+                    <div>
                       <label
                         htmlFor="online"
                         className="font-medium cursor-pointer"
@@ -482,8 +482,8 @@ const Checkout = () => {
                       <p className="text-sm text-gray-500">
                         Thanh toán qua MoMo
                       </p>
-                    </div> */}
-                  </div>
+                    </div>
+                  </div> */}
 
                   {/* VNPay */}
                   <div
