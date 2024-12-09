@@ -4,7 +4,7 @@ const Loading = () => {
   return (
     <div className="w-full ">
       <div
-        class="w-12 h-12 rounded-full animate-spin mx-auto
+        className="w-12 h-12 rounded-full animate-spin mx-auto
     border-y-2 border-solid border-blue-500 border-t-transparent shadow-md"
       ></div>
     </div>

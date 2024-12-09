@@ -1,14 +1,33 @@
-import instance from "../configs/axios";
+import UnAuthor from "./baseApi/UnAuthorApi";
 
-let size = 5;
+let limit = 8;
 
-export const getProductAll = async (page, name) => {
+export const getProductAll = async (
+  page,
+  name,
+  category,
+  color,
+  size,
+  minPrice,
+  maxPrice,
+  sort
+) => {
   try {
-    const response = await instance.get(
-      `/products?page=${page}&size=${size}&sort=DESC`
-    );
-    console.log(response);
-    return response.data;
+    let queryParams = '';
+
+    if (minPrice) queryParams += `minPrice=${minPrice}`;
+    if (maxPrice) queryParams += `${queryParams ? '&' : ''}maxPrice=${maxPrice}`;
+
+    queryParams += `${queryParams ? '&' : ''}sort=${sort || "DESC"}`;
+    queryParams += `&page=${page}&size=${limit}`;
+
+    if (category) queryParams += `&categoryId=${category}`;
+    if (color) queryParams += `&colorId=${color}`;
+    if (size) queryParams += `&sizeId=${size}`;
+    if (name) queryParams += `&name=${name}`;
+
+    const response = await UnAuthor.get(`/products?${queryParams}`);
+    return response;
   } catch (error) {
     throw error;
   }
@@ -16,10 +35,17 @@ export const getProductAll = async (page, name) => {
 
 export const getProductBySlug = async (slug) => {
   try {
-    console.log(slug);
-    // const response = await instance.get(`/products/${slug}`);
-    const response = await instance.get(`/products/${slug}/productAtts`);
+    const response = await UnAuthor.get(`/products/${slug}`);
 
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getProductAttById = async (id) => {
+  try {
+    const response = await UnAuthor.get(`/productAtts/${id}`);
     return response;
   } catch (error) {
     throw error;

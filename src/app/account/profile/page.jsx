@@ -1,100 +1,73 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation"; // Import useSearchParams
 import { BsBox2, BsBox2Heart } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
+import { RiLockPasswordLine } from "react-icons/ri";
 import MyOrders from "../orders/_components/MyOrders";
 import UserInfo from "./_components/UserInfo";
-import WishList from "./_components/WishList";
+import useProfileQuery from "@/hooks/useProfile/useProfileQuery";
+import Loading from "@/components/base/Loading/Loading";
+import ChangePassword from "./_components/ChangePassword";
+import Address from "./_components/Address";
+import messageService from "@/components/base/Message/Message";
 
 const UserAccountPage = () => {
+
+  return (
+    <Suspense fallback={<Loading />}>
+      <UserAccountContent />
+    </Suspense>
+  );
+};
+
+const UserAccountContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("profile");
 
-  const userProfile = {
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "0123 456 789",
+  const checkAuth = () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
+      router.push("/sign-in");
+    }
   };
 
-  const favoriteProducts = [
-    {
-      id: 1,
-      name: "Áo Sơ Mi Trắng",
-      price: 350000,
-      image: "/api/placeholder/200/250",
-    },
-    {
-      id: 2,
-      name: "Quần Jean Nam",
-      price: 450000,
-      image: "/api/placeholder/200/250",
-    },
-  ];
+  useEffect(() => {
+    checkAuth();
 
-  const orderHistory = [
-    {
-      id: "DH001",
-      date: "15/10/2024",
-      total: 800000,
-      status: "Đã Giao",
-    },
-    {
-      id: "DH002",
-      date: "20/10/2024",
-      total: 1200000,
-      status: "Đang Vận Chuyển",
-    },
-  ];
+    const activeQueryParam = searchParams.get("active");
+    if (activeQueryParam) {
+      setActiveTab(activeQueryParam);
+    }
+  }, [searchParams]);
 
-  const addresses = [
-    {
-      id: 1,
-      label: "Nhà Riêng",
-      address: "123 Đường ABC, Phường XYZ, TP Hồ Chí Minh",
-    },
-    {
-      id: 2,
-      label: "Văn Phòng",
-      address: "456 Đường DEF, Quận GHI, TP Hà Nội",
-    },
-  ];
+  const { data: userProfile, isLoading } = useProfileQuery();
 
   const renderContent = () => {
     switch (activeTab) {
       case "profile":
-        return <UserInfo data={userProfile} />;
-      case "favorites":
-        return <WishList data={favoriteProducts} />;
+        return <UserInfo data={userProfile?.data} />;
+      // case "favorites":
+      //   return <WishList data={favoriteProducts} />;
       case "orders":
         return <MyOrders />;
-      //   case "addresses":
-      //     return (
-      //       <div className="bg-white p-6 rounded-lg">
-      //         <h2 className="text-2xl font-bold mb-4 flex items-center">
-      //           <MapPin className="mr-2" /> Địa Chỉ
-      //         </h2>
-      //         {addresses.map((addr) => (
-      //           <div
-      //             key={addr.id}
-      //             className="border p-4 rounded mb-4 flex justify-between items-center"
-      //           >
-      //             <div>
-      //               <h3 className="font-bold">{addr.label}</h3>
-      //               <p>{addr.address}</p>
-      //             </div>
-      //             <div>
-      //               <button className="mr-2 text-blue-500">Sửa</button>
-      //               <button className="text-red-500">Xóa</button>
-      //             </div>
-      //           </div>
-      //         ))}
-      //         <button className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
-      //           Thêm Địa Chỉ Mới
-      //         </button>
-      //       </div>
-      //     );
+      case "change-password":
+        return <ChangePassword />;
+      case "addresses":
+        return <Address />;
+      case "logout":
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user");
+        window.dispatchEvent(new Event("logoutSuccess"));
+        window.dispatchEvent(new Event("storage"));
+        router.push("/");
+        return null;
       default:
-        return <UserInfo data={userProfile} />;
+        return <UserInfo data={userProfile.data} />;
     }
   };
 
@@ -104,8 +77,8 @@ const UserAccountPage = () => {
         <div className="bg-white rounded-lg p-4 h-fit">
           <div className="flex items-center mb-6">
             <div>
-              <h2 className="font-bold">{userProfile.name}</h2>
-              <p className="text-gray-500">ID: 12345</p>
+              <h2 className="font-bold">{userProfile?.data?.name}</h2>
+              {/* <p className="text-gray-500">ID: 12345</p> */}
             </div>
           </div>
           <nav className="space-y-2 *:flex *:gap-2 *:items-center ">
@@ -118,6 +91,14 @@ const UserAccountPage = () => {
               <FaRegUser /> <p>Thông Tin Cá Nhân</p>
             </button>
             <button
+              onClick={() => setActiveTab("change-password")}
+              className={`w-full text-left p-2 rounded ${
+                activeTab === "change-password" ? "bg-blue-100" : ""
+              }`}
+            >
+              <RiLockPasswordLine /> <p>Đổi Mật Khẩu</p>
+            </button>
+            {/* <button
               onClick={() => setActiveTab("favorites")}
               className={`w-full text-left p-2 rounded ${
                 activeTab === "favorites" ? "bg-blue-100" : ""
@@ -125,7 +106,7 @@ const UserAccountPage = () => {
             >
               <BsBox2Heart />
               <p> Sản Phẩm Yêu Thích </p>
-            </button>
+            </button> */}
             <button
               onClick={() => setActiveTab("orders")}
               className={`w-full text-left p-2 rounded ${
@@ -142,9 +123,17 @@ const UserAccountPage = () => {
             >
               <GrMapLocation /> Địa Chỉ
             </button>
+            <button
+              onClick={() => setActiveTab("logout")}
+              className="w-full text-left p-2 rounded bg-red-500 text-white"
+            >
+              Đăng Xuất
+            </button>
           </nav>
         </div>
-        <div className="col-span-3 ">{renderContent()}</div>
+        <div className="col-span-3 ">
+          {isLoading ? <Loading /> : renderContent()}
+        </div>
       </div>
     </div>
   );

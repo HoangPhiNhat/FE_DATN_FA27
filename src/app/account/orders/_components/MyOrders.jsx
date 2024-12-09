@@ -1,10 +1,10 @@
 import { useState } from "react";
 import OrderList from "./OrderList";
 import OrderHistory from "./OrderHistory";
+import useOrderQuery from "@/hooks/useOrder/useOrderQuery";
 
-const MyOrders = ({ orders, historyOrders }) => {
+const MyOrders = () => {
   const [selectedTab, setSelectedTab] = useState("list");
-
   return (
     <>
       <div className="flex space-x-4 border-b border-gray-300">
@@ -33,12 +33,12 @@ const MyOrders = ({ orders, historyOrders }) => {
       <div className="mt-4">
         {selectedTab === "list" && (
           <div className="animate-fade-right">
-            <OrderList orders={orders} />
+            <OrderList />
           </div>
         )}
         {selectedTab === "history" && (
           <div className="animate-fade-left">
-            <OrderHistory orders={historyOrders} />
+            <OrderHistory />
           </div>
         )}
       </div>

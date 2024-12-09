@@ -1,15 +1,13 @@
 "use client";
+import Loading from "@/components/base/Loading/Loading";
 import Banner from "@/components/UI/Banner/Banner";
 import ServiceHighlights from "@/components/UI/Service/ServiceHighlights";
-import { products } from "../../data.example";
-import ProductSlider from "./products/_components/ProductSlider";
-import ProductGrid from "./products/_components/ProductGrid";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
-import Loading from "@/components/base/Loading/Loading";
+import ProductGrid from "./products/_components/ProductGrid";
+import ProductSlider from "./products/_components/ProductSlider";
 
 export default function Home() {
-  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, 10);
-  console.log(data);
+  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, "");
   const features = [
     {
       image: "/images/shipping.webp",
@@ -50,11 +48,11 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <ProductSlider title="New Arrivals" href="/" data={data} />
+              <ProductSlider title="New Arrivals" href="/" data={data.data} />
               <ProductGrid
                 title="Best Sellers"
                 href="/"
-                data={data.slice(0, 4)}
+                data={data.data.slice(0, 4)}
               />
             </>
           )}
