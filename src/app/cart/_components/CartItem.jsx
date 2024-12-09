@@ -6,7 +6,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { CiTrash } from "react-icons/ci";
 
-const CartItem = ({ data, onToggleSelect, isSelected }) => {
+const CartItem = ({ data, onToggleSelect, isSelected, priceChanged }) => {
   const [quantity, setQuantity] = useState(data.quantity);
   const [timer, setTimer] = useState(null);
   const [shouldUpdate, setShouldUpdate] = useState(false);
@@ -150,9 +150,18 @@ const CartItem = ({ data, onToggleSelect, isSelected }) => {
               )}
             </p>
           </div>
+
         </div>
       </div>
-
+      {priceChanged && (
+        <div className="text-red-500 text-sm mb-2 ml-4">
+          Giá sản phẩm đã thay đổi:
+          {priceChanged.newReducedPrice > 0
+            ? ` ${Number(priceChanged.newReducedPrice).toLocaleString()}đ`
+            : ` ${Number(priceChanged.newRegularPrice).toLocaleString()}đ`
+          }
+        </div>
+      )}
       <ConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}

@@ -19,28 +19,29 @@ export const createOnlinePayment = async (data) => {
 
 export const orderHistory = async (page = 1, size = 4) => {
   const response = await Author.get(
-    `/orders/user-id?status=completed&page=${Number(page)}&size=${Number(size)}`
+    `/orders/user-id?status=completed&page=${Number(page)}&size=${Number(size)}&sort=DESC`
   );
   return response.data;
 };
 
 export const getOrder = async (page = 1, size = 4) => {
   const response = await Author.get(
-    `/orders/user-id?page=${Number(page)}&size=${Number(size)}`
+    `/orders/user-id?page=${Number(page)}&size=${Number(size)}&sort=DESC`
   );
   return response.data;
 };
 
-export const cancelOrder = async (id) => {
+export const cancelOrder = async (id, order_status = "Đã huỷ") => {
   try {
     const response = await Author.put(`orders/${id}/order-status`, {
-      order_status: "Đã hủy",
+      order_status: order_status,
     });
     return response.data;
   } catch (error) {
     throw error;
   }
 };
+
 export const createOnlinePaymentVNPay = async (data) => {
   try {
     const response = await Author.post("/vnpay_payment", data);

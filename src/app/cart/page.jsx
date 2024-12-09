@@ -19,6 +19,8 @@ const Cart = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [refetchCart, setRefetchCart] = useState(0);
+  const [changedPriceProducts, setChangedPriceProducts] = useState([]);
+
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     setIsAuthenticated(!!token);
@@ -100,23 +102,32 @@ const Cart = () => {
     );
 
     try {
-
       const attFromAPI = await Promise.all(
         selectedProducts.map(item => getProductAttById(item.product_att_id))
       );
 
       const invalidProducts = selectedProducts.filter(cartItem => {
         const attData = attFromAPI.find(att => att.id === cartItem.product_att_id);
-
         if (!attData) return true;
 
         const isQuantityValid = cartItem.quantity <= attData.quantity;
         const isPriceChanged =
-          Number(cartItem.product_att.regular_price ) !== Number(attData.regular_price) ||
+          Number(cartItem.product_att.regular_price) !== Number(attData.regular_price) ||
           Number(cartItem.product_att.reduced_price) !== Number(attData.reduced_price);
+        console.log(isPriceChanged)
+        console.log(isQuantityValid)
+        if (isPriceChanged) {
+          setChangedPriceProducts(prev => [...prev, {
+            id: cartItem.id,
+            oldRegularPrice: cartItem.product_att.regular_price,
+            oldReducedPrice: cartItem.product_att.reduced_price,
+            newRegularPrice: attData.regular_price,
+            newReducedPrice: attData.reduced_price
+          }]);
+        }
+
         return !isQuantityValid && isPriceChanged;
       });
-
 
       if (invalidProducts.length > 0) {
         await refetch();
@@ -200,6 +211,7 @@ const Cart = () => {
                 data={v}
                 isSelected={selectedItems.includes(v.id)}
                 onToggleSelect={() => handleToggleSelect(v.id)}
+                priceChanged={changedPriceProducts.find(p => p.id === v.id)}
               />
             </div>
           ))}
@@ -237,7 +249,7 @@ const Cart = () => {
                   : "bg-gray-400 text-gray-200 cursor-not-allowed"
               }`}
             >
-              Mua hàng
+              {changedPriceProducts.length > 0 ? "Tiếp tục" : "Mua hàng"}
             </button>
           </div>
         </div>
