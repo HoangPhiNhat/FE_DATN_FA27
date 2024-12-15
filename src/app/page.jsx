@@ -5,9 +5,12 @@ import ServiceHighlights from "@/components/UI/Service/ServiceHighlights";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
 import ProductGrid from "./products/_components/ProductGrid";
 import ProductSlider from "./products/_components/ProductSlider";
+import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
+import VoucherSlider from "@/components/UI/VoucherSlider";
 
 export default function Home() {
-  const { data, isLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, "");
+  const { data: productData, isLoading: productLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, "");
+  const { data: voucherData } = useVoucherQuery();
   const features = [
     {
       image: "/images/shipping.webp",
@@ -30,6 +33,7 @@ export default function Home() {
       description: "Hỗ trợ bạn từ 8h30-24h00",
     },
   ];
+  console.log(voucherData)
   return (
     <div>
       <Banner />
@@ -42,17 +46,19 @@ export default function Home() {
           </div>
         </div>
         <div className="container">
-          {isLoading ? (
+          {voucherData && <VoucherSlider vouchers={voucherData} />}
+
+          {productLoading ? (
             <div className="mt-20">
               <Loading />
             </div>
           ) : (
             <>
-              <ProductSlider title="New Arrivals" href="/" data={data.data} />
+              <ProductSlider title="New Arrivals" href="/" data={productData.data} />
               <ProductGrid
                 title="Best Sellers"
                 href="/"
-                data={data.data.slice(0, 4)}
+                data={productData.data.slice(0, 4)}
               />
             </>
           )}

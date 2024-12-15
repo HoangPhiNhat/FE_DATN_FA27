@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import messageService from "@/components/base/Message/Message";
 import { updateStatusPayment } from "@/services/order";
-import { Suspense } from 'react';
+import { Suspense } from "react";
 
 const OrderConfirmation = () => {
   const router = useRouter();
@@ -25,17 +25,17 @@ const OrderConfirmation = () => {
         }
       } catch (error) {
         console.error(error);
-        messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
+        // messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
         throw error;
       }
     })();
   }, [vnp_TransactionStatus, order_id]);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem("access_token");
     if (!accessToken) {
-      router.push('/sign-in');
-      messageService.error("Không thể truy cập vào trang này");
+      router.push("/sign-in");
+      // messageService.error("Không thể truy cập vào trang này");
       return;
     }
   }, [router]);
@@ -62,32 +62,61 @@ const OrderConfirmation = () => {
     <div className=" flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow">
         <div className="flex justify-center">
-          <div className={`w-16 h-16 ${vnp_TransactionStatus == "00" ? "bg-green-100" : "bg-red-100"} rounded-full flex items-center justify-center`}>
+          <div
+            className={`w-16 h-16 ${
+              vnp_TransactionStatus == "00" ? "bg-green-100" : "bg-red-100"
+            } rounded-full flex items-center justify-center`}
+          >
             {vnp_TransactionStatus == "00" ? (
-              <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+              <svg
+                className="w-8 h-8 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             ) : (
-              <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-8 h-8 text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             )}
           </div>
         </div>
 
         <div className="text-center">
-          <h2 className={`text-2xl font-bold ${vnp_TransactionStatus == "00" ? "text-green-600" : "text-red-600"} mb-2`}>
-            {vnp_TransactionStatus == "00" ? "Đặt hàng thành công!" : "Đặt hàng thất bại!"}
+          <h2
+            className={`text-2xl font-bold ${
+              vnp_TransactionStatus == "00" ? "text-green-600" : "text-red-600"
+            } mb-2`}
+          >
+            {vnp_TransactionStatus == "00"
+              ? "Đặt hàng thành công!"
+              : "Đặt hàng thất bại!"}
           </h2>
 
           {vnp_TransactionStatus == "00" ? (
             <p className="text-gray-600 mb-6">
-              Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng của bạn trong thời gian sớm nhất.
+              Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng của bạn trong
+              thời gian sớm nhất.
             </p>
           ) : (
-            <p className="text-gray-600 mb-6">
-              {getStatus(vnp_ResponseCode)}
-            </p>
+            <p className="text-gray-600 mb-6">{getStatus(vnp_ResponseCode)}</p>
           )}
 
           {/* <div className="border-t border-b border-gray-200 py-4 my-6">

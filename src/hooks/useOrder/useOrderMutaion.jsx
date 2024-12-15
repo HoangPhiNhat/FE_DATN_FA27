@@ -1,4 +1,4 @@
-import { cancelOrder } from "@/services/order";
+import { cancelOrder, confirmOrder, deliverOrder } from "@/services/order";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useOrderMutation = ({ action, onSuccess, onError }) => {
@@ -7,7 +7,12 @@ const useOrderMutation = ({ action, onSuccess, onError }) => {
     mutationFn: async (data) => {
       switch (action) {
         case "CANCEL_ORDER":
+          console.log(data);
           return await cancelOrder(data);
+        case "RECEIVED_ORDER":
+          return await confirmOrder(data.id, data.order_status);
+        case "NOT_RECEIVE_ORDER":
+          return await deliverOrder(data.id, data.order_status);
         default:
           return null;
       }

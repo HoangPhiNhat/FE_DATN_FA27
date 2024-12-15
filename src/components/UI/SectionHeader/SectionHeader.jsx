@@ -6,9 +6,9 @@ const SectionHeader = ({ title, href }) => {
   return (
     <div className="flex justify-between items-center py-8">
       <div className="text-3xl font-bold">{title}</div>
-      <Link href={href} className="flex gap-1 items-center hover:underline hover:text-primary">
+    {href &&   <Link href={href} className="flex gap-1 items-center hover:underline hover:text-primary">
         <p> Xem tất cả</p> <MdKeyboardDoubleArrowRight />
-      </Link>
+      </Link>}
     </div>
   );
 };

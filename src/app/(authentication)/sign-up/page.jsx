@@ -32,7 +32,6 @@ const SignUp = () => {
       phone: "",
       password: "",
       password_confirmation: "",
-      address: "",
     },
   });
 
@@ -133,15 +132,6 @@ const SignUp = () => {
                     required: "Nhập lại mật khẩu",
                     validate: (value) =>
                       value === password || "Mật khẩu không khớp",
-                  })}
-                />
-
-                <Input
-                  label="Địa chỉ"
-                  placeholder="road-001, house-115, example area"
-                  error={errors.address?.message}
-                  {...register("address", {
-                    required: "Nhập địa chỉ của bạn",
                   })}
                 />
 

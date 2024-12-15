@@ -13,6 +13,21 @@ const ProductItem = ({ product }) => {
     setSelectedVariantIndex(index);
   };
 
+  const handleProductClick = () => {
+    const viewedProducts = JSON.parse(localStorage.getItem('viewedProducts') || '[]');
+
+    const existingIndex = viewedProducts.findIndex(p => p.id === product.id);
+    if (existingIndex !== -1) {
+      viewedProducts.splice(existingIndex, 1);
+    }
+
+    viewedProducts.unshift(product);
+
+    const limitedProducts = viewedProducts.slice(0, 8);
+
+    localStorage.setItem('viewedProducts', JSON.stringify(limitedProducts));
+  };
+
   return (
     <div
       className="relative border flex flex-col bg-white rounded-lg"
@@ -31,7 +46,7 @@ const ProductItem = ({ product }) => {
             %
           </div>
         ) : null}
-        <Link href={`products/${product.slug}`}>
+        <Link href={`products/${product.slug}`} onClick={handleProductClick}>
           <Image
             src={product.thumbnail}
             width={334}

@@ -17,9 +17,38 @@ export const createOnlinePayment = async (data) => {
   }
 };
 
-export const orderHistory = async (page = 1, size = 4) => {
+export const getHistoryOrder = async (page = 1, size = 4) => {
   const response = await Author.get(
-    `/orders/user-id?status=completed&page=${Number(page)}&size=${Number(size)}&sort=DESC`
+    `/orders/user-id?status=history&page=${Number(page)}&size=${Number(
+      size
+    )}&sort=DESC`
+  );
+  return response.data;
+};
+
+export const getDeliveryOrder = async (page = 1, size = 4) => {
+  const response = await Author.get(
+    `/orders/user-id?status=delivery&page=${Number(page)}&size=${Number(
+      size
+    )}&sort=DESC`
+  );
+  return response.data;
+};
+
+export const getDeliveredOrder = async (page = 1, size = 4) => {
+  const response = await Author.get(
+    `/orders/user-id?status=delivered&page=${Number(page)}&size=${Number(
+      size
+    )}&sort=DESC`
+  );
+  return response.data;
+};
+
+export const getConfirmOrder = async (page = 1, size = 4) => {
+  const response = await Author.get(
+    `/orders/user-id?status=confirm&page=${Number(page)}&size=${Number(
+      size
+    )}&sort=DESC`
   );
   return response.data;
 };
@@ -31,10 +60,23 @@ export const getOrder = async (page = 1, size = 4) => {
   return response.data;
 };
 
-export const cancelOrder = async (id, order_status = "Đã huỷ") => {
+export const statusOrder = async (data) => {
   try {
-    const response = await Author.put(`orders/${id}/order-status`, {
-      order_status: order_status,
+    const response = await Author.put(`orders/${data.id}/order-status`, {
+      order_status: data.order_status,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const cancelOrder = async (data) => {
+  try {
+    const status = "Đã huỷ";
+    const response = await Author.put(`orders/${data.id}/order-status`, {
+      order_status: status,
+      note: data.note,
     });
     return response.data;
   } catch (error) {
@@ -57,6 +99,28 @@ export const updateStatusPayment = async (orderId, statusPayment) => {
       payment_status: statusPayment,
     });
     return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const confirmOrder = async (orderId, status) => {
+  try {
+    const response = await Author.put(`orders/${orderId}/order-status`, {
+      order_status: status
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deliverOrder = async (orderId, status) => {
+  try {
+    const response = await Author.put(`orders/${orderId}/order-status`, {
+      order_status: status
+    });
+    return response.data;
   } catch (error) {
     throw error;
   }

@@ -17,6 +17,8 @@ import useCartQuery from "@/hooks/useCart/useCartQuery";
 import Image from "next/image";
 import { getProductAttById } from "@/services/product";
 import Link from "next/link";
+import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
+import useVoucherMutation from "@/hooks/useVoucher/useVoucherMutation";
 
 const Checkout = () => {
   const router = useRouter();
@@ -32,8 +34,11 @@ const Checkout = () => {
     districtName: "",
     wardName: "",
   });
+  const [cart, setCart] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cod");
-  const { data: cartData, refetch: refetchCart } = useCartQuery("CART_DATA");
+  const { data: cartData, refetch: refetchCart } = useCartQuery(cart);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
 
   const {
     register,
@@ -43,6 +48,21 @@ const Checkout = () => {
     watch,
   } = useForm();
   const { data: addresses, isLoading } = useAddressQuery("address");
+  const { data: voucherData } = useVoucherQuery();
+  const { mutate: applyVoucherMutation } = useVoucherMutation({
+    onSuccess: (data) => {
+      setDiscountAmount(Number(data.discountPrice));
+      messageService.success("Áp dụng voucher thành công!");
+    },
+    onError: (error) => {
+      setDiscountAmount(0);
+      setSelectedVoucher(null);
+      messageService.error(
+        error?.response?.data?.message || "Không thể áp dụng voucher"
+      );
+    },
+  });
+
   useEffect(() => {
     const validateAndFetchProducts = async () => {
       try {
@@ -186,18 +206,25 @@ const Checkout = () => {
       }));
 
       const payload = {
-        total_amount: Number(totalAmount) + Number(shippingFee),
+        total_amount:
+          discountAmount > 0
+            ? totalAmount + Number(shippingFee) - discountAmount
+            : Number(totalAmount) + Number(shippingFee),
         delivery_fee: Number(shippingFee),
         shipping_address_id: selectedAddressId,
         note: data.note || "",
         order_details: orderDetails,
         total_product_amount: Number(totalAmount),
+        voucher_code: selectedVoucher?.voucher_code
+          ? selectedVoucher?.voucher_code
+          : "",
       };
 
       if (paymentMethod === "cod") {
         const response = await createOrder(payload);
         if (response.message == "Đặt hàng thành công") {
           messageService.success("Đặt hàng thành công");
+          setCart(cart + 1);
           refetchCart();
           localStorage.removeItem("checkoutItems");
           router.push("/order-confirmation");
@@ -364,6 +391,20 @@ const Checkout = () => {
     }
   }, [selectedAddress]);
 
+  const handleApplyVoucher = (voucherId) => {
+    const voucher = voucherData?.find((v) => v.id === Number(voucherId));
+    setSelectedVoucher(voucher);
+
+    if (voucher) {
+      applyVoucherMutation({
+        voucher_code: voucher.voucher_code,
+        total: Number(totalAmount) + Number(shippingFee),
+      });
+    } else {
+      setDiscountAmount(0);
+    }
+  };
+
   if (isLoading) return <Loading />;
 
   return (
@@ -408,35 +449,17 @@ const Checkout = () => {
                     )}
                   </button>
                 </div>
-                <Input
-                  {...register("email", {
-                    required: "Vui lòng nhập email",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email không hợp lệ",
-                    },
-                  })}
-                  error={errors.email?.message}
-                  placeholder="Email"
-                  className="w-full"
-                />
-                <Input
-                  {...register("address")}
-                  error={errors.address?.message}
-                  placeholder="Địa chỉ"
-                  className="w-full"
-                />
                 <textarea
                   {...register("note")}
                   placeholder="Ghi chú"
                   className="w-full border rounded-lg p-2"
                 ></textarea>
               </div>
-              <div className="mt-8">
+              <div className="mt-8 w-full">
                 <p className="text-xl font-semibold dark:text-white leading-5 text-gray-800">
                   Phương thức thanh toán
                 </p>
-                <div className="mt-4 space-y-4">
+                <div className="mt-4 space-y-4 w-full">
                   <div
                     className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:border-blue-500"
                     onClick={() => setPaymentMethod("cod")}
@@ -589,6 +612,41 @@ const Checkout = () => {
                 })}
               </div>
 
+              <div className="flex justify-between w-full items-center">
+                <div className="w-full">
+                  <p className="text-lg dark:text-gray-300 mb-2">Mã giảm giá</p>
+                  <div className="flex gap-2">
+                    <select
+                      className="w-full p-2 border rounded-lg"
+                      onChange={(e) => handleApplyVoucher(e.target.value)}
+                      value={selectedVoucher?.id || ""}
+                    >
+                      <option value="">Chọn voucher</option>
+                      {voucherData?.map((voucher) => (
+                        <option key={voucher.id} value={voucher.id}>
+                          {voucher.name} - Giảm{" "}
+                          {voucher.discount_type === "percentage"
+                            ? `${voucher.discount_value}%`
+                            : `${new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(voucher.discount_value)}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {selectedVoucher && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      Giảm tối đa{" "}
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(selectedVoucher.min_order_value)}
+                    </p>
+                  )}
+                </div>
+              </div>
+
               <div className="flex mt-7 flex-col items-end w-full space-y-6">
                 <div className="flex justify-between w-full items-center">
                   <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
@@ -623,6 +681,25 @@ const Checkout = () => {
                     }).format(shippingFee)}
                   </p>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between w-full items-center">
+                    <p className="text-lg dark:text-gray-300 leading-4 text-gray-600">
+                      Giảm giá
+                      {selectedVoucher && (
+                        <span className="text-sm text-gray-500 ml-2">
+                          (Voucher: {selectedVoucher.name})
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-lg dark:text-gray-300 font-semibold leading-4 text-red-600">
+                      -{" "}
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(discountAmount)}
+                    </p>
+                  </div>
+                )}
                 <div className="flex justify-between w-full items-center border-t pt-6">
                   <p className="text-xl dark:text-white font-semibold leading-4 text-gray-800">
                     Tổng thanh toán
@@ -631,7 +708,9 @@ const Checkout = () => {
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",
                       currency: "VND",
-                    }).format(totalAmount + Number(shippingFee))}
+                    }).format(
+                      totalAmount + Number(shippingFee) - discountAmount
+                    )}
                   </p>
                 </div>
               </div>

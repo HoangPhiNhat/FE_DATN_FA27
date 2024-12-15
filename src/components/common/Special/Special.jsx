@@ -48,7 +48,7 @@ const Special = () => {
       setCartCount(0);
     }
   }, [cartData]);
-
+  console.log(cartData)
   return (
     <div className="fixed top-52 right-2 z-20 hidden md:flex flex-col gap-2">
       <Link href={profileLink}>

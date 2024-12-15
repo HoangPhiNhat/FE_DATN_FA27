@@ -5,8 +5,9 @@ import useOrderQuery from "@/hooks/useOrder/useOrderQuery";
 import React, { useState } from "react";
 import Image from "next/image";
 import Pagination from "@/components/base/Pagination";
+import { createOnlinePaymentVNPay } from "@/services/order";
 
-const OrderList = () => {
+const ConfirmOrder = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 4;
   const [cancelReason, setCancelReason] = useState("");
@@ -14,11 +15,10 @@ const OrderList = () => {
   const [currentOrderId, setCurrentOrderId] = useState(null);
 
   const { data: orderData, refetch } = useOrderQuery(
-    "ORDER",
+    "CONFIRM_ORDER",
     currentPage,
     pageSize
   );
-  console.log(currentPage)
   const orders = orderData?.data;
   const totalPages = Math.ceil(orderData?.total / pageSize);
 
@@ -43,8 +43,12 @@ const OrderList = () => {
   };
 
   const confirmCancelOrder = () => {
-
-    cancelOrder(currentOrderId, cancelReason)
+    const payload = {
+      id: currentOrderId,
+      order_status: "Đã hủy",
+      note: cancelReason,
+    };
+    cancelOrder(payload)
       .then(() => {
         messageService.success("Đơn hàng đã hủy thành công");
         refetch();
@@ -56,7 +60,17 @@ const OrderList = () => {
         messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
       });
   };
+  const handlePaymentTry = async (order_id, total) => {
+    const data = {
+      order_id: order_id,
+      total_amount: total,
+    };
 
+    const resOnlineVnPay = await createOnlinePaymentVNPay(data);
+    if ((resOnlineVnPay.message = "success" && resOnlineVnPay.data)) {
+      window.location.href = resOnlineVnPay.data;
+    }
+  };
   return (
     <div>
       <div className="bg-white p-6 rounded-lg">
@@ -88,15 +102,28 @@ const OrderList = () => {
                           Hủy
                         </span>
                       )}
-                      <span
-                        className={`px-3 py-1 rounded ${
-                          order.order_status === "Đã Giao"
-                            ? "bg-green-200"
-                            : "bg-yellow-200"
-                        }`}
-                      >
-                        {order.order_status}
-                      </span>
+                      {order.payment_status === "Thanh toán thất bại" ? (
+                        <>
+                          <button
+                            onClick={() =>
+                              handlePaymentTry(order.id, order.total_amount)
+                            }
+                            className="px-3 py-1 bg-red-100 text-red-800  font-medium rounded dark:bg-red-900 dark:text-red-300"
+                          >
+                            Thanh toán lại
+                          </button>
+                        </>
+                      ) : (
+                        <span
+                          className={`px-3 py-1 rounded ${
+                            order.order_status === "Đã Giao"
+                              ? "bg-green-200"
+                              : "bg-yellow-200"
+                          }`}
+                        >
+                          {order.order_status}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -144,8 +171,8 @@ const OrderList = () => {
                         {parseInt(order.delivery_fee).toLocaleString()}đ
                       </p>
                       <p className="font-bold text-lg">
-                        Tổng cộng:{" "}
-                        {(Number(order.total_product_amount) + Number(order.delivery_fee)).toLocaleString()}đ
+                        Tổng cộng: {Number(order.total_amount).toLocaleString()}
+                        đ
                       </p>
                     </div>
                   </div>
@@ -161,19 +188,19 @@ const OrderList = () => {
                       className="border p-2 w-full"
                     />
                     <div className="flex justify-end gap-2">
-                  <button
-                      onClick={() => setIsCanceling(false)}
-                      className="mt-2 text-right text-black border border-gray-300 px-4 py-2 rounded"
-                    >
-                      Hủy
-                    </button>
-                    <button
-                      onClick={confirmCancelOrder}
-                      className="mt-2 text-right bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                      Xác nhận
-                    </button>
-                  </div>
+                      <button
+                        onClick={() => setIsCanceling(false)}
+                        className="mt-2 text-right text-black border border-gray-300 px-4 py-2 rounded"
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        onClick={confirmCancelOrder}
+                        className="mt-2 text-right bg-blue-500 text-white px-4 py-2 rounded"
+                      >
+                        Xác nhận
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -193,4 +220,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default ConfirmOrder;

@@ -6,55 +6,44 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Pagination from "@/components/base/Pagination";
 
-const OrderList = () => {
+const DeliveredOrder = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 4;
   const [cancelReason, setCancelReason] = useState("");
   const [isCanceling, setIsCanceling] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState(null);
-
+  const [action, setAction] = useState("");
   const { data: orderData, refetch } = useOrderQuery(
-    "ORDER",
+    "DELIVERED_ORDER",
     currentPage,
     pageSize
   );
-  console.log(currentPage)
   const orders = orderData?.data;
   const totalPages = Math.ceil(orderData?.total / pageSize);
-
-  const { mutate: cancelOrder } = useOrderMutation({
-    action: "CANCEL_ORDER",
-    onSuccess: () => {
-      messageService.success("Đơn hàng đã hủy thành công");
-      refetch();
-    },
-    onError: (error) => {
-      messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
-    },
-  });
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const handleCancelOrder = (orderId) => {
-    setIsCanceling(true);
-    setCurrentOrderId(orderId);
+  const { mutate } = useOrderMutation({
+    action: action,
+    onSuccess: () => {
+      messageService.success("Cập nhật trạng thái giao hàng thành công");
+      refetch();
+    },
+    onError: (error) => {
+      messageService.error("Có lỗi xảy ra");
+    },
+  });
+
+  const handleReceiveOrder = (orderId) => {
+    setAction("RECEIVED_ORDER");
+    mutate({ id: orderId, order_status: "Đã nhận hàng" });
   };
 
-  const confirmCancelOrder = () => {
-
-    cancelOrder(currentOrderId, cancelReason)
-      .then(() => {
-        messageService.success("Đơn hàng đã hủy thành công");
-        refetch();
-        setCancelReason("");
-        setIsCanceling(false);
-        setCurrentOrderId(null);
-      })
-      .catch((error) => {
-        messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
-      });
+  const handleNotReceiveOrder = (orderId) => {
+    setAction("NOT_RECEIVE_ORDER");
+    mutate({ id: orderId, order_status: "Chưa nhận hàng" });
   };
 
   return (
@@ -80,23 +69,18 @@ const OrderList = () => {
                       <p>Ngày đặt: {order.created_at}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      {order.order_status !== "Đang giao" && (
-                        <span
-                          className="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white"
-                          onClick={() => handleCancelOrder(order.id)}
-                        >
-                          Hủy
-                        </span>
-                      )}
-                      <span
-                        className={`px-3 py-1 rounded ${
-                          order.order_status === "Đã Giao"
-                            ? "bg-green-200"
-                            : "bg-yellow-200"
-                        }`}
+                      <button
+                        className="cursor-pointer px-3 py-1 rounded-md bg-yellow-500 text-white"
+                        onClick={() => handleNotReceiveOrder(order.id)}
                       >
-                        {order.order_status}
-                      </span>
+                        Chưa nhận hàng
+                      </button>
+                      <button
+                        className="cursor-pointer px-3 py-1 rounded-md bg-green-500 text-white"
+                        onClick={() => handleReceiveOrder(order.id)}
+                      >
+                        Đã nhận hàng
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -145,37 +129,14 @@ const OrderList = () => {
                       </p>
                       <p className="font-bold text-lg">
                         Tổng cộng:{" "}
-                        {(Number(order.total_product_amount) + Number(order.delivery_fee)).toLocaleString()}đ
+                       {(
+                          Number(order.total_amount)
+                        ).toLocaleString()}
+                        đ
                       </p>
                     </div>
                   </div>
                 </div>
-
-                {isCanceling && currentOrderId === order.id && (
-                  <div className="mt-2  w-full p-4 ">
-                    <textarea
-                      rows="3"
-                      placeholder="Nhập lý do hủy..."
-                      value={cancelReason}
-                      onChange={(e) => setCancelReason(e.target.value)}
-                      className="border p-2 w-full"
-                    />
-                    <div className="flex justify-end gap-2">
-                  <button
-                      onClick={() => setIsCanceling(false)}
-                      className="mt-2 text-right text-black border border-gray-300 px-4 py-2 rounded"
-                    >
-                      Hủy
-                    </button>
-                    <button
-                      onClick={confirmCancelOrder}
-                      className="mt-2 text-right bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                      Xác nhận
-                    </button>
-                  </div>
-                  </div>
-                )}
               </div>
             ))}
 
@@ -193,4 +154,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default DeliveredOrder;

@@ -9,7 +9,7 @@ const OrderHistory = () => {
   const pageSize = 4;
 
   const { data: orderData } = useOrderQuery(
-    "ORDER_HISTORY",
+    "HISTORY_ORDER",
     currentPage,
     pageSize
   );
