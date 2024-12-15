@@ -18,7 +18,7 @@ const OrderList = () => {
     currentPage,
     pageSize
   );
-  console.log(currentPage)
+  console.log(currentPage);
   const orders = orderData?.data;
   const totalPages = Math.ceil(orderData?.total / pageSize);
 
@@ -43,7 +43,6 @@ const OrderList = () => {
   };
 
   const confirmCancelOrder = () => {
-
     cancelOrder(currentOrderId, cancelReason)
       .then(() => {
         messageService.success("Đơn hàng đã hủy thành công");
@@ -108,13 +107,13 @@ const OrderList = () => {
                       className="flex items-center py-3 border-b last:border-b-0"
                     >
                       <div className="w-20 h-20">
-                        {/* <Image
+                        <Image
                           width={100}
                           height={100}
                           src={item.thumbnail}
                           alt={item.product_name}
                           className="w-full h-full object-cover rounded"
-                        /> */}
+                        />
                       </div>
                       <div className="ml-4 flex-grow">
                         <h3 className="font-medium">{item.product_name}</h3>
@@ -145,7 +144,11 @@ const OrderList = () => {
                       </p>
                       <p className="font-bold text-lg">
                         Tổng cộng:{" "}
-                        {(Number(order.total_product_amount) + Number(order.delivery_fee)).toLocaleString()}đ
+                        {(
+                          Number(order.total_product_amount) +
+                          Number(order.delivery_fee)
+                        ).toLocaleString()}
+                        đ
                       </p>
                     </div>
                   </div>
@@ -161,19 +164,19 @@ const OrderList = () => {
                       className="border p-2 w-full"
                     />
                     <div className="flex justify-end gap-2">
-                  <button
-                      onClick={() => setIsCanceling(false)}
-                      className="mt-2 text-right text-black border border-gray-300 px-4 py-2 rounded"
-                    >
-                      Hủy
-                    </button>
-                    <button
-                      onClick={confirmCancelOrder}
-                      className="mt-2 text-right bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                      Xác nhận
-                    </button>
-                  </div>
+                      <button
+                        onClick={() => setIsCanceling(false)}
+                        className="mt-2 text-right text-black border border-gray-300 px-4 py-2 rounded"
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        onClick={confirmCancelOrder}
+                        className="mt-2 text-right bg-blue-500 text-white px-4 py-2 rounded"
+                      >
+                        Xác nhận
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

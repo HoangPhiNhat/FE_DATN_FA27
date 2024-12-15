@@ -135,13 +135,13 @@ const ConfirmOrder = () => {
                       className="flex items-center py-3 border-b last:border-b-0"
                     >
                       <div className="w-20 h-20">
-                        {/* <Image
+                        <Image
                           width={100}
                           height={100}
                           src={item.thumbnail}
                           alt={item.product_name}
                           className="w-full h-full object-cover rounded"
-                        /> */}
+                        />
                       </div>
                       <div className="ml-4 flex-grow">
                         <h3 className="font-medium">{item.product_name}</h3>

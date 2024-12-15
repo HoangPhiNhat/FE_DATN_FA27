@@ -36,7 +36,8 @@ const Footer = () => {
           </h3>
           <div className="flex flex-col gap-6">
             <p className="text-base w-full xl:w-[80%]">
-              Chúng tôi tự hào là điểm đến thời trang hàng đầu, mang đến những sản phẩm chất lượng cao với giá cả hợp lý.
+              Chúng tôi tự hào là điểm đến thời trang hàng đầu, mang đến những
+              sản phẩm chất lượng cao với giá cả hợp lý.
             </p>
           </div>
         </div>
@@ -50,13 +51,11 @@ const Footer = () => {
           </div>
         </div>
         <div>
-          <h3 className="text-xl font-bodyFont font-semibold mb-6">
-            Liên hệ
-          </h3>
+          <h3 className="text-xl font-bodyFont font-semibold mb-6">Liên hệ</h3>
           <div className="flex flex-col gap-2">
             <p>Hotline: 1900 xxxx</p>
             <p>Email: support@novathreads.com</p>
-            <p>Địa chỉ: 123 ABC, Quận X, TP.HCM</p>
+            <p>Địa chỉ: Toà nhà FPT Polytechnic, Quận Trịnh Văn Bô, TP.HN</p>
           </div>
         </div>
         <div className="col-span-2 flex flex-col items-center w-full px-4">

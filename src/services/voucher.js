@@ -6,6 +6,8 @@ const res = await UnAuthor.get("vouchers/client")
 return res
 }
 
+
+
 export const applyVoucher = async (data) => {
     const res = await Author.post("vouchers/apply", {
         voucher_code: data.voucher_code,

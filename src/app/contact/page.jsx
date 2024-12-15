@@ -1,9 +1,11 @@
-import React from 'react';
+import React from "react";
 
 const ContactPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-center mb-12">Liên Hệ Với Chúng Tôi</h1>
+      <h1 className="text-4xl font-bold text-center mb-12">
+        Liên Hệ Với Chúng Tôi
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Thông tin liên hệ */}
@@ -84,13 +86,19 @@ const ContactPage = () => {
         </div>
       </div>
 
-      {/* Bản đồ */}
       <div className="mt-16">
         <h2 className="text-2xl font-semibold mb-6">Vị Trí Của Chúng Tôi</h2>
         <div className="w-full h-96 bg-gray-200 rounded-lg">
-          {/* Thêm Google Maps hoặc bản đồ khác vào đây */}
           <div className="w-full h-full flex items-center justify-center">
-            <p className="text-gray-500">Nhúng bản đồ Google Maps vào đây</p>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59581.82289115897!2d105.67104414863282!3d21.038129800000032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e0!3m2!1sen!2s!4v1734278154786!5m2!1sen!2s"
+              width="100%"
+              height="350"
+              // style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
       </div>

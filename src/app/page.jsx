@@ -9,7 +9,12 @@ import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
 import VoucherSlider from "@/components/UI/VoucherSlider";
 
 export default function Home() {
-  const { data: productData, isLoading: productLoading } = useProductQuery("GET_ALL_PRODUCT", null, 1, "");
+  const { data: productData, isLoading: productLoading } = useProductQuery(
+    "GET_ALL_PRODUCT",
+    null,
+    1,
+    ""
+  );
   const { data: voucherData } = useVoucherQuery();
   const features = [
     {
@@ -33,7 +38,7 @@ export default function Home() {
       description: "Hỗ trợ bạn từ 8h30-24h00",
     },
   ];
-  console.log(voucherData)
+  console.log(voucherData);
   return (
     <div>
       <Banner />
@@ -54,10 +59,14 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <ProductSlider title="New Arrivals" href="/" data={productData.data} />
-              <ProductGrid
-                title="Best Sellers"
+              <ProductSlider
+                title="Sản phẩm"
                 href="/"
+                data={productData.data}
+              />
+              <ProductGrid
+                title="Sản phẩm bán chạy chạy nhất"
+                // href="/"
                 data={productData.data.slice(0, 4)}
               />
             </>
