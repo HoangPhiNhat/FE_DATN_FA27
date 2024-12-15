@@ -54,8 +54,8 @@ const ProductDetail = () => {
   }, [data]);
 
   useEffect(() => {
-    const products = JSON.parse(localStorage.getItem('viewedProducts') || '[]');
-    const filteredProducts = products.filter(p => p.id !== data?.id);
+    const products = JSON.parse(localStorage.getItem("viewedProducts") || "[]");
+    const filteredProducts = products.filter((p) => p.id !== data?.id);
     setViewedProducts(filteredProducts);
   }, [data]);
 
@@ -119,6 +119,7 @@ const ProductDetail = () => {
         <ProductSlider
           title="Sản phẩm đã xem"
           data={viewedProducts}
+          hrefEdit={true}
         />
       );
     }
@@ -127,6 +128,7 @@ const ProductDetail = () => {
       <ProductGrid
         title="Sản phẩm đã xem"
         data={viewedProducts}
+        hrefEdit={true}
       />
     );
   };
@@ -288,9 +290,7 @@ const ProductDetail = () => {
               </button>
             </div>
           </div>
-          <div className="mt-12">
-            {renderViewedProducts()}
-          </div>
+          <div className="mt-12">{renderViewedProducts()}</div>
         </>
       ) : (
         "Sản phẩm không tồn tại"

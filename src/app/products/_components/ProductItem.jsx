@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FaRegEye } from "react-icons/fa";
 import { BsFillCartPlusFill } from "react-icons/bs";
 
-const ProductItem = ({ product }) => {
+const ProductItem = ({ product, hrefEdit }) => {
   // const [isHovered, setIsHovered] = useState(false);
   // const [isQuickView, setIsQuickView] = useState(false);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
@@ -14,9 +14,11 @@ const ProductItem = ({ product }) => {
   };
 
   const handleProductClick = () => {
-    const viewedProducts = JSON.parse(localStorage.getItem('viewedProducts') || '[]');
+    const viewedProducts = JSON.parse(
+      localStorage.getItem("viewedProducts") || "[]"
+    );
 
-    const existingIndex = viewedProducts.findIndex(p => p.id === product.id);
+    const existingIndex = viewedProducts.findIndex((p) => p.id === product.id);
     if (existingIndex !== -1) {
       viewedProducts.splice(existingIndex, 1);
     }
@@ -25,7 +27,7 @@ const ProductItem = ({ product }) => {
 
     const limitedProducts = viewedProducts.slice(0, 8);
 
-    localStorage.setItem('viewedProducts', JSON.stringify(limitedProducts));
+    localStorage.setItem("viewedProducts", JSON.stringify(limitedProducts));
   };
 
   return (
@@ -46,7 +48,10 @@ const ProductItem = ({ product }) => {
             %
           </div>
         ) : null}
-        <Link href={`products/${product.slug}`} onClick={handleProductClick}>
+        <Link
+          href={hrefEdit ? `${product.slug}` : `products/${product.slug}`}
+          onClick={handleProductClick}
+        >
           <Image
             src={product.thumbnail}
             width={334}
@@ -87,7 +92,7 @@ const ProductItem = ({ product }) => {
       <div className="  p-2">
         <div className="mt-2">
           <Link
-            href={`products/${product.slug}`}
+            href={hrefEdit ? `${product.slug}` : `products/${product.slug}`}
             className="font-semibold text-xl"
           >
             {product.name}
