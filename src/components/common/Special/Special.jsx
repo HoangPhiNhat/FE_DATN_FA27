@@ -8,8 +8,8 @@ import useCartQuery from "@/hooks/useCart/useCartQuery";
 const Special = () => {
   const [userName, setUserName] = useState("Đăng nhập");
   const [profileLink, setProfileLink] = useState("/sign-in");
-  const { data: cartData, refetch: refetchCart } = useCartQuery();
   const [cartCount, setCartCount] = useState(0);
+  const { data: cartData, refetch: refetchCart } = useCartQuery(cartCount);
 
   const handleStorageChange = useCallback(() => {
     const user = localStorage.getItem("user");
@@ -27,12 +27,10 @@ const Special = () => {
 
   useEffect(() => {
     handleStorageChange();
-
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("loginSuccess", handleStorageChange);
     window.addEventListener("checkoutSuccess", handleStorageChange);
     window.addEventListener("checkoutItems", handleStorageChange);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("loginSuccess", handleStorageChange);
@@ -40,15 +38,6 @@ const Special = () => {
       window.removeEventListener("checkoutItems", handleStorageChange);
     };
   }, [handleStorageChange, refetchCart]);
-
-  useEffect(() => {
-    if (cartData) {
-      setCartCount(cartData.length);
-    } else {
-      setCartCount(0);
-    }
-  }, [cartData]);
-  console.log(cartData)
   return (
     <div className="fixed top-52 right-2 z-20 hidden md:flex flex-col gap-2">
       <Link href={profileLink}>
@@ -69,9 +58,9 @@ const Special = () => {
             <RiShoppingCart2Fill className="text-2xl -translate-x-3 group-hover:translate-x-12 transition-transform duration-200" />
           </div>
           <p className="text-xs font-semibold font-titleFont">Giỏ hàng</p>
-          {cartCount > 0 && (
+          {cartData?.length > 0 && (
             <p className="absolute top-1 right-2 bg-primary text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-semibold">
-              {cartCount}
+              {cartData?.length}
             </p>
           )}
         </div>

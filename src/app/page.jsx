@@ -94,7 +94,11 @@ export default function Home() {
               {Object.values(groupedProducts).map(
                 ({ category, products }) =>
                   products.length > 0 && (
-                    <ProductGrid title={`${category.name}`} data={products} />
+                    <ProductGrid
+                      key={category.id}
+                      title={`${category.name}`}
+                      data={products}
+                    />
                   )
               )}
             </>

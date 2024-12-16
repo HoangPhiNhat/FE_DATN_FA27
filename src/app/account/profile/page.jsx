@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; // Import useSearchParams
 import { BsBox2, BsBox2Heart } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
@@ -26,13 +26,13 @@ const UserAccountContent = () => {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("profile");
 
-  const checkAuth = () => {
+  const checkAuth = useCallback(() => {
     const token = localStorage.getItem("access_token");
     if (!token) {
       // messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
       router.push("/sign-in");
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     checkAuth();
