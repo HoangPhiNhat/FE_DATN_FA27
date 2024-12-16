@@ -9,10 +9,17 @@ import messageService from "@/components/base/Message/Message";
 import Loading from "@/components/base/Loading/Loading";
 import { usePathname } from "next/navigation";
 
-const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
+const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
   const [isAddingNew, setIsAddingNew] = useState(isAdding);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [addressDetails, setAddressDetails] = useState([]);
+  const [districtMap, setDistrictMap] = useState({});
+  const [wardMap, setWardMap] = useState({});
+  const pathname = usePathname();
+  const isCheckoutPage = pathname?.includes("checkout");
   const { mutate: addNewAddress, isLoading: isAddingNewAddress } =
     useAddressMutation({
       action: "CREATE",
@@ -37,7 +44,19 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
       messageService.error("Cập nhật địa chỉ thất bại");
     },
   });
-  const { data: addresses, isLoading } = useAddressQuery();
+
+  const { data: addresses, isLoading, refetch } = useAddressQuery();
+  const { mutate: removeAddress } = useAddressMutation({
+    action: "DELETE",
+    onSuccess: () => {
+      refetch();
+      messageService.success("Xoá địa chỉ thành công");
+    },
+    onError: () => {
+      messageService.error("Đã có lỗi xảy ra vui lòng thử lại");
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -56,18 +75,7 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
       is_default: false,
     },
   });
-
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
-  const [addressDetails, setAddressDetails] = useState([]);
-
   const selectedDistrict = watch("district");
-
-  const [districtMap, setDistrictMap] = useState({});
-  const [wardMap, setWardMap] = useState({});
-
-  const pathname = usePathname();
-  const isCheckoutPage = pathname?.includes('checkout');
 
   useEffect(() => {
     const fetchDistricts = async () => {
@@ -127,7 +135,6 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
       fetchAddressDetails();
     }
   }, [addresses]);
-
   const handleEdit = (address) => {
     setSelectedAddress(address);
     setIsEditing(true);
@@ -173,7 +180,7 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
   }
 
   return (
-    <div className={`${!isCheckoutPage ? 'mt-4 max-w-4xl mx-auto p-4 ' : ''}`}>
+    <div className={`${!isCheckoutPage ? "mt-4 max-w-4xl mx-auto p-4 " : ""}`}>
       {!isCheckoutPage && (
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-800">
@@ -196,14 +203,14 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
         ) : (
           !isCheckoutPage && (
             <div className="text-center py-8">
-            <p className="text-gray-500 mb-4">Bạn chưa có địa chỉ nào</p>
-            <button
-              onClick={() => setIsAddingNew(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Thêm địa chỉ mới
-            </button>
-          </div>
+              <p className="text-gray-500 mb-4">Bạn chưa có địa chỉ nào</p>
+              <button
+                onClick={() => setIsAddingNew(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Thêm địa chỉ mới
+              </button>
+            </div>
           )
         )
       ) : (
@@ -219,7 +226,7 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
                     <span className="font-medium">
                       {address.recipient_name}
                     </span>
-                    {address.is_default && (
+                    {address.is_default === 0 && (
                       <span className="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded">
                         Mặc định
                       </span>
@@ -251,7 +258,7 @@ const Address = ({ isAdding = false, isCheckout = false , onClose}) => {
         </div>
       )}
 
-      {(isAddingNew || isEditing)  && (
+      {(isAddingNew || isEditing) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-lg">
             <h3 className="text-xl font-semibold mb-4">

@@ -49,7 +49,7 @@ const Product = () => {
     sort
   );
   if (isLoading) return <Loading />;
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div>Error: {error?.response?.data?.message}</div>;
   const handlePageChange = (newPage) => {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -74,12 +74,18 @@ const Product = () => {
             sort={sort}
             setSort={setSort}
           />
-          <ProductGrid data={products.data} />
-          <Pagination
-            currentPage={page}
-            totalPages={products?.last_page}
-            onPageChange={handlePageChange}
-          />
+          {products?.data?.length > 0 ? (
+            <>
+              <ProductGrid data={products.data} />
+              <Pagination
+                currentPage={page}
+                totalPages={products?.last_page}
+                onPageChange={handlePageChange}
+              />
+            </>
+          ) : (
+            <>Danh mục này chưa có sản phẩm</>
+          )}
         </div>
       </div>
     </div>

@@ -14,13 +14,18 @@ const CartItem = ({ data, onToggleSelect, isSelected, priceChanged }) => {
 
   const { mutate: updateQuantity, isLoading } = useCartMutation({
     action: "UPDATE",
-    onSuccess: () => {
-      messageService.success("Cập nhật số lượng thành công");
+    onSuccess: (data) => {
+      console.log(data);
+      if (data?.status === 200) {
+        messageService.success("Cập nhật số lượng thành công");
+      }
     },
     onError: (error) => {
-      messageService.error(
-        error?.response?.data?.message || "Có lỗi xảy ra khi vui lòng thử lại"
-      );
+      if (error.status === 400) {
+        messageService.error(
+          error?.response?.data?.message || "Có lỗi xảy ra khi vui lòng thử lại"
+        );
+      }
       setQuantity(data.quantity);
     },
   });
@@ -52,7 +57,7 @@ const CartItem = ({ data, onToggleSelect, isSelected, priceChanged }) => {
 
   const increaseQuantity = () => {
     if (quantity < data.product_att.stock_quantity) {
-      setQuantity(prev => prev + 1);
+      setQuantity((prev) => prev + 1);
     } else {
       messageService.warning("Số lượng trong kho không đủ");
     }
@@ -60,7 +65,7 @@ const CartItem = ({ data, onToggleSelect, isSelected, priceChanged }) => {
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
-      setQuantity(prev => prev - 1);
+      setQuantity((prev) => prev - 1);
     } else if (quantity === 1) {
       setIsConfirmOpen(true);
     }
@@ -150,7 +155,6 @@ const CartItem = ({ data, onToggleSelect, isSelected, priceChanged }) => {
               )}
             </p>
           </div>
-
         </div>
       </div>
       {priceChanged && (
@@ -158,8 +162,7 @@ const CartItem = ({ data, onToggleSelect, isSelected, priceChanged }) => {
           Giá sản phẩm đã thay đổi:
           {priceChanged.newReducedPrice > 0
             ? ` ${Number(priceChanged.newReducedPrice).toLocaleString()}đ`
-            : ` ${Number(priceChanged.newRegularPrice).toLocaleString()}đ`
-          }
+            : ` ${Number(priceChanged.newRegularPrice).toLocaleString()}đ`}
         </div>
       )}
       <ConfirmModal

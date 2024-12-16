@@ -29,7 +29,9 @@ const ConfirmOrder = () => {
       refetch();
     },
     onError: (error) => {
-      messageService.error(error.message || "Có lỗi xảy ra khi hủy đơn hàng");
+      messageService.error(
+        error?.response?.data?.message || "Có lỗi xảy ra khi hủy đơn hàng"
+      );
     },
   });
 

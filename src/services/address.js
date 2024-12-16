@@ -103,3 +103,12 @@ export const getWard = async (id) => {
     throw error;
   }
 };
+
+export const deleteAddress = async (id) => {
+  try {
+    const response = await Author.delete(`/shipping-addresses/${id}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

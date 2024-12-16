@@ -1,4 +1,4 @@
-import { addAddress, updateAddress } from "@/services/address";
+import { addAddress, deleteAddress, updateAddress } from "@/services/address";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useAddressMutation = ({ action, onSuccess, onError }) => {
@@ -8,8 +8,8 @@ const useAddressMutation = ({ action, onSuccess, onError }) => {
       switch (action) {
         case "CREATE":
           return await addAddress(data);
-        // case "DELETE":
-        //   return await deleteAddress(data);
+        case "DELETE":
+          return await deleteAddress(data);
         case "UPDATE":
           return await updateAddress(data);
         default:
