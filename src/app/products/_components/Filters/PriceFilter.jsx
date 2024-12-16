@@ -25,14 +25,14 @@ const PriceFilter = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }) => {
   return (
     <div className="w-full mb-6">
       <h2 className="text-lg font-bold mb-4">Lọc theo giá</h2>
-      <div className="flex flex-col gap-3">
+      <div className="space-y-3">
         <input
           type="number"
           min="0"
           placeholder="Giá thấp nhất"
           value={localMinPrice === 0 ? "" : localMinPrice}
           onChange={handleMinPriceChange}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:outline-none focus:border-primary"
         />
         <input
           type="number"
@@ -40,16 +40,13 @@ const PriceFilter = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }) => {
           placeholder="Giá cao nhất"
           value={localMaxPrice === 0 ? "" : localMaxPrice}
           onChange={handleMaxPriceChange}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:outline-none focus:border-primary"
         />
         <button
           onClick={handleApplyFilter}
-          className="bg-primary text-white py-2 px-4 rounded hover:bg-opacity-90"
+          className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-opacity-90"
         >
           Áp dụng
-        </button>
-        <button className="border py-2 px-4 rounded hover:bg-opacity-90">
-          Loại bỏ bộ lọc
         </button>
       </div>
     </div>

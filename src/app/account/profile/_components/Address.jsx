@@ -112,6 +112,11 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
 
   useEffect(() => {
     const fetchAddressDetails = async () => {
+      if (!addresses || addresses.length === 0) {
+        setAddressDetails([]);
+        return;
+      }
+
       const details = await Promise.all(
         addresses.map(async (address) => {
           const districtRes = await getDistrict(address.province_code);
@@ -131,24 +136,34 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
       setAddressDetails(details);
     };
 
-    if (addresses?.length > 0) {
-      fetchAddressDetails();
-    }
+    fetchAddressDetails();
   }, [addresses]);
-  const handleEdit = (address) => {
-    setSelectedAddress(address);
-    setIsEditing(true);
-    reset({
-      recipient_name: address.recipient_name,
-      recipient_phone: address.recipient_phone,
-      recipient_address: address.recipient_address,
-      province: "201",
-      district: address.district_code,
-      ward: address.ward_code,
-      is_default: address.is_default,
-    });
-  };
+  const handleEdit = async (address) => {
+    try {
+      setValue("district", address.district_code);
+      const wardRes = await getWard(address.district_code);
+      if (wardRes?.data) {
+        setWards(wardRes.data);
+        const wMap = {};
+        wardRes.data.forEach((w) => {
+          wMap[w.WardCode] = w.WardName;
+        });
+        setWardMap(wMap);
+      }
 
+      setSelectedAddress(address);
+      setIsEditing(true);
+
+      setValue("recipient_name", address.recipient_name);
+      setValue("recipient_phone", address.recipient_phone);
+      setValue("recipient_address", address.recipient_address);
+      setValue("province", "201");
+      setValue("ward", address.ward_code);
+      setValue("is_default", address.is_default);
+    } catch (error) {
+      console.error("Error in handleEdit:", error);
+    }
+  };
   const onSubmit = (data, event) => {
     event.preventDefault();
 

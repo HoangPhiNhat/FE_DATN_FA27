@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import FooterItemLink from "./FooterItemLink";
-import { accountItems, blankItems, shopItems } from "@/structures/Footer";
 import Image from "next/image";
 
 const Footer = () => {
@@ -28,75 +26,104 @@ const Footer = () => {
   };
 
   return (
-    <div className="w-full bg-[#F5F5F3] py-20 mt-20">
-      <div className="container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 px-4 gap-10">
-        <div className="col-span-2">
-          <h3 className="text-xl font-bodyFont font-semibold mb-6">
-            Về NovaThreads Shop
-          </h3>
-          <div className="flex flex-col gap-6">
-            <p className="text-base w-full xl:w-[80%]">
+    <div className="w-full bg-[#F5F5F3] py-10 md:py-20 mt-10 md:mt-20">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+          <div className="lg:col-span-1">
+            <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">
+              Về NovaThreads Shop
+            </h3>
+            <p className="text-sm md:text-base text-gray-600">
               Chúng tôi tự hào là điểm đến thời trang hàng đầu, mang đến những
               sản phẩm chất lượng cao với giá cả hợp lý.
             </p>
           </div>
-        </div>
-        <div>
-          <h3 className="text-xl font-bodyFont font-semibold mb-6">Dịch vụ</h3>
-          <div className="flex flex-col gap-2">
-            <p>Giao hàng nhanh chóng</p>
-            <p>Đổi trả trong 30 ngày</p>
-            <p>Bảo hành sản phẩm</p>
-            <p>Tư vấn miễn phí</p>
+
+          <div>
+            <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">
+              Dịch vụ
+            </h3>
+            <ul className="space-y-2">
+              <li className="text-sm md:text-base text-gray-600">
+                Giao hàng nhanh chóng
+              </li>
+              <li className="text-sm md:text-base text-gray-600">
+                Đổi trả trong 30 ngày
+              </li>
+              <li className="text-sm md:text-base text-gray-600">
+                Bảo hành sản phẩm
+              </li>
+              <li className="text-sm md:text-base text-gray-600">
+                Tư vấn miễn phí
+              </li>
+            </ul>
           </div>
-        </div>
-        <div>
-          <h3 className="text-xl font-bodyFont font-semibold mb-6">Liên hệ</h3>
-          <div className="flex flex-col gap-2">
-            <p>Hotline: 1900 xxxx</p>
-            <p>Email: support@novathreads.com</p>
-            <p>Địa chỉ: Toà nhà FPT Polytechnic, Quận Trịnh Văn Bô, TP.HN</p>
+
+          <div>
+            <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">
+              Liên hệ
+            </h3>
+            <ul className="space-y-2">
+              <li className="text-sm md:text-base text-gray-600">
+                Hotline: 1900 1999
+              </li>
+              <li className="text-sm md:text-base text-gray-600">
+                Email: support@novathreads.com
+              </li>
+              <li className="text-sm md:text-base text-gray-600">
+                Địa chỉ: Toà nhà FPT Polytechnic, Quận Trịnh Văn Bô, TP.HN
+              </li>
+            </ul>
           </div>
-        </div>
-        <div className="col-span-2 flex flex-col items-center w-full px-4">
-          <h3 className="text-xl font-bodyFont font-semibold mb-6">
-            Đăng ký nhận bản tin
-          </h3>
-          <div className="w-full">
-            <p className="text-center mb-4">
-              Nhận thông tin về sản phẩm mới và ưu đãi đặc biệt
-            </p>
-            {subscription ? (
-              <p className="w-full text-center text-base font-semibold text-green-600">
-                Đăng ký thành công!
+
+          <div className="lg:col-span-1">
+            <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">
+              Đăng ký nhận bản tin
+            </h3>
+            <div className="space-y-4">
+              <p className="text-sm md:text-base text-gray-600">
+                Nhận thông tin về sản phẩm mới và ưu đãi đặc biệt
               </p>
-            ) : (
-              <div className="w-full flex-col xl:flex-row flex justify-between items-center gap-4">
-                <div className="flex flex-col w-full">
-                  <input
-                    onChange={(e) => setEmailInfo(e.target.value)}
-                    value={emailInfo}
-                    className="w-full h-12 border-b border-gray-400 bg-transparent px-4 text-primary text-lg placeholder:text-base outline-none"
-                    type="text"
-                    placeholder="Nhập email của bạn...*"
-                  />
-                  {errMsg && (
-                    <p className="text-red-600 text-sm font-semibold text-center animate-bounce mt-2">
-                      {errMsg === "Please provide an Email !"
-                        ? "Vui lòng nhập email!"
-                        : "Vui lòng nhập email hợp lệ!"}
-                    </p>
-                  )}
+
+              {subscription ? (
+                <p className="text-sm md:text-base font-semibold text-green-600">
+                  Đăng ký thành công!
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  <div className="relative">
+                    <input
+                      onChange={(e) => setEmailInfo(e.target.value)}
+                      value={emailInfo}
+                      className="w-full h-12 border-b border-gray-400 bg-transparent px-4 text-primary text-base
+                               placeholder:text-gray-500 outline-none focus:border-primary transition-colors"
+                      type="text"
+                      placeholder="Nhập email của bạn...*"
+                    />
+                    {errMsg && (
+                      <p className="absolute -bottom-6 left-0 text-red-600 text-xs md:text-sm font-medium animate-bounce">
+                        {errMsg === "Please provide an Email !"
+                          ? "Vui lòng nhập email!"
+                          : "Vui lòng nhập email hợp lệ!"}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleSubscription}
+                    className="w-full md:w-auto px-6 py-3 bg-white text-gray-800 text-sm md:text-base
+                             hover:bg-black hover:text-white transition-colors duration-300 mt-4"
+                  >
+                    Đăng ký
+                  </button>
                 </div>
-                <button
-                  onClick={handleSubscription}
-                  className="bg-white text-lightText w-[30%] h-10 hover:bg-black hover:text-white duration-300 text-base tracking-wide"
-                >
-                  Đăng ký
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
+        </div>
+        <div className="mt-10 pt-8 border-t border-gray-200">
+          <p className="text-center text-sm text-gray-600">
+            © 2024 NovaThreads Shop. All rights reserved.
+          </p>
         </div>
       </div>
     </div>

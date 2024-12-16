@@ -2,16 +2,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { FaRegEye } from "react-icons/fa";
-import { BsFillCartPlusFill } from "react-icons/bs";
 
 const ProductItem = ({ product, hrefEdit }) => {
-  // const [isHovered, setIsHovered] = useState(false);
-  // const [isQuickView, setIsQuickView] = useState(false);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
-  const handleVariantClick = (index) => {
-    setSelectedVariantIndex(index);
-  };
 
   const handleProductClick = () => {
     const viewedProducts = JSON.parse(
@@ -24,21 +17,15 @@ const ProductItem = ({ product, hrefEdit }) => {
     }
 
     viewedProducts.unshift(product);
-
     const limitedProducts = viewedProducts.slice(0, 8);
-
     localStorage.setItem("viewedProducts", JSON.stringify(limitedProducts));
   };
 
   return (
-    <div
-      className="relative border flex flex-col bg-white rounded-lg"
-      // onMouseEnter={() => setIsHovered(true)}
-      // onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="relative w-full overflow-hidden">
-        {product.reduced_price ? (
-          <div className="absolute top-0 right-0 bg-red-600 text-white px-2 py-1 rounded-bl-lg z-10">
+    <div className="relative flex flex-col bg-white rounded-lg border hover:shadow-md transition-shadow duration-300">
+      <div className="relative w-full overflow-hidden aspect-[3/4]">
+        {product.reduced_price && (
+          <div className="absolute top-0 right-0 bg-red-600 text-white text-xs md:text-sm px-2 py-1 rounded-bl-lg z-10">
             Sale off{" "}
             {Math.round(
               ((product.regular_price - product.reduced_price) /
@@ -47,101 +34,75 @@ const ProductItem = ({ product, hrefEdit }) => {
             )}
             %
           </div>
-        ) : null}
+        )}
+
         <Link
           href={hrefEdit ? `${product.slug}` : `products/${product.slug}`}
           onClick={handleProductClick}
+          className="block w-full h-full"
         >
           <Image
             src={product.thumbnail}
             width={334}
             height={425}
-            alt="Hình ảnh sản phẩm"
-            className={`transition-opacity duration-500 ease-in-out rounded-t-lg w-full $`}
+            alt={product.name}
+            className="rounded-t-lg object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+            priority
           />
-          {
-            // isHovered ? "opacity-0" : "opacity-100"
-          }
-          {/* <Image
-            src={product.variants[selectedVariantIndex].images[1]}
-            width={334}
-            height={425}
-            alt="Hình ảnh sản phẩm khi di chuột qua"
-            className={`transition-opacity duration-500 ease-in-out rounded-t-lg w-full ${
-              isHovered ? "opacity-100" : "opacity-0"
-            } absolute top-0 left-0`}
-          /> */}
+        </Link>
+      </div>
+
+      <div className="p-2 md:p-3 flex flex-col flex-grow">
+        <Link
+          href={hrefEdit ? `${product.slug}` : `products/${product.slug}`}
+          className="font-semibold text-sm md:text-base lg:text-lg line-clamp-2 hover:text-primary transition-colors duration-300"
+        >
+          {product.name}
         </Link>
 
-        {/* {isHovered && (
-          <div className="absolute bottom-2 flex justify-center items-center w-full animate-fade-up transition duration-300">
-            <div className="flex justify-center items-center border rounded-lg w-fit bg-white shadow-md">
-              <button className="hover:text-primary transition duration-300 p-2 flex justify-center items-center">
-                <BsFillCartPlusFill className="text-lg" />
-              </button>
-              <button
-                className="hover:text-primary transition duration-300 p-2 flex justify-center items-center"
-                onClick={() => setIsQuickView(true)}
-              >
-                <FaRegEye className="text-lg" />
-              </button>
-            </div>
-          </div>
-        )} */}
-      </div>
-      <div className="  p-2">
-        <div className="mt-2">
-          <Link
-            href={hrefEdit ? `${product.slug}` : `products/${product.slug}`}
-            className="font-semibold text-xl"
-          >
-            {product.name}
-          </Link>
-          <div className="flex items-center gap-2 mt-1">
-            {product.reduced_price ? (
-              <>
-                <p className="text-primary text-lg">
-                  {product.reduced_price.toLocaleString()}₫
-                </p>
-                <p className="text-gray-500 line-through">
-                  {product.regular_price.toLocaleString()}₫
-                </p>
-              </>
-            ) : (
-              <p className="text-primary text-lg">
+        <div className="flex items-center gap-2 mt-1 md:mt-2">
+          {product.reduced_price ? (
+            <>
+              <p className="text-primary font-medium text-base md:text-lg">
+                {product.reduced_price.toLocaleString()}₫
+              </p>
+              <p className="text-gray-500 line-through text-sm md:text-base">
                 {product.regular_price.toLocaleString()}₫
               </p>
-            )}
-          </div>
+            </>
+          ) : (
+            <p className="text-primary font-medium text-base md:text-lg">
+              {product.regular_price.toLocaleString()}₫
+            </p>
+          )}
         </div>
-        {/* <div className="flex space-x-2 mt-2">
-          {product.variants.map((variant, index) => (
-            <button
-              key={index}
-              onClick={() => handleVariantClick(index)}
-              title={variant.color}
-            >
-              <Image
-                src={variant.images[0]}
-                width={35}
-                height={35}
-                alt={index}
-                className={`aspect-square object-cover rounded-full border-2 ${
-                  selectedVariantIndex === index
-                    ? " border-blue-500"
-                    : "border-gray-400"
-                }`}
-              />
-            </button>
-          ))}
-        </div> */}
+
+        {product.variants && (
+          <div className="flex flex-wrap gap-1 mt-2">
+            {product.variants.map((variant, index) => (
+              <button
+                key={index}
+                onClick={() => handleVariantClick(index)}
+                title={variant.color}
+                className="w-6 h-6 md:w-8 md:h-8"
+              >
+                <Image
+                  src={variant.images[0]}
+                  width={32}
+                  height={32}
+                  alt={variant.color}
+                  className={`aspect-square object-cover rounded-full border-2
+                    ${
+                      selectedVariantIndex === index
+                        ? "border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-      {/* {isQuickView && (
-        <PreviewProduct
-          product={product}
-          onClose={() => setIsQuickView(false)}
-        />
-      )} */}
     </div>
   );
 };

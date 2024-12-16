@@ -28,11 +28,17 @@ const Cart = () => {
 
   useEffect(() => {
     if (refetchCart > 0) {
-      messageService.error("Một số sản phẩm đã thay đổi thông tin. Vui lòng kiểm tra lại");
+      messageService.error(
+        "Một số sản phẩm đã thay đổi thông tin. Vui lòng kiểm tra lại"
+      );
     }
   }, [refetchCart]);
 
-  const { data: cartData, isLoading, refetch } = useCartQuery({
+  const {
+    data: cartData,
+    isLoading,
+    refetch,
+  } = useCartQuery({
     enabled: isAuthenticated,
   });
 
@@ -87,7 +93,7 @@ const Cart = () => {
           item.product_att.reduced_price && item.product_att.reduced_price > 0
             ? parseFloat(item.product_att.reduced_price)
             : parseFloat(item.product_att.regular_price);
-        return total + (price * parseInt(item.quantity));
+        return total + price * parseInt(item.quantity);
       }, 0);
   }, [cartData, selectedItems]);
 
@@ -103,27 +109,34 @@ const Cart = () => {
 
     try {
       const attFromAPI = await Promise.all(
-        selectedProducts.map(item => getProductAttById(item.product_att_id))
+        selectedProducts.map((item) => getProductAttById(item.product_att_id))
       );
 
-      const invalidProducts = selectedProducts.filter(cartItem => {
-        const attData = attFromAPI.find(att => att.id === cartItem.product_att_id);
+      const invalidProducts = selectedProducts.filter((cartItem) => {
+        const attData = attFromAPI.find(
+          (att) => att.id === cartItem.product_att_id
+        );
         if (!attData) return true;
 
         const isQuantityValid = cartItem.quantity <= attData.quantity;
         const isPriceChanged =
-          Number(cartItem.product_att.regular_price) !== Number(attData.regular_price) ||
-          Number(cartItem.product_att.reduced_price) !== Number(attData.reduced_price);
-        console.log(isPriceChanged)
-        console.log(isQuantityValid)
+          Number(cartItem.product_att.regular_price) !==
+            Number(attData.regular_price) ||
+          Number(cartItem.product_att.reduced_price) !==
+            Number(attData.reduced_price);
+        console.log(isPriceChanged);
+        console.log(isQuantityValid);
         if (isPriceChanged) {
-          setChangedPriceProducts(prev => [...prev, {
-            id: cartItem.id,
-            oldRegularPrice: cartItem.product_att.regular_price,
-            oldReducedPrice: cartItem.product_att.reduced_price,
-            newRegularPrice: attData.regular_price,
-            newReducedPrice: attData.reduced_price
-          }]);
+          setChangedPriceProducts((prev) => [
+            ...prev,
+            {
+              id: cartItem.id,
+              oldRegularPrice: cartItem.product_att.regular_price,
+              oldReducedPrice: cartItem.product_att.reduced_price,
+              newRegularPrice: attData.regular_price,
+              newReducedPrice: attData.reduced_price,
+            },
+          ]);
         }
 
         return !isQuantityValid && isPriceChanged;
@@ -131,15 +144,16 @@ const Cart = () => {
 
       if (invalidProducts.length > 0) {
         await refetch();
-        setRefetchCart(prev => prev + 1);
+        setRefetchCart((prev) => prev + 1);
         return;
       }
 
       localStorage.setItem("checkoutItems", JSON.stringify(selectedProducts));
       router.push("/checkout");
-
     } catch (error) {
-      messageService.error("Không thể kiểm tra thông tin sản phẩm. Vui lòng thử lại");
+      messageService.error(
+        "Không thể kiểm tra thông tin sản phẩm. Vui lòng thử lại"
+      );
     }
   };
 
@@ -211,7 +225,7 @@ const Cart = () => {
                 data={v}
                 isSelected={selectedItems.includes(v.id)}
                 onToggleSelect={() => handleToggleSelect(v.id)}
-                priceChanged={changedPriceProducts.find(p => p.id === v.id)}
+                priceChanged={changedPriceProducts.find((p) => p.id === v.id)}
               />
             </div>
           ))}

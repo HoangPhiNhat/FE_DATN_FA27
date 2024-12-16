@@ -12,7 +12,7 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
 
   useEffect(() => {
     setShowArrows(images.length > 5);
-    const activeIndex = images.findIndex(img => img.active);
+    const activeIndex = images.findIndex((img) => img.active);
     if (activeIndex !== -1) {
       setCurrentIndex(activeIndex);
       if (sliderRefMain.current) {

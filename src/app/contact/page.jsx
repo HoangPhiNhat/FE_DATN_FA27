@@ -15,17 +15,17 @@ const ContactPage = () => {
           <div className="space-y-4">
             <div>
               <h3 className="font-medium">Địa Chỉ:</h3>
-              <p>123 Đường ABC, Quận 1, TP.HCM</p>
+              <p>Toà nhà FPT Polytechnic, Quận Trịnh Văn Bô, TP.HN</p>
             </div>
 
             <div>
               <h3 className="font-medium">Email:</h3>
-              <p>contact@example.com</p>
+              <p>support@novathreads.com</p>
             </div>
 
             <div>
               <h3 className="font-medium">Điện Thoại:</h3>
-              <p>(+84) 123-456-789</p>
+              <p>1900 1999</p>
             </div>
 
             <div>

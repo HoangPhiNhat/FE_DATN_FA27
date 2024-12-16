@@ -118,7 +118,7 @@ const productSettings = {
     {
       breakpoint: 480,
       settings: {
-        slidesToShow: 1,
+        slidesToShow: 2,
         slidesToScroll: 1,
         infinite: true,
       },
@@ -159,9 +159,6 @@ const productImageSettings = {
   ],
 };
 
-// dùng cho chi tiết sản phẩm
-
-// ảnh chính
 const mainSliderSettings = (handleMainSlideChange) => ({
   slidesToShow: 1,
   slidesToScroll: 1,
@@ -171,7 +168,6 @@ const mainSliderSettings = (handleMainSlideChange) => ({
   beforeChange: (_, next) => handleMainSlideChange(next), // Đồng bộ thumbnail
 });
 
-// ảnh phụ
 const thumbnailSliderSettings = (images, showArrows) => ({
   slidesToShow: 5,
   slidesToScroll: 1,
@@ -189,5 +185,3 @@ export {
   mainSliderSettings,
   thumbnailSliderSettings,
 };
-
-

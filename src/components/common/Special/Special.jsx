@@ -39,9 +39,9 @@ const Special = () => {
     };
   }, [handleStorageChange, refetchCart]);
   return (
-    <div className="fixed top-52 right-2 z-20 hidden md:flex flex-col gap-2">
+    <div className="fixed top-52 right-2 z-20 md:flex flex-col gap-2">
       <Link href={profileLink}>
-        <div className="bg-white w-16 h-[70px] rounded-md flex flex-col gap-1 text-[#33475b] justify-center items-center shadow-2xl overflow-x-hidden group cursor-pointer">
+        <div className="bg-white mb-2 w-16 h-[70px] rounded-md flex flex-col gap-1 text-[#33475b] justify-center items-center shadow-2xl overflow-x-hidden group cursor-pointer">
           <div className="flex justify-center items-center">
             <MdSwitchAccount className="text-2xl -translate-x-12 group-hover:translate-x-3 transition-transform duration-200" />
 

@@ -57,3 +57,13 @@ html, body {
 main {
   flex: 1;
 }
+
+/* Ẩn thanh scrollbar cho các trình duyệt Webkit (Chrome, Safari) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ẩn thanh scrollbar cho Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}

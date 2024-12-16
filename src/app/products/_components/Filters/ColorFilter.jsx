@@ -8,21 +8,23 @@ const ColorFilter = ({ color, setColor }) => {
   const { data: colors } = useColorQuery();
 
   return (
-    <div>
+    <div className="mb-6">
       <div
         onClick={() => setShowColors(!showColors)}
-        className="cursor-pointer"
+        className="flex items-center justify-between cursor-pointer mb-4"
       >
-        <NavTitle title="Color" icons={true} />
+        <NavTitle title="Màu sắc" icons={true} />
       </div>
       {showColors && (
-        <ul className="flex flex-col gap-4 text-sm lg:text-base text-[#767676]">
+        <ul className="space-y-3">
           {colors?.map((item) => (
             <li
               key={item.id}
               onClick={() => setColor(color === item.id ? "" : item.id)}
-              className={`border-b-[1px] border-b-[#F0F0F0] pb-2 flex items-center gap-2 cursor-pointer ${
-                color === item.name ? "text-black font-medium" : ""
+              className={`pb-2 border-b flex items-center gap-2 cursor-pointer text-sm ${
+                color === item.name
+                  ? "text-primary font-medium"
+                  : "text-gray-600"
               }`}
             >
               {item.name}

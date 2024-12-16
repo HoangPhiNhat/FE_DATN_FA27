@@ -1,5 +1,5 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
 const AboutPage = () => {
   return (
@@ -10,14 +10,14 @@ const AboutPage = () => {
         <div className="space-y-6">
           <h2 className="text-3xl font-semibold">Câu Chuyện Của Chúng Tôi</h2>
           <p className="text-gray-600">
-            Được thành lập vào năm 20XX, chúng tôi bắt đầu với một ước mơ đơn giản:
-            mang đến những sản phẩm thời trang chất lượng cao với giá cả hợp lý cho
-            người tiêu dùng Việt Nam.
+            Được thành lập vào năm 2024, chúng tôi bắt đầu với một ước mơ đơn
+            giản: mang đến những sản phẩm thời trang chất lượng cao với giá cả
+            hợp lý cho người tiêu dùng Việt Nam.
           </p>
           <p className="text-gray-600">
-            Trải qua nhiều năm phát triển, chúng tôi tự hào đã trở thành một trong
-            những thương hiệu thời trang được yêu thích với hàng nghìn khách hàng
-            trung thành trên toàn quốc.
+            Trải qua nhiều năm phát triển, chúng tôi tự hào đã trở thành một
+            trong những thương hiệu thời trang được yêu thích với hàng nghìn
+            khách hàng trung thành trên toàn quốc.
           </p>
         </div>
         <div className="w-full h-[400px] bg-gray-100 rounded-lg relative">
@@ -26,12 +26,15 @@ const AboutPage = () => {
       </div>
 
       <div className="mb-16">
-        <h2 className="text-3xl font-semibold text-center mb-8">Giá Trị Cốt Lõi</h2>
+        <h2 className="text-3xl font-semibold text-center mb-8">
+          Giá Trị Cốt Lõi
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="p-6 bg-white rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-3">Chất Lượng</h3>
             <p className="text-gray-600">
-              Cam kết mang đến những sản phẩm chất lượng cao, được tuyển chọn kỹ lưỡng.
+              Cam kết mang đến những sản phẩm chất lượng cao, được tuyển chọn kỹ
+              lưỡng.
             </p>
           </div>
           <div className="p-6 bg-white rounded-lg shadow-md">
@@ -72,10 +75,12 @@ const AboutPage = () => {
       </div> */}
 
       <div className="bg-white p-8 rounded-lg">
-        <h2 className="text-3xl font-semibold text-center mb-8">Cam Kết Của Chúng Tôi</h2>
+        <h2 className="text-3xl font-semibold text-center mb-8">
+          Cam Kết Của Chúng Tôi
+        </h2>
         <div className=" mx-auto">
           <ul className="space-y-4 flex  *:flex-1 text-gray-600">
-            <li className="flex items-center">
+            <li className="flex items-center -mb-3">
               <span className="mr-2">✓</span>
               Sản phẩm chính hãng 100%
             </li>
