@@ -2,7 +2,7 @@
 import Loading from "@/components/base/Loading/Loading";
 import Pagination from "@/components/base/Pagination";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import CategoryFilter from "./_components/Filters/CategoryFilter";
 import ColorFilter from "./_components/Filters/ColorFilter";
@@ -23,7 +23,7 @@ const Product = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
+    const categoryFromUrl = searchParams.get("category");
     if (categoryFromUrl) {
       setCategory(categoryFromUrl);
     }

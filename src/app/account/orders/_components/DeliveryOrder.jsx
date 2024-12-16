@@ -1,6 +1,7 @@
 "use client";
 import Pagination from "@/components/base/Pagination";
 import useOrderQuery from "@/hooks/useOrder/useOrderQuery";
+import Image from "next/image";
 import React from "react";
 
 const DeliveryOrder = () => {

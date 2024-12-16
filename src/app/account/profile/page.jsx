@@ -14,7 +14,6 @@ import Address from "./_components/Address";
 import messageService from "@/components/base/Message/Message";
 
 const UserAccountPage = () => {
-
   return (
     <Suspense fallback={<Loading />}>
       <UserAccountContent />
@@ -30,7 +29,7 @@ const UserAccountContent = () => {
   const checkAuth = () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
-      messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
+      // messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
       router.push("/sign-in");
     }
   };
@@ -42,7 +41,7 @@ const UserAccountContent = () => {
     if (activeQueryParam) {
       setActiveTab(activeQueryParam);
     }
-  }, [searchParams]);
+  }, [searchParams, checkAuth]);
 
   const { data: userProfile, isLoading } = useProfileQuery();
 

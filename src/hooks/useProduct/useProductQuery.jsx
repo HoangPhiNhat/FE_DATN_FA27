@@ -1,5 +1,9 @@
 "use client";
-import { getProductAll, getProductBySlug } from "@/services/product";
+import {
+  getProductAll,
+  getProductBySlug,
+  getProducts,
+} from "@/services/product";
 import { useQuery } from "@tanstack/react-query";
 
 const useProductQuery = (
@@ -44,6 +48,18 @@ const useProductQuery = (
           );
         case "GET_PRODUCT_BY_SLUG":
           return await getProductBySlug(slug);
+        case "GET_PRODUCT_BY":
+          return await getProducts(
+            page,
+            name,
+            category,
+            color,
+            size,
+            minPrice,
+            maxPrice,
+            sort
+          );
+
         default:
           return null;
       }

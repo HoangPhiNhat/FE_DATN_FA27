@@ -48,6 +48,9 @@ const PriceFilter = ({ minPrice, setMinPrice, maxPrice, setMaxPrice }) => {
         >
           Áp dụng
         </button>
+        <button className="border py-2 px-4 rounded hover:bg-opacity-90">
+          Loại bỏ bộ lọc
+        </button>
       </div>
     </div>
   );

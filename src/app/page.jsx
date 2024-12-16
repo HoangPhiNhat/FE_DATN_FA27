@@ -7,15 +7,41 @@ import ProductGrid from "./products/_components/ProductGrid";
 import ProductSlider from "./products/_components/ProductSlider";
 import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
 import VoucherSlider from "@/components/UI/VoucherSlider";
+import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
+import { useMemo } from "react";
 
 export default function Home() {
+  const { data: categories, isLoading: categoryLoading } = useCategoryQuery();
   const { data: productData, isLoading: productLoading } = useProductQuery(
-    "GET_ALL_PRODUCT",
+    "GET_PRODUCT_BY",
     null,
     1,
     ""
   );
+
   const { data: voucherData } = useVoucherQuery();
+  console.log({ productData });
+  const topCategories = useMemo(() => {
+    return categories ? categories.data.slice(0, 4) : [];
+  }, [categories]);
+
+  const groupedProducts = useMemo(() => {
+    if (!productData || !topCategories) return {};
+
+    const grouped = {};
+
+    topCategories.forEach((category) => {
+      grouped[category.id] = {
+        category,
+        products: productData?.data
+          .filter((product) => product.category_id === category.id)
+          .slice(0, 8),
+      };
+    });
+
+    return grouped;
+  }, [productData, topCategories]);
+
   const features = [
     {
       image: "/images/shipping.webp",
@@ -38,11 +64,11 @@ export default function Home() {
       description: "Hỗ trợ bạn từ 8h30-24h00",
     },
   ];
-  console.log(voucherData);
+
   return (
     <div>
       <Banner />
-      <div className=" ">
+      <div className="">
         <div className="py-7 border-b">
           <div className="container flex justify-between">
             {features.map((feature, index) => (
@@ -59,30 +85,22 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <ProductSlider
-                title="Sản phẩm"
+              {/* <ProductSlider
+                title="Tất cả sản phẩm"
                 href="/"
                 data={productData.data}
-              />
-              <ProductGrid
-                title="Sản phẩm bán chạy chạy nhất"
-                // href="/"
-                data={productData.data.slice(0, 4)}
-              />
+              /> */}
+
+              {Object.values(groupedProducts).map(
+                ({ category, products }) =>
+                  products.length > 0 && (
+                    <ProductGrid title={`${category.name}`} data={products} />
+                  )
+              )}
             </>
           )}
         </div>
       </div>
     </div>
   );
-}
-{
-  /* <SectionHeader title="New Arrivals" href="/" />
-          <div className="grid grid-cols-5 gap-x-4 gap-y-8">
-            <Slider {...productSettings}>
-              {products.map((product, index) => (
-                <ProductItem key={index} product={product} />
-              ))}
-            </Slider>
-          </div> */
 }

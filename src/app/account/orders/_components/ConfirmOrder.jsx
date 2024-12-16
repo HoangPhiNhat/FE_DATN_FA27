@@ -29,7 +29,7 @@ const ConfirmOrder = () => {
       refetch();
     },
     onError: (error) => {
-      messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
+      messageService.error(error.message || "Có lỗi xảy ra khi hủy đơn hàng");
     },
   });
 
@@ -48,17 +48,7 @@ const ConfirmOrder = () => {
       order_status: "Đã hủy",
       note: cancelReason,
     };
-    cancelOrder(payload)
-      .then(() => {
-        messageService.success("Đơn hàng đã hủy thành công");
-        refetch();
-        setCancelReason("");
-        setIsCanceling(false);
-        setCurrentOrderId(null);
-      })
-      .catch((error) => {
-        messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
-      });
+    cancelOrder(payload);
   };
   const handlePaymentTry = async (order_id, total) => {
     const data = {
