@@ -8,7 +8,7 @@ import ProductSlider from "./products/_components/ProductSlider";
 import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
 import VoucherSlider from "@/components/UI/VoucherSlider";
 import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export default function Home() {
   const { data: categories, isLoading: categoryLoading } = useCategoryQuery();
@@ -18,9 +18,10 @@ export default function Home() {
     1,
     ""
   );
-  localStorage.removeItem("checkoutItems");
+  useEffect(() => {
+    localStorage.removeItem("checkoutItems");
+  }, []);
   const { data: voucherData } = useVoucherQuery();
-  console.log({ productData });
   const topCategories = useMemo(() => {
     return categories ? categories.data.slice(0, 4) : [];
   }, [categories]);

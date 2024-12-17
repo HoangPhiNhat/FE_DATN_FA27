@@ -13,7 +13,6 @@ const DeliveredOrder = () => {
   const [activeTooltip, setActiveTooltip] = useState(null);
   const tooltipRef = useRef(null);
 
-  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
@@ -56,6 +55,7 @@ const DeliveredOrder = () => {
   };
 
   const handleNotReceiveOrder = (orderId) => {
+    console.log(orderId);
     setAction("NOT_RECEIVE_ORDER");
     mutate({ id: orderId, order_status: "Chưa nhận hàng" });
   };
@@ -87,7 +87,7 @@ const DeliveredOrder = () => {
                       <p>Ngày đặt: {order.created_at}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="relative" ref={tooltipRef}>
+                      <div className="relative">
                         <button
                           className="cursor-pointer px-3 py-1 rounded-md bg-yellow-500 text-white"
                           onClick={() =>
@@ -115,11 +115,11 @@ const DeliveredOrder = () => {
                                 Xác nhận
                               </button>
                             </div>
-                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-white"></div>
                           </div>
                         )}
                       </div>
-                      <div className="relative" ref={tooltipRef}>
+
+                      <div className="relative">
                         <button
                           className="cursor-pointer px-3 py-1 rounded-md bg-green-500 text-white"
                           onClick={() => toggleTooltip(`receive-${order.id}`)}
@@ -145,7 +145,6 @@ const DeliveredOrder = () => {
                                 Xác nhận
                               </button>
                             </div>
-                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-white"></div>
                           </div>
                         )}
                       </div>
