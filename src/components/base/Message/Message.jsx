@@ -87,12 +87,17 @@ const messageService = {
       const root = createRoot(container);
       root.render(<MessageContainer />);
 
-      setTimeout(() => {
-        if (typeof window.addMessage === "function") {
-          window.addMessage(message);
-        }
-      }, 0);
-      return;
+      return new Promise((resolve) => {
+        const checkAddMessage = () => {
+          if (typeof window.addMessage === "function") {
+            window.addMessage(message);
+            resolve();
+          } else {
+            setTimeout(checkAddMessage, 10);
+          }
+        };
+        checkAddMessage();
+      });
     }
 
     if (typeof window.addMessage === "function") {

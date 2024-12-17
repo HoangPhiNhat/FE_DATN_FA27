@@ -63,7 +63,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full mt-10 flex items-center justify-center scrollbar-none">
       <form
         className="w-full lgl:w-[450px] flex items-center justify-center"
         onSubmit={handleSubmit(onSubmit)}
