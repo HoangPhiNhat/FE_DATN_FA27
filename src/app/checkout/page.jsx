@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import Input from "@/components/common/Input/Input";
 import useAddressQuery from "@/hooks/useAddress/useAddressQuery";
 import Loading from "@/components/base/Loading/Loading";
 import Address from "../account/profile/_components/Address";
@@ -15,8 +14,6 @@ import {
 } from "@/services/order";
 import useCartQuery from "@/hooks/useCart/useCartQuery";
 import Image from "next/image";
-import { getProductAttById } from "@/services/product";
-import Link from "next/link";
 import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
 import useVoucherMutation from "@/hooks/useVoucher/useVoucherMutation";
 
@@ -435,7 +432,8 @@ const Checkout = () => {
 
       if (address.district_code) {
         const district = await getDistrict2(address.district_code);
-        setShippingFee(district?.data?.ship_fee || 0);
+        console.log(district);
+        setShippingFee(district?.shipping_fee || 0);
       }
 
       setShowAddressModal(false);
@@ -446,7 +444,6 @@ const Checkout = () => {
   };
 
   if (isLoading) return <Loading />;
-
   return (
     <>
       <form
@@ -554,9 +551,6 @@ const Checkout = () => {
                     />
                     <div>
                       <p className="font-medium">Thanh toán qua VNPAY</p>
-                      <p className="text-sm text-gray-500">
-                        Thanh toán qua Internet Banking, Visa, Master, JCB
-                      </p>
                     </div>
                   </label>
                 </div>
@@ -633,7 +627,12 @@ const Checkout = () => {
                         ? `${voucher.discount_value}%`
                         : `${new Intl.NumberFormat("vi-VN").format(
                             voucher.discount_value
-                          )}đ`}
+                          )}đ`}{" "}
+                      - Đơn tối thiểu{" "}
+                      {new Intl.NumberFormat("vi-VN").format(
+                        voucher.min_order_value
+                      )}
+                      đ
                     </option>
                   ))}
                 </select>

@@ -5,6 +5,7 @@ import useOrderQuery from "@/hooks/useOrder/useOrderQuery";
 import React, { useState } from "react";
 import Image from "next/image";
 import Pagination from "@/components/base/Pagination";
+import ConfirmModal from "@/components/base/Confirm/Confirm";
 
 const DeliveredOrder = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -13,6 +14,7 @@ const DeliveredOrder = () => {
   const [isCanceling, setIsCanceling] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState(null);
   const [action, setAction] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const { data: orderData, refetch } = useOrderQuery(
     "DELIVERED_ORDER",
     currentPage,
@@ -48,6 +50,14 @@ const DeliveredOrder = () => {
 
   return (
     <div>
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => {}}
+        title="Xác nhận xóa"
+        message={`=`}
+        label="Xóa"
+      />
       <div className="bg-white p-6 rounded-lg">
         {!orders || orders.length === 0 ? (
           <div className="text-center py-8 text-gray-500">

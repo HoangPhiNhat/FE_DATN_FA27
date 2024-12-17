@@ -107,7 +107,10 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     const user = localStorage.getItem("user");
     const userData = JSON.parse(user);
-
+    if (!userData) {
+      messageService.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
+      return;
+    }
     const cartData = {
       product_id: data.id,
       product_att_id: selectedSize.id,
@@ -275,7 +278,6 @@ const ProductDetail = () => {
                 <p>
                   <strong>SKU:</strong> {selectedSize.sku}
                 </p>
-                <p className="mt-2">{data.long_description}</p>
               </div>
 
               <button
@@ -306,6 +308,7 @@ const ProductDetail = () => {
                     : "Thêm vào giỏ hàng"
                   : "Hết hàng"}
               </button>
+              <p className="mt-2">{data.long_description}</p>
             </div>
           </div>
 

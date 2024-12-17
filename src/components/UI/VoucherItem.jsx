@@ -7,8 +7,8 @@ const VoucherItem = ({ voucher }) => {
         <div className="text-xl font-bold text-red-600 mb-2">
           {`Giảm ${
             voucher.discount_type === "percentage"
-              ? `${voucher.discount_value}%`
-              : `${Number(voucher.discount_value).toLocaleString("vi-VN")}đ`
+              ? `${Number(voucher.discount_value).toLocaleString("vi-VN")}đ`
+              : `${voucher.discount_value}%`
           } cho đơn hàng từ ${Number(voucher.min_order_value).toLocaleString(
             "vi-VN"
           )}đ`}

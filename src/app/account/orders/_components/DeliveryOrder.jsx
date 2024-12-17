@@ -1,13 +1,17 @@
 "use client";
+import messageService from "@/components/base/Message/Message";
 import Pagination from "@/components/base/Pagination";
+import useOrderMutation from "@/hooks/useOrder/useOrderMutaion";
 import useOrderQuery from "@/hooks/useOrder/useOrderQuery";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const DeliveryOrder = () => {
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
 
+  const [isCanceling, setIsCanceling] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
   const { data: orderData, refetch } = useOrderQuery(
     "DELIVERY_ORDER",
     currentPage,
@@ -15,9 +19,27 @@ const DeliveryOrder = () => {
   );
   const orders = orderData?.data;
   const totalPages = Math.ceil(orderData?.total / pageSize);
+  const [cancelReason, setCancelReason] = useState("");
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+  const { mutate: cancelOrder } = useOrderMutation({
+    action: "CANCEL_ORDER",
+    onSuccess: () => {
+      messageService.success("Đơn hàng đã hủy thành công");
+      refetch();
+      setCancelReason("");
+      setIsCanceling(false);
+    },
+    onError: (error) => {
+      messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
+    },
+  });
+
+  const handleCancelOrder = (orderId) => {
+    setIsCanceling(true);
+    setCurrentOrderId(orderId);
   };
 
   return (
@@ -43,6 +65,12 @@ const DeliveryOrder = () => {
                       <p>Ngày đặt: {order.created_at}</p>
                     </div>
                     <div className="flex items-center gap-2">
+                      <span
+                        className="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white"
+                        onClick={() => handleCancelOrder(order.id)}
+                      >
+                        Hủy
+                      </span>
                       <span
                         className={`px-3 py-1 rounded ${
                           order.order_status === "Đã Giao"
@@ -105,6 +133,36 @@ const DeliveryOrder = () => {
                     </div>
                   </div>
                 </div>
+                {isCanceling && currentOrderId === order.id && (
+                  <div className="mt-2  w-full p-4 ">
+                    <textarea
+                      rows="3"
+                      placeholder="Nhập lý do hủy..."
+                      value={cancelReason}
+                      onChange={(e) => setCancelReason(e.target.value)}
+                      className="border p-2 w-full"
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => setIsCanceling(false)}
+                        className="mt-2 text-right text-black border border-gray-300 px-4 py-2 rounded"
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        onClick={() =>
+                          cancelOrder({
+                            id: order.id,
+                            cancelReason: cancelReason,
+                          })
+                        }
+                        className="mt-2 text-right bg-blue-500 text-white px-4 py-2 rounded"
+                      >
+                        Xác nhận
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
 

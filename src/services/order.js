@@ -76,7 +76,7 @@ export const cancelOrder = async (data) => {
     const status = "Đã huỷ";
     const response = await Author.put(`orders/${data.id}/order-status`, {
       order_status: status,
-      note: data.note,
+      note: data.cancelReason || data.note,
     });
     return response.data;
   } catch (error) {
@@ -107,7 +107,7 @@ export const updateStatusPayment = async (orderId, statusPayment) => {
 export const confirmOrder = async (orderId, status) => {
   try {
     const response = await Author.put(`orders/${orderId}/order-status`, {
-      order_status: status
+      order_status: status,
     });
     return response.data;
   } catch (error) {
@@ -118,7 +118,7 @@ export const confirmOrder = async (orderId, status) => {
 export const deliverOrder = async (orderId, status) => {
   try {
     const response = await Author.put(`orders/${orderId}/order-status`, {
-      order_status: status
+      order_status: status,
     });
     return response.data;
   } catch (error) {

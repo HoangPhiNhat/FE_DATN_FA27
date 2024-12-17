@@ -7,7 +7,7 @@ import Image from "next/image";
 import Pagination from "@/components/base/Pagination";
 
 const OrderList = () => {
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
   const [cancelReason, setCancelReason] = useState("");
   const [isCanceling, setIsCanceling] = useState(false);
@@ -33,7 +33,7 @@ const OrderList = () => {
       messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
     },
   });
-
+  
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };

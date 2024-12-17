@@ -29,7 +29,7 @@ const SignUp = () => {
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      // phone: "",
       password: "",
       password_confirmation: "",
     },
@@ -40,7 +40,7 @@ const SignUp = () => {
     if (!checked) {
       return;
     }
-
+    console.log(data);
     try {
       const res = await signUp(data);
       if (res) {
@@ -100,14 +100,14 @@ const SignUp = () => {
                   })}
                 />
 
-                <Input
+                {/* <Input
                   label="Số điện thoại"
-                  placeholder="008801234567891"
+                  placeholder="0987654321"
                   error={errors.phone?.message}
                   {...register("phone", {
                     required: "Nhập số điện thoại của bạn",
                   })}
-                />
+                /> */}
 
                 <Input
                   label="Mật khẩu"
@@ -126,7 +126,7 @@ const SignUp = () => {
                 <Input
                   label="Nhập lại mật khẩu"
                   type="password"
-                  placeholder="Confirm password"
+                  placeholder="Nhập lại mật khẩu"
                   error={errors.password_confirmation?.message}
                   {...register("password_confirmation", {
                     required: "Nhập lại mật khẩu",

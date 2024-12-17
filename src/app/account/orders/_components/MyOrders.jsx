@@ -38,7 +38,7 @@ const MyOrders = () => {
           }`}
           onClick={() => setSelectedTab("delivery")}
         >
-         Giao hàng
+          Giao hàng
         </button>
         <button
           className={`py-2 px-4 font-semibold ${
@@ -87,7 +87,7 @@ const MyOrders = () => {
           <div className="animate-fade-left">
             <DeliveredOrder />
           </div>
-          )}
+        )}
       </div>
     </>
   );

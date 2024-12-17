@@ -1,5 +1,10 @@
 "use client";
-import { getHistoryOrder, getConfirmOrder, getDeliveryOrder, getDeliveredOrder } from "@/services/order";
+import {
+  getHistoryOrder,
+  getConfirmOrder,
+  getDeliveryOrder,
+  getDeliveredOrder,
+} from "@/services/order";
 import { useQuery } from "@tanstack/react-query";
 
 const useOrderQuery = (action, page = 1, size = 4) => {
@@ -20,7 +25,8 @@ const useOrderQuery = (action, page = 1, size = 4) => {
           return null;
       }
     },
-    keepPreviousData: true,
+    staleTime: 0,
+    gcTime: 0,
   });
   return { data, refetch, ...rest };
 };
