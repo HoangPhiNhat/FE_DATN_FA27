@@ -241,7 +241,7 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
                     <span className="font-medium">
                       {address.recipient_name}
                     </span>
-                    {address.is_default === 0 && (
+                    {address.is_default === 1 && (
                       <span className="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded">
                         Mặc định
                       </span>

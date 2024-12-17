@@ -26,7 +26,7 @@ const ProductItem = ({ product, hrefEdit }) => {
       <div className="relative w-full overflow-hidden aspect-[3/4]">
         {product.reduced_price && (
           <div className="absolute top-0 right-0 bg-red-600 text-white text-xs md:text-sm px-2 py-1 rounded-bl-lg z-10">
-            Sale off{" "}
+            Giảm{" "}
             {Math.round(
               ((product.regular_price - product.reduced_price) /
                 product.regular_price) *
