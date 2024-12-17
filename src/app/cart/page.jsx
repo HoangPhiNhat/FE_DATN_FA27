@@ -161,7 +161,7 @@ const Cart = () => {
 
   if (!isAuthenticated || !cartData?.length) {
     return (
-      <div className="container mx-auto">
+      <div className="container mx-auto mt-10">
         <div className="flex flex-col mdl:flex-row justify-center items-center gap-4 pb-20">
           <div className="max-w-[500px] p-4 py-8 bg-white flex gap-4 flex-col items-center rounded-md shadow-lg">
             <h1 className="font-titleFont text-xl font-bold uppercase">

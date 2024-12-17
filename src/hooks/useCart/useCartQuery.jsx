@@ -13,6 +13,8 @@ const useCartQuery = (key) => {
       }
       return await getCart();
     },
+    staleTime: 0,
+    gcTime: 0,
   });
   return { data, refetch, ...rest };
 };

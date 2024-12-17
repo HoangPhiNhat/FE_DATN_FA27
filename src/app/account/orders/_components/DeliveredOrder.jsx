@@ -2,19 +2,29 @@
 import messageService from "@/components/base/Message/Message";
 import useOrderMutation from "@/hooks/useOrder/useOrderMutaion";
 import useOrderQuery from "@/hooks/useOrder/useOrderQuery";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Pagination from "@/components/base/Pagination";
-import ConfirmModal from "@/components/base/Confirm/Confirm";
 
 const DeliveredOrder = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 4;
-  const [cancelReason, setCancelReason] = useState("");
-  const [isCanceling, setIsCanceling] = useState(false);
-  const [currentOrderId, setCurrentOrderId] = useState(null);
   const [action, setAction] = useState("");
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [activeTooltip, setActiveTooltip] = useState(null);
+  const tooltipRef = useRef(null);
+
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
+        setActiveTooltip(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const { data: orderData, refetch } = useOrderQuery(
     "DELIVERED_ORDER",
     currentPage,
@@ -32,9 +42,11 @@ const DeliveredOrder = () => {
     onSuccess: () => {
       messageService.success("Cập nhật trạng thái giao hàng thành công");
       refetch();
+      setActiveTooltip(null);
     },
     onError: (error) => {
       messageService.error("Có lỗi xảy ra");
+      setActiveTooltip(null);
     },
   });
 
@@ -48,16 +60,12 @@ const DeliveredOrder = () => {
     mutate({ id: orderId, order_status: "Chưa nhận hàng" });
   };
 
+  const toggleTooltip = (tooltipId) => {
+    setActiveTooltip(activeTooltip === tooltipId ? null : tooltipId);
+  };
+
   return (
     <div>
-      <ConfirmModal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={() => {}}
-        title="Xác nhận xóa"
-        message={`=`}
-        label="Xóa"
-      />
       <div className="bg-white p-6 rounded-lg">
         {!orders || orders.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
@@ -79,18 +87,68 @@ const DeliveredOrder = () => {
                       <p>Ngày đặt: {order.created_at}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button
-                        className="cursor-pointer px-3 py-1 rounded-md bg-yellow-500 text-white"
-                        onClick={() => handleNotReceiveOrder(order.id)}
-                      >
-                        Chưa nhận hàng
-                      </button>
-                      <button
-                        className="cursor-pointer px-3 py-1 rounded-md bg-green-500 text-white"
-                        onClick={() => handleReceiveOrder(order.id)}
-                      >
-                        Đã nhận hàng
-                      </button>
+                      <div className="relative" ref={tooltipRef}>
+                        <button
+                          className="cursor-pointer px-3 py-1 rounded-md bg-yellow-500 text-white"
+                          onClick={() =>
+                            toggleTooltip(`not-receive-${order.id}`)
+                          }
+                        >
+                          Chưa nhận hàng
+                        </button>
+                        {activeTooltip === `not-receive-${order.id}` && (
+                          <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-3 bg-white border border-gray-200 rounded-lg shadow-lg whitespace-nowrap">
+                            <p className="mb-2 text-gray-700">
+                              Xác nhận chưa nhận được hàng?
+                            </p>
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                                onClick={() => setActiveTooltip(null)}
+                              >
+                                Hủy
+                              </button>
+                              <button
+                                className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                onClick={() => handleNotReceiveOrder(order.id)}
+                              >
+                                Xác nhận
+                              </button>
+                            </div>
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-white"></div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="relative" ref={tooltipRef}>
+                        <button
+                          className="cursor-pointer px-3 py-1 rounded-md bg-green-500 text-white"
+                          onClick={() => toggleTooltip(`receive-${order.id}`)}
+                        >
+                          Đã nhận hàng
+                        </button>
+                        {activeTooltip === `receive-${order.id}` && (
+                          <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-3 bg-white border border-gray-200 rounded-lg shadow-lg whitespace-nowrap">
+                            <p className="mb-2 text-gray-700">
+                              Xác nhận đã nhận được hàng?
+                            </p>
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                                onClick={() => setActiveTooltip(null)}
+                              >
+                                Hủy
+                              </button>
+                              <button
+                                className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+                                onClick={() => handleReceiveOrder(order.id)}
+                              >
+                                Xác nhận
+                              </button>
+                            </div>
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-white"></div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
