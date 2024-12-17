@@ -77,7 +77,7 @@ export default function Home() {
           </div>
         </div>
         <div className="container">
-          {voucherData && <VoucherSlider vouchers={voucherData} />}
+          {voucherData?.length > 0 && <VoucherSlider vouchers={voucherData} />}
 
           {productLoading ? (
             <div className="mt-20">

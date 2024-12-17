@@ -27,11 +27,14 @@ const ConfirmOrder = () => {
     onSuccess: () => {
       messageService.success("Đơn hàng đã hủy thành công");
       refetch();
+      setCancelReason("");
     },
     onError: (error) => {
       messageService.error(
         error?.response?.data?.message || "Có lỗi xảy ra khi hủy đơn hàng"
       );
+      refetch();
+      setCancelReason("");
     },
   });
 
