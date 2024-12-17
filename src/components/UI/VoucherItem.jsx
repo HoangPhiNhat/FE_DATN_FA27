@@ -5,9 +5,13 @@ const VoucherItem = ({ voucher }) => {
     <div className="p-4 border rounded-lg mx-2 bg-white shadow-sm hover:shadow-md transition-shadow">
       <div className="flex flex-col">
         <div className="text-xl font-bold text-red-600 mb-2">
-          {`Giảm ${voucher.discount_value}% cho đơn hàng từ ${Number(
-            voucher.min_order_value
-          ).toLocaleString("vi-VN")}đ`}
+          {`Giảm ${
+            voucher.discount_type === "percentage"
+              ? `${voucher.discount_value}%`
+              : `${Number(voucher.discount_value).toLocaleString("vi-VN")}đ`
+          } cho đơn hàng từ ${Number(voucher.min_order_value).toLocaleString(
+            "vi-VN"
+          )}đ`}
         </div>
         <div className="text-sm font-medium mb-1">{voucher.name}</div>
         <div className="text-xs text-gray-500 ">{voucher.description}</div>

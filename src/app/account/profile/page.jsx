@@ -29,7 +29,7 @@ const UserAccountContent = () => {
   const checkAuth = useCallback(() => {
     const token = localStorage.getItem("access_token");
     if (!token) {
-      // messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
+      messageService.error("Vui lòng đăng nhập để sử dụng chức năng này");
       router.push("/sign-in");
     }
   }, [router]);
@@ -63,8 +63,10 @@ const UserAccountContent = () => {
         localStorage.removeItem("user");
         window.dispatchEvent(new Event("logoutSuccess"));
         window.dispatchEvent(new Event("storage"));
+        messageService.success("Đăng xuất thành công");
         router.push("/");
         return null;
+
       default:
         return <UserInfo data={userProfile.data} />;
     }

@@ -18,7 +18,6 @@ const OrderList = () => {
     currentPage,
     pageSize
   );
-  console.log(currentPage);
   const orders = orderData?.data;
   const totalPages = Math.ceil(orderData?.total / pageSize);
 
@@ -27,6 +26,8 @@ const OrderList = () => {
     onSuccess: () => {
       messageService.success("Đơn hàng đã hủy thành công");
       refetch();
+      setCancelReason("");
+      setIsCanceling(false);
     },
     onError: (error) => {
       messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
@@ -40,20 +41,6 @@ const OrderList = () => {
   const handleCancelOrder = (orderId) => {
     setIsCanceling(true);
     setCurrentOrderId(orderId);
-  };
-
-  const confirmCancelOrder = () => {
-    cancelOrder(currentOrderId, cancelReason)
-      .then(() => {
-        messageService.success("Đơn hàng đã hủy thành công");
-        refetch();
-        setCancelReason("");
-        setIsCanceling(false);
-        setCurrentOrderId(null);
-      })
-      .catch((error) => {
-        messageService.error("Có lỗi xảy ra khi hủy đơn hàng");
-      });
   };
 
   return (
@@ -171,7 +158,12 @@ const OrderList = () => {
                         Hủy
                       </button>
                       <button
-                        onClick={confirmCancelOrder}
+                        onClick={() =>
+                          cancelOrder({
+                            id: order.id,
+                            cancelReason: cancelReason,
+                          })
+                        }
                         className="mt-2 text-right bg-blue-500 text-white px-4 py-2 rounded"
                       >
                         Xác nhận

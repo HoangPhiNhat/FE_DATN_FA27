@@ -26,7 +26,7 @@ export const getProductAll = async (
     if (size) queryParams += `&sizeId=${size}`;
     if (name) queryParams += `&name=${name}`;
 
-    const response = await UnAuthor.get(`/products?${queryParams}`);
+    const response = await UnAuthor.get(`/products?${queryParams}&is_active=1`);
     return response;
   } catch (error) {
     throw error;
@@ -78,7 +78,7 @@ export const getProducts = async (
     if (size) queryParams += `&sizeId=${size}`;
     if (name) queryParams += `&name=${name}`;
 
-    const response = await UnAuthor.get(`/products?${queryParams}`);
+    const response = await UnAuthor.get(`/products?${queryParams}&is_active=1`);
     return response;
   } catch (error) {
     throw error;

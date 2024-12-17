@@ -39,7 +39,7 @@ const Checkout = () => {
   const { data: cartData, refetch: refetchCart } = useCartQuery(cart);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [discountAmount, setDiscountAmount] = useState(0);
-
+  const [overload, setOverload] = useState(false);
   const {
     register,
     handleSubmit,
@@ -181,6 +181,7 @@ const Checkout = () => {
 
   const onSubmit = async (data) => {
     try {
+      setOverload(true);
       const selectedAddress = addressDetails.find(
         (addr) => addr.id === selectedAddressId
       );
@@ -252,6 +253,7 @@ const Checkout = () => {
         }
       }
     } catch (error) {
+      setOverload(false);
       messageService.error(
         "Đặt hàng thất bại. " + error?.response.data.message
       );
@@ -701,8 +703,16 @@ const Checkout = () => {
           </div>
         </div>
       </form>
-
-      {/* Modals */}
+      {overload && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+          <div className="text-center p-6 ">
+            <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-800 text-lg font-semibold animate-fade">
+              Đang xử lý đặt hàng, vui lòng chờ trong giây lát
+            </p>
+          </div>
+        </div>
+      )}
       {showAddressModal && <AddressModal />}
       {isAddingNew && (
         <Address

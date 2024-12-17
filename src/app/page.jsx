@@ -18,7 +18,7 @@ export default function Home() {
     1,
     ""
   );
-
+  localStorage.removeItem("checkoutItems");
   const { data: voucherData } = useVoucherQuery();
   console.log({ productData });
   const topCategories = useMemo(() => {
