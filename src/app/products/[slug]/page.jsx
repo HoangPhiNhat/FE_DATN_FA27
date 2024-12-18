@@ -146,7 +146,8 @@ const ProductDetail = () => {
   };
 
   if (isLoading) return <Loading />;
-  if (isError || !data) return <p>Sản phẩm không tồn tại</p>;
+  if (isError || !data)
+    return <p className="text-center">Sản phẩm không tồn tại</p>;
   if (!selectedColor) return <Loading />;
 
   return (
@@ -184,11 +185,9 @@ const ProductDetail = () => {
                   )}
                 </p>
               </div>
-
-              <p className="mb-4 text-sm md:text-base">
+              {/* <p className="mb-4 text-sm md:text-base">
                 {data.short_description}
-              </p>
-
+              </p> */}
               <div className="mb-4">
                 <h3 className="font-semibold mb-2 text-sm md:text-base">Màu</h3>
                 <div className="flex flex-wrap gap-2">

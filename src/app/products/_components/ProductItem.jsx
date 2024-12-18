@@ -46,7 +46,7 @@ const ProductItem = ({ product, hrefEdit }) => {
             width={334}
             height={425}
             alt={product.name}
-            className="rounded-t-lg object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+            className="rounded-t-lg object-cover w-[343px] h-[343px] hover:scale-105 transition-transform duration-300 sm:w-[180px] sm:h-[180px] md:w-[343px] md:h-[343px]"
             priority
           />
         </Link>
