@@ -54,7 +54,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center overflow-hidden mt-10">
       <div className="w-full h-full flex flex-col items-center justify-center">
         {successMsg ? (
           <div className="w-[500px]">
@@ -72,7 +72,7 @@ const SignUp = () => {
             className="w-full lgl:w-[500px] h-full flex items-center justify-center"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="px-6 py-4 w-full h-full flex flex-col justify-start overflow-y-scroll scrollbar-thin scrollbar-thumb-primary">
+            <div className="px-6 py-4 w-full h-full flex flex-col justify-start">
               <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-2xl mdl:text-3xl mb-4">
                 Tạo tài khoản của bạn
               </h1>

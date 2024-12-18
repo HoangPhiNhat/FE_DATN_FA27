@@ -63,12 +63,12 @@ const SignIn = () => {
   };
 
   return (
-    <div className="w-full h-full mt-10 flex items-center justify-center scrollbar-none">
+    <div className="w-full h-full mt-10 flex items-center justify-center overflow-hidden">
       <form
         className="w-full lgl:w-[450px] flex items-center justify-center"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="px-6 py-4 w-full flex flex-col justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-primary">
+        <div className="px-6 py-4 w-full flex flex-col justify-center">
           <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-3xl mdl:text-4xl mb-4">
             Đăng nhập
           </h1>
