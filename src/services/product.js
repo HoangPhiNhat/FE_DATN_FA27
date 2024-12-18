@@ -71,7 +71,7 @@ export const getProducts = async (
       queryParams += `${queryParams ? "&" : ""}maxPrice=${maxPrice}`;
 
     queryParams += `${queryParams ? "&" : ""}sort=${sort || "DESC"}`;
-    queryParams += `&page=${page}&size=${400}`;
+    queryParams += `&page=${page}&size=${300}`;
 
     if (category) queryParams += `&categoryId=${category}`;
     if (color) queryParams += `&colorId=${color}`;
