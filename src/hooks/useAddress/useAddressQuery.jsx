@@ -18,6 +18,8 @@ const useAddressQuery = (id) => {
           return await getAddress();
       }
     },
+    staleTime: 0,
+    gcTime: 0,
   });
   return { data, ...rest };
 };

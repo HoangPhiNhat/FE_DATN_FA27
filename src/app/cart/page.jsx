@@ -20,7 +20,7 @@ const Cart = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [refetchCart, setRefetchCart] = useState(0);
   const [changedPriceProducts, setChangedPriceProducts] = useState([]);
-
+  const [quantityErrors, setQuantityErrors] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     setIsAuthenticated(!!token);
@@ -117,15 +117,22 @@ const Cart = () => {
           (att) => att.id === cartItem.product_att_id
         );
         if (!attData) return true;
-
-        const isQuantityValid = cartItem.quantity <= attData.quantity;
+        const isQuantityValid = cartItem.quantity <= attData.stock_quantity;
+        if (!isQuantityValid) {
+          setQuantityErrors((prev) => [
+            ...prev,
+            {
+              id: cartItem.id,
+              requestedQuantity: cartItem.quantity,
+              availableQuantity: attData.stock_quantity,
+            },
+          ]);
+        }
         const isPriceChanged =
           Number(cartItem.product_att.regular_price) !==
             Number(attData.regular_price) ||
           Number(cartItem.product_att.reduced_price) !==
             Number(attData.reduced_price);
-        console.log(isPriceChanged);
-        console.log(isQuantityValid);
         if (isPriceChanged) {
           setChangedPriceProducts((prev) => [
             ...prev,
@@ -138,10 +145,8 @@ const Cart = () => {
             },
           ]);
         }
-
-        return !isQuantityValid && isPriceChanged;
+        return !isQuantityValid || isPriceChanged;
       });
-
       if (invalidProducts.length > 0) {
         await refetch();
         setRefetchCart((prev) => prev + 1);
@@ -226,6 +231,7 @@ const Cart = () => {
                 isSelected={selectedItems.includes(v.id)}
                 onToggleSelect={() => handleToggleSelect(v.id)}
                 priceChanged={changedPriceProducts.find((p) => p.id === v.id)}
+                quantityChanged={quantityErrors.find((p) => p.id === v.id)}
               />
             </div>
           ))}
