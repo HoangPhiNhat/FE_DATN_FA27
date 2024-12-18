@@ -13,7 +13,7 @@ const Banner = () => {
       <Slider {...settings}>
         <Link href="/">
           <Image
-            src="/images/banner/bannerImgOne.webp"
+            src="/images/banner/banner1.jpeg"
             width={1920}
             height={1080}
             className="object-cover"
@@ -22,7 +22,7 @@ const Banner = () => {
         </Link>
         <Link href="/">
           <Image
-            src="/images/banner/bannerImgTwo.webp"
+            src="/images/banner/banner2.png"
             width={1920}
             height={1080}
             className="object-cover"
@@ -31,13 +31,22 @@ const Banner = () => {
         </Link>
         <Link href="/">
           <Image
-            src="/images/banner/bannerImgThree.webp"
+            src="/images/banner/banner3.png"
             width={1920}
             height={1080}
             className="object-cover"
             alt="Banner Image 3"
           />
         </Link>
+        {/* <Link href="/">
+          <Image
+            src="/images/banner/banner5.png"
+            width={1920}
+            height={1080}
+            className="object-cover"
+            alt="Banner Image 3"
+          />
+        </Link> */}
       </Slider>
     </div>
   );
