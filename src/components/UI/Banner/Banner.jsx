@@ -11,7 +11,7 @@ const Banner = () => {
   return (
     <div className="w-full  bg-white">
       <Slider {...settings}>
-        <Link href="/offer">
+        <Link href="/">
           <Image
             src="/images/banner/bannerImgOne.webp"
             width={1920}
@@ -20,7 +20,7 @@ const Banner = () => {
             alt="Banner Image 3"
           />
         </Link>
-        <Link href="/offer">
+        <Link href="/">
           <Image
             src="/images/banner/bannerImgTwo.webp"
             width={1920}
@@ -29,7 +29,7 @@ const Banner = () => {
             alt="Banner Image 3"
           />
         </Link>
-        <Link href="/offer">
+        <Link href="/">
           <Image
             src="/images/banner/bannerImgThree.webp"
             width={1920}

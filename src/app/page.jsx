@@ -4,7 +4,6 @@ import Banner from "@/components/UI/Banner/Banner";
 import ServiceHighlights from "@/components/UI/Service/ServiceHighlights";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
 import ProductGrid from "./products/_components/ProductGrid";
-import ProductSlider from "./products/_components/ProductSlider";
 import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
 import VoucherSlider from "@/components/UI/VoucherSlider";
 import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";

@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
             <NavigationBar />
           </header>
           <main>
-            <Breadcrumbs />
+            {/* <Breadcrumbs /> */}
             {children}
           </main>
           <Footer />
