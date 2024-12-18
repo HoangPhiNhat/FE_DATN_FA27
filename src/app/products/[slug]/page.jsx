@@ -83,11 +83,13 @@ const ProductDetail = () => {
     }));
 
     setColorImages(updatedImages);
+    setQuantity(1);
   };
 
   const handleSizeChange = (sizeId) => {
     const size = selectedColor.sizes.find((s) => s.size_id === sizeId);
     setSelectedSize(size);
+    setQuantity(1);
   };
 
   const handleQuantityChange = (e) => {
