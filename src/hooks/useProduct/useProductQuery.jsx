@@ -64,6 +64,7 @@ const useProductQuery = (
           return null;
       }
     },
+    refetchOnWindowFocus: true,
   });
   return { data, ...rest };
 };

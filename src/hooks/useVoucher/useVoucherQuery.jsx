@@ -12,7 +12,9 @@ const useVoucherQuery = () => {
         return await getVoucher();
       }
     },
-    keepPreviousData: true,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
   });
   return { data, refetch, ...rest };
 };

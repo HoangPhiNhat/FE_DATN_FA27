@@ -27,6 +27,7 @@ const useOrderQuery = (action, page = 1, size = 4) => {
     },
     staleTime: 0,
     gcTime: 0,
+    refetchOnWindowFocus: true,
   });
   return { data, refetch, ...rest };
 };

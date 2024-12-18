@@ -36,6 +36,7 @@ const Address = ({
     action: "CREATE",
     onSuccess: () => {
       setIsAddingNew(false);
+      onClose();
       reset();
       messageService.success("Thêm địa chỉ mới thành công");
     },
