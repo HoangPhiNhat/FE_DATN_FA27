@@ -8,6 +8,7 @@ import useAddressMutation from "@/hooks/useAddress/useAddressMutation";
 import messageService from "@/components/base/Message/Message";
 import Loading from "@/components/base/Loading/Loading";
 import { usePathname } from "next/navigation";
+import ConfirmModal from "@/components/base/Confirm/Confirm";
 
 const Address = ({
   isAdding = false,
@@ -25,6 +26,8 @@ const Address = ({
   const [wardMap, setWardMap] = useState({});
   const pathname = usePathname();
   const isCheckoutPage = pathname?.includes("checkout");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [addressId, setAddressId] = useState(null);
   const {
     mutate: addNewAddress,
     isLoading: isAddingNewAddress,
@@ -204,7 +207,7 @@ const Address = ({
   }
 
   return (
-    <div className={`${!isCheckoutPage ? "mt-4 max-w-4xl mx-auto p-4 " : ""}`}>
+    <div className={`${!isCheckoutPage ? "mt-4  mx-auto p-4 " : ""}`}>
       {!isCheckoutPage && (
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-800">
@@ -215,7 +218,7 @@ const Address = ({
               onClick={() => setIsAddingNew(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              + Thêm địa chỉ m��i
+              + Thêm địa chỉ mới
             </button>
           )}
         </div>
@@ -270,7 +273,10 @@ const Address = ({
                     Sửa
                   </button>
                   <button
-                    onClick={() => removeAddress(address.id)}
+                    onClick={() => {
+                      setShowConfirmModal(true);
+                      setAddressId(address.id);
+                    }}
                     className="text-gray-600 hover:text-red-600"
                   >
                     Xóa
@@ -281,7 +287,15 @@ const Address = ({
           ))}
         </div>
       )}
-
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => removeAddress(addressId)}
+        title="Xác nhận xóa"
+        message={`Bạn có chắc chắn muốn xóa địa chỉ đã chọn?
+        `}
+        label="Xóa"
+      />
       {(isAddingNew || isEditing) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-lg relative">
