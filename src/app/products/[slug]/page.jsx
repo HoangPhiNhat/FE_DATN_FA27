@@ -16,6 +16,16 @@ const ProductDetail = () => {
     "GET_PRODUCT_BY_SLUG",
     slug
   );
+  const colorMap = {
+    "Xanh lam": "#0000FF", // Xanh lam là mã màu xanh dương
+    Xám: "#808080", // Xám
+    Đen: "#000000", // Đen
+    Hồng: "#FFC0CB", // Hồng
+    Nâu: "#A52A2A", // Nâu
+    "Xanh lá": "#008000", // Xanh lá
+    Tím: "#800080", // Tím
+    Đỏ: "#FF0000", // Đỏ
+  };
 
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -201,7 +211,7 @@ const ProductDetail = () => {
                           : "border-gray-300"
                       }`}
                       style={{
-                        backgroundColor: color.color_name.toLowerCase(),
+                        backgroundColor: colorMap[color.name] || "#FFFFFF",
                       }}
                     />
                   ))}
