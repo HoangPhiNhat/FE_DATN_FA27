@@ -83,7 +83,7 @@ const CartItem = ({
         />
 
         {/* Product Info Section */}
-        <div className="flex col-span-2 items-center gap-4 ml-4 mb-4 sm:mb-0">
+        <div className="flex col-span-2 md:items-center sm:items-start gap-4 ml-4 mb-4 sm:mb-0">
           <input
             type="checkbox"
             checked={isSelected}
@@ -94,7 +94,7 @@ const CartItem = ({
             width={80}
             height={80}
             className="aspect-square object-cover sm:w-[104px] sm:h-[104px]"
-            src={data.product_att.image ?? "/images/default-image.jpg"}
+            src={data.product_att.image}
             alt={data.name}
           />
           <div className="flex flex-col gap-1">
@@ -107,8 +107,8 @@ const CartItem = ({
           </div>
         </div>
 
-        <div className="col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 px-4 sm:px-0">
-          <div className="flex items-center">
+        <div className="col-span-3 grid sm:grid-cols-1 md:grid-cols-3 gap-4 sm:gap-0 px-4 sm:px-0 sm:mt-8">
+          <div className="flex items-center md:block sm:hidden">
             {data.product_att.reduced_price ? (
               <div className="flex items-center gap-2">
                 <span className="text-red-500 text-sm sm:text-base">
@@ -141,8 +141,28 @@ const CartItem = ({
             </button>
           </div>
 
-          <div className="flex items-center justify-end sm:justify-start">
-            <span className="text-sm sm:text-base font-medium">
+          <div className="flex items-center sm:block justify-end sm:justify-around">
+            <div className="flex items-center md:hidden sm:block">
+              {data.product_att.reduced_price ? (
+                <div className="flex mt-2">
+                  <p>Giá: </p>
+                  <div className="flex items-center gap-2 ml-1">
+                    <span className="text-red-500 text-sm sm:text-base">
+                      {data.product_att.reduced_price.toLocaleString()}đ
+                    </span>
+                    <span className="line-through text-gray-400 text-xs">
+                      {data.product_att.regular_price.toLocaleString()}đ
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <span className="text-sm sm:text-base">
+                  {data.product_att.regular_price.toLocaleString()}đ
+                </span>
+              )}
+            </div>
+            <span className="text-sm sm:text-base font-medium mt-1">
+              <span className="mr-1">Tổng</span>
               {(
                 (data.product_att.reduced_price ||
                   data.product_att.regular_price) * quantity
