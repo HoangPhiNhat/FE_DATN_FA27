@@ -22,7 +22,7 @@ const ProductNav = ({ itemsPerPageFromBanner, sort, setSort }) => {
   // }, [girdViewActive, listViewActive]);
 
   return (
-    <div className="w-full flex flex-col md:flex-row md:items-center justify-between">
+    <div className="w-full flex flex-col md:flex-row md:items-center justify-between pb-4">
       <div className="flex items-center gap-4">
         {/* <span
           className={`${
@@ -45,7 +45,7 @@ const ProductNav = ({ itemsPerPageFromBanner, sort, setSort }) => {
       </div>
       <div className="flex items-center gap-2 md:gap-6 mt-4 md:mt-0">
         <div className="flex items-center gap-2 text-base text-[#767676] relative">
-          <label className="block">Lặp theo:</label>
+          <label className="block">Sắp xếp theo:</label>
           <select
             onChange={(e) => setSort(e.target.value)}
             className="w-32 md:w-52 border-[1px] border-gray-200 py-1 px-4 cursor-pointer text-primeColor text-base block dark:placeholder-gray-400 appearance-none focus-within:outline-none focus-visible:border-primeColor"

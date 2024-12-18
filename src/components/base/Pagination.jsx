@@ -1,11 +1,47 @@
+import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const getPageNumbers = () => {
-    const pages = [];
+    // Nếu tổng số trang nhỏ hơn hoặc bằng 10, hiển thị tất cả các trang
+    if (totalPages <= 10) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
 
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
+    let pages = [];
+
+    // Luôn hiển thị trang đầu tiên
+    pages.push(1);
+
+    // Logic để hiển thị các trang
+    if (currentPage <= 5) {
+      // Nếu đang ở đầu
+      pages = [1, 2, 3, 4, 5, 6, "...", totalPages];
+    } else if (currentPage > totalPages - 5) {
+      // Nếu đang ở cuối
+      pages = [
+        1,
+        "...",
+        totalPages - 5,
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    } else {
+      // Nếu đang ở giữa
+      pages = [
+        1,
+        "...",
+        currentPage - 2,
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        currentPage + 2,
+        "...",
+        totalPages,
+      ];
     }
 
     return pages;
@@ -31,19 +67,28 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <FaChevronLeft />
       </button>
 
-      {getPageNumbers().map((pageNumber) => (
-        <button
-          key={pageNumber}
-          onClick={() => handlePageChange(pageNumber)}
-          className={`px-3 py-1 rounded border ${
-            pageNumber === currentPage
-              ? "bg-blue-500 text-white"
-              : "hover:bg-gray-100"
-          }`}
-        >
-          {pageNumber}
-        </button>
-      ))}
+      {getPageNumbers().map((pageNumber, index) => {
+        if (pageNumber === "...") {
+          return (
+            <span key={`ellipsis-${index}`} className="px-3 py-1">
+              ...
+            </span>
+          );
+        }
+        return (
+          <button
+            key={pageNumber}
+            onClick={() => handlePageChange(pageNumber)}
+            className={`px-3 py-1 rounded border ${
+              pageNumber === currentPage
+                ? "bg-blue-500 text-white"
+                : "hover:bg-gray-100"
+            }`}
+          >
+            {pageNumber}
+          </button>
+        );
+      })}
 
       <button
         onClick={() => handlePageChange(currentPage + 1)}

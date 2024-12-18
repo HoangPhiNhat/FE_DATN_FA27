@@ -23,7 +23,7 @@ const ProductItem = ({ product, hrefEdit }) => {
 
   return (
     <div className="relative flex flex-col bg-white rounded-lg border hover:shadow-md transition-shadow duration-300">
-      <div className="relative w-full overflow-hidden aspect-[3/4]">
+      <div className="relative w-full overflow-hidden ">
         {product.reduced_price && (
           <div className="absolute top-0 right-0 bg-red-600 text-white text-xs md:text-sm px-2 py-1 rounded-bl-lg z-10">
             Giảm{" "}
