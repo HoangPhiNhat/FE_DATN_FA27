@@ -10,7 +10,11 @@ import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
 import { useEffect, useMemo } from "react";
 
 export default function Home() {
-  const { data: categories, isLoading: categoryLoading } = useCategoryQuery();
+  const {
+    data: categories,
+    isLoading: categoryLoading,
+    refetch,
+  } = useCategoryQuery("GET_ALL_CATEGORY");
   const { data: productData, isLoading: productLoading } = useProductQuery(
     "GET_PRODUCT_BY",
     null,
@@ -19,12 +23,13 @@ export default function Home() {
   );
   useEffect(() => {
     localStorage.removeItem("checkoutItems");
-  }, []);
+    refetch();
+  }, [refetch]);
+  console.log(productData);
   const { data: voucherData } = useVoucherQuery();
   const topCategories = useMemo(() => {
     return categories ? categories.data.slice(0, 4) : [];
   }, [categories]);
-
   const groupedProducts = useMemo(() => {
     if (!productData || !topCategories) return {};
 
