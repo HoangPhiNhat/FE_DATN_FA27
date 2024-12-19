@@ -95,7 +95,7 @@ const CartItem = ({
             height={80}
             className="aspect-square object-cover sm:w-[104px] sm:h-[104px]"
             src={data.product_att.image}
-            alt={data.name}
+            alt={data.product_att.image}
           />
           <div className="flex flex-col gap-1">
             <h1 className="font-titleFont font-semibold text-sm sm:text-base">
@@ -110,7 +110,7 @@ const CartItem = ({
         <div className="col-span-3 grid sm:grid-cols-1 md:grid-cols-3 gap-4 sm:gap-0 px-4 sm:px-0 sm:mt-8">
           <div className="flex items-center md:block sm:hidden">
             {data.product_att.reduced_price ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 md:mt-8 sm:mt-0">
                 <span className="text-red-500 text-sm sm:text-base">
                   {data.product_att.reduced_price.toLocaleString()}đ
                 </span>
@@ -119,9 +119,11 @@ const CartItem = ({
                 </span>
               </div>
             ) : (
-              <span className="text-sm sm:text-base">
-                {data.product_att.regular_price.toLocaleString()}đ
-              </span>
+              <div className="md:mt-8 sm:mt-0">
+                <span className="text-sm sm:text-base ">
+                  {data.product_att.regular_price.toLocaleString()}đ
+                </span>
+              </div>
             )}
           </div>
 
@@ -141,12 +143,12 @@ const CartItem = ({
             </button>
           </div>
 
-          <div className="flex items-center sm:block justify-end sm:justify-around">
+          <div className="flex items-center sm:block justify-end sm:justify-around md:mt-8 sm:mt-none">
             <div className="flex items-center md:hidden sm:block">
               {data.product_att.reduced_price ? (
                 <div className="flex mt-2">
                   <p>Giá: </p>
-                  <div className="flex items-center gap-2 ml-1">
+                  <div className="flex items-center gap-2  ml-1">
                     <span className="text-red-500 text-sm sm:text-base">
                       {data.product_att.reduced_price.toLocaleString()}đ
                     </span>
@@ -161,7 +163,7 @@ const CartItem = ({
                 </span>
               )}
             </div>
-            <span className="text-sm sm:text-base font-medium mt-1">
+            <span className="text-sm sm:text-base font-medium md:mt-6 sm:mt-0">
               <span className="mr-1">Tổng</span>
               {(
                 (data.product_att.reduced_price ||
