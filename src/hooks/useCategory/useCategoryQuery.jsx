@@ -16,6 +16,10 @@ const useCategoryQuery = (action, slug) => {
           return null;
       }
     },
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
   return { data, ...rest };
 };

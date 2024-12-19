@@ -9,6 +9,9 @@ const useColorQuery = (action) => {
     queryFn: async () => {
       return await getAllColor();
     },
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
   });
   return { data, ...rest };
 };

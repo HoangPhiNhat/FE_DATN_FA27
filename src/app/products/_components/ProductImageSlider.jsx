@@ -40,18 +40,31 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
   return (
     <div className="slider-container">
       {/* Slider Chính */}
-      <Slider {...mainSettings} ref={sliderRefMain}>
-        {images.map((image, index) => (
+      {images.length === 1 ? (
+        images.map((image, index) => (
           <Image
             key={index}
-            alt={index}
+            alt={index.toString()}
             src={image.url}
             width={740}
             height={740}
-            className="object-cover"
+            className="object-cover md:w-[694px] md:h-[694px] sm:w-[394px] sm:h-[394px]"
           />
-        ))}
-      </Slider>
+        ))
+      ) : (
+        <Slider {...mainSettings} ref={sliderRefMain}>
+          {images.map((image, index) => (
+            <Image
+              key={index}
+              alt={index.toString()}
+              src={image.url}
+              width={740}
+              height={740}
+              className="object-cover md:w-[694px] md:h-[694px] sm:w-[394px] sm:h-[394px]"
+            />
+          ))}
+        </Slider>
+      )}
 
       {/* Slider Thumbnail */}
       <div className={`mt-4 ${!showArrows ? "slick-no-arrow" : ""}`}>
@@ -76,7 +89,7 @@ const ProductImageSlider = ({ images, handleChangeImage }) => {
                     src={image.url}
                     width={100}
                     height={100}
-                    className={`object-cover w-full h-full transition-all duration-300 ${
+                    className={`object-cover md:w-[141px] md:h-[141px] sm:w-[65px] sm:h-[65px] transition-all duration-300 ${
                       isActive ? "scale-110" : "hover:scale-110"
                     }`}
                   />

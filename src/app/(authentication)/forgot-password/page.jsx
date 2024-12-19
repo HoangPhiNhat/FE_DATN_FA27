@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Input from "@/components/common/Input/Input";
 import messageService from "@/components/base/Message/Message";
-import { resetPasswordEmail } from "@/services/auth";
+import { resetPassword, resetPasswordEmail } from "@/services/auth";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);
@@ -21,6 +21,7 @@ const ForgotPassword = () => {
       setEmail(savedEmail);
       setStep(savedStep);
     }
+    return () => localStorage.removeItem("forgotPasswordData");
   }, []);
 
   const saveToLocalStorage = (email, step) => {
@@ -31,20 +32,24 @@ const ForgotPassword = () => {
     try {
       setEmail(data.email);
       const res = await resetPasswordEmail(data);
-      if (res.status === 201) {
+      if (res) {
         setStep(2);
         saveToLocalStorage(data.email, 2);
       }
     } catch (error) {
-      if (error.response?.status === 429) {
+      console.log(error);
+      if (error.response.status === 422) {
+        messageService.error("Email không tồn tại trên hệ thống");
+      } else if (error.response?.status === 429) {
         messageService.error(
           "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau!"
         );
         return;
+      } else {
+        messageService.error(
+          error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!"
+        );
       }
-      messageService.error(
-        error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!"
-      );
     }
   };
 
@@ -54,8 +59,12 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      const res = await resetPassword(data);
-      if (res.status === 201) {
+      const res = await resetPassword({
+        ...data,
+        email,
+        password_confirmation: data.confirmPassword,
+      });
+      if (res) {
         messageService.success("Đặt lại mật khẩu thành công!");
         localStorage.removeItem("forgotPasswordData");
         router.push("/sign-in");
@@ -114,7 +123,7 @@ const ForgotPassword = () => {
         })}
       />
       <Input
-        type="password"
+        type="text"
         label="Mật khẩu mới"
         placeholder="Nhập mật khẩu mới"
         error={errors.password?.message}
@@ -127,7 +136,7 @@ const ForgotPassword = () => {
         })}
       />
       <Input
-        type="password"
+        type="text"
         label="Xác nhận mật khẩu"
         placeholder="Nhập lại mật khẩu mới"
         error={errors.confirmPassword?.message}
@@ -145,7 +154,7 @@ const ForgotPassword = () => {
   );
 
   return (
-    <div className="flex  items-center justify-center">
+    <div className="flex  items-center justify-center mt-20">
       <div className="w-full max-w-md p-8 space-y-4 bg-white rounded-lg shadow">
         {step === 1 && renderEmailForm()}
         {step === 2 && renderOTPAndPasswordForm()}

@@ -8,8 +8,14 @@ import useAddressMutation from "@/hooks/useAddress/useAddressMutation";
 import messageService from "@/components/base/Message/Message";
 import Loading from "@/components/base/Loading/Loading";
 import { usePathname } from "next/navigation";
+import ConfirmModal from "@/components/base/Confirm/Confirm";
 
-const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
+const Address = ({
+  isAdding = false,
+  isCheckout = false,
+  onClose,
+  loading = false,
+}) => {
   const [isAddingNew, setIsAddingNew] = useState(isAdding);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -20,30 +26,37 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
   const [wardMap, setWardMap] = useState({});
   const pathname = usePathname();
   const isCheckoutPage = pathname?.includes("checkout");
-  const { mutate: addNewAddress, isLoading: isAddingNewAddress } =
-    useAddressMutation({
-      action: "CREATE",
-      onSuccess: () => {
-        setIsAddingNew(false);
-        reset();
-        messageService.success("Thêm địa chỉ mới thành công");
-      },
-      onError: () => {
-        messageService.error("Thêm địa chỉ mới thất bại");
-      },
-    });
-  const { mutate: updateAddress } = useAddressMutation({
-    action: "UPDATE",
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [addressId, setAddressId] = useState(null);
+  const {
+    mutate: addNewAddress,
+    isLoading: isAddingNewAddress,
+    isPending,
+  } = useAddressMutation({
+    action: "CREATE",
     onSuccess: () => {
-      setIsEditing(false);
-      setSelectedAddress(null);
+      setIsAddingNew(false);
+      onClose();
       reset();
-      messageService.success("Cập nhật địa chỉ thành công");
+      messageService.success("Thêm địa chỉ mới thành công");
     },
     onError: () => {
-      messageService.error("Cập nhật địa chỉ thất bại");
+      messageService.error("Thêm địa chỉ mới thất bại");
     },
   });
+  const { mutate: updateAddress, isPending: isUpdatingAddress } =
+    useAddressMutation({
+      action: "UPDATE",
+      onSuccess: () => {
+        setIsEditing(false);
+        setSelectedAddress(null);
+        reset();
+        messageService.success("Cập nhật địa chỉ thành công");
+      },
+      onError: () => {
+        messageService.error("Cập nhật địa chỉ thất bại");
+      },
+    });
 
   const { data: addresses, isLoading, refetch } = useAddressQuery();
   const { mutate: removeAddress } = useAddressMutation({
@@ -190,12 +203,12 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !loading) {
     return <Loading />;
   }
 
   return (
-    <div className={`${!isCheckoutPage ? "mt-4 max-w-4xl mx-auto p-4 " : ""}`}>
+    <div className={`${!isCheckoutPage ? "mt-4  mx-auto p-4 " : ""}`}>
       {!isCheckoutPage && (
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-800">
@@ -213,7 +226,7 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
       )}
 
       {addressDetails.length === 0 || isCheckout ? (
-        isLoading ? (
+        isLoading && !loading ? (
           <Loading />
         ) : (
           !isCheckoutPage && (
@@ -261,7 +274,10 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
                     Sửa
                   </button>
                   <button
-                    onClick={() => removeAddress(address.id)}
+                    onClick={() => {
+                      setShowConfirmModal(true);
+                      setAddressId(address.id);
+                    }}
                     className="text-gray-600 hover:text-red-600"
                   >
                     Xóa
@@ -272,13 +288,28 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
           ))}
         </div>
       )}
-
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => removeAddress(addressId)}
+        title="Xác nhận xóa"
+        message={`Bạn có chắc chắn muốn xóa địa chỉ đã chọn?
+        `}
+        label="Xóa"
+      />
       {(isAddingNew || isEditing) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-lg">
+          <div className="bg-white p-6 rounded-lg w-full max-w-lg relative">
+            {(isPending || isUpdatingAddress) && (
+              <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center rounded-lg z-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            )}
+
             <h3 className="text-xl font-semibold mb-4">
               {isEditing ? "Sửa địa chỉ" : "Thêm địa chỉ mới"}
             </h3>
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -390,6 +421,7 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
                     onClose && onClose();
                     reset();
                   }}
+                  disabled={isAddingNewAddress || isUpdatingAddress}
                   className="px-4 py-2 border rounded-lg hover:bg-gray-50"
                 >
                   Hủy
@@ -397,6 +429,7 @@ const Address = ({ isAdding = false, isCheckout = false, onClose }) => {
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  disabled={isAddingNewAddress || isUpdatingAddress}
                 >
                   {isEditing ? "Cập nhật" : "Lưu"}
                 </button>

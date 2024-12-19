@@ -83,11 +83,13 @@ const ProductDetail = () => {
     }));
 
     setColorImages(updatedImages);
+    setQuantity(1);
   };
 
   const handleSizeChange = (sizeId) => {
     const size = selectedColor.sizes.find((s) => s.size_id === sizeId);
     setSelectedSize(size);
+    setQuantity(1);
   };
 
   const handleQuantityChange = (e) => {
@@ -144,7 +146,8 @@ const ProductDetail = () => {
   };
 
   if (isLoading) return <Loading />;
-  if (isError || !data) return <p>Sản phẩm không tồn tại</p>;
+  if (isError || !data)
+    return <p className="text-center">Sản phẩm không tồn tại</p>;
   if (!selectedColor) return <Loading />;
 
   return (
@@ -182,11 +185,9 @@ const ProductDetail = () => {
                   )}
                 </p>
               </div>
-
-              <p className="mb-4 text-sm md:text-base">
+              {/* <p className="mb-4 text-sm md:text-base">
                 {data.short_description}
-              </p>
-
+              </p> */}
               <div className="mb-4">
                 <h3 className="font-semibold mb-2 text-sm md:text-base">Màu</h3>
                 <div className="flex flex-wrap gap-2">
@@ -194,15 +195,14 @@ const ProductDetail = () => {
                     <button
                       key={color.color_id}
                       onClick={() => handleColorChange(color.color_id)}
-                      className={`w-7 h-7 md:w-8 md:h-8 rounded-full border-2 ${
+                      className={`rounded-lg px-2 py-1  border-2 ${
                         selectedColor.color_id === color.color_id
-                          ? "border-black"
+                          ? "border-primary"
                           : "border-gray-300"
                       }`}
-                      style={{
-                        backgroundColor: color.color_name.toLowerCase(),
-                      }}
-                    />
+                    >
+                      {color.color_name}
+                    </button>
                   ))}
                 </div>
               </div>

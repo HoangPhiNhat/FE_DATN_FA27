@@ -178,6 +178,14 @@ const Checkout = () => {
 
   const onSubmit = async (data) => {
     try {
+      if (!selectedAddressId || addressDetails.length === 0) {
+        messageService.error(
+          "Vui lòng thêm địa chỉ giao hàng trước khi đặt hàng"
+        );
+        setIsAddingNew(true);
+        return;
+      }
+
       setOverload(true);
       const selectedAddress = addressDetails.find(
         (addr) => addr.id === selectedAddressId
@@ -443,7 +451,7 @@ const Checkout = () => {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading && !isAddingNew) return <Loading />;
   return (
     <>
       <form
@@ -694,9 +702,17 @@ const Checkout = () => {
 
               <button
                 type="submit"
-                className="w-full mt-6 bg-primary text-white py-4 rounded-lg hover:bg-primary-dark transition-colors text-sm md:text-base"
+                disabled={addressDetails.length === 0}
+                className={`w-full mt-6 py-4 rounded-lg text-sm md:text-base transition-colors
+                  ${
+                    addressDetails.length === 0
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-primary text-white hover:bg-primary-dark"
+                  }`}
               >
-                Đặt hàng
+                {addressDetails.length === 0
+                  ? "Vui lòng thêm địa chỉ giao hàng"
+                  : "Đặt hàng"}
               </button>
             </div>
           </div>
@@ -718,6 +734,7 @@ const Checkout = () => {
           isAdding={isAddingNew}
           isCheckout={true}
           onClose={() => setIsAddingNew(false)}
+          loading={true}
         />
       )}
     </>

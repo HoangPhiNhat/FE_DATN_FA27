@@ -4,14 +4,17 @@ import Banner from "@/components/UI/Banner/Banner";
 import ServiceHighlights from "@/components/UI/Service/ServiceHighlights";
 import useProductQuery from "@/hooks/useProduct/useProductQuery";
 import ProductGrid from "./products/_components/ProductGrid";
-import ProductSlider from "./products/_components/ProductSlider";
 import useVoucherQuery from "@/hooks/useVoucher/useVoucherQuery";
 import VoucherSlider from "@/components/UI/VoucherSlider";
 import useCategoryQuery from "@/hooks/useCategory/useCategoryQuery";
 import { useEffect, useMemo } from "react";
 
 export default function Home() {
-  const { data: categories, isLoading: categoryLoading } = useCategoryQuery();
+  const {
+    data: categories,
+    isLoading: categoryLoading,
+    refetch,
+  } = useCategoryQuery("GET_ALL_CATEGORY");
   const { data: productData, isLoading: productLoading } = useProductQuery(
     "GET_PRODUCT_BY",
     null,
@@ -20,12 +23,13 @@ export default function Home() {
   );
   useEffect(() => {
     localStorage.removeItem("checkoutItems");
-  }, []);
+    refetch();
+  }, [refetch]);
+  console.log(productData);
   const { data: voucherData } = useVoucherQuery();
   const topCategories = useMemo(() => {
     return categories ? categories.data.slice(0, 4) : [];
   }, [categories]);
-
   const groupedProducts = useMemo(() => {
     if (!productData || !topCategories) return {};
 
@@ -44,11 +48,6 @@ export default function Home() {
   }, [productData, topCategories]);
 
   const features = [
-    {
-      image: "/images/shipping.webp",
-      title: "Miễn phí vận chuyển",
-      description: "Đơn từ 399K",
-    },
     {
       image: "/images/exchange_goods.png",
       title: "Đổi hàng tận nhà",

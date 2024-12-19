@@ -11,7 +11,7 @@ export const getProductAll = async (
   sort
 ) => {
   try {
-    let limit = 9;
+    let limit = 8;
     let queryParams = "";
 
     if (minPrice) queryParams += `minPrice=${minPrice}`;
@@ -71,7 +71,7 @@ export const getProducts = async (
       queryParams += `${queryParams ? "&" : ""}maxPrice=${maxPrice}`;
 
     queryParams += `${queryParams ? "&" : ""}sort=${sort || "DESC"}`;
-    queryParams += `&page=${page}&size=${400}`;
+    queryParams += `&page=${page}&size=${300}`;
 
     if (category) queryParams += `&categoryId=${category}`;
     if (color) queryParams += `&colorId=${color}`;

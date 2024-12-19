@@ -37,9 +37,9 @@ const Breadcrumbs = () => {
     <>
       {pathname !== "/" && (
         <div className="container">
-          {/* <div className="container w-full py-10 xl:py-10 flex flex-col gap-3"> */}
-          <p className="text-sm font-normal text-lightText capitalize flex items-center">
-            {/* {breadcrumbPath.map((segment, index) => (
+          <div className="container w-full py-10 xl:py-10 flex flex-col gap-3">
+            <p className="text-sm font-normal text-lightText capitalize flex items-center">
+              {/* {breadcrumbPath.map((segment, index) => (
               <span key={index} className="flex items-center">
                 <span className="capitalize font-semibold text-primary">
                   {segment}
@@ -51,7 +51,8 @@ const Breadcrumbs = () => {
                 )}
               </span>
             ))} */}
-          </p>
+            </p>
+          </div>
         </div>
       )}
     </>

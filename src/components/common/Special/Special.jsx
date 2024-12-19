@@ -22,6 +22,7 @@ const Special = () => {
       setUserName("Đăng nhập");
       setProfileLink("/sign-in");
       setCartCount(0);
+      refetchCart();
     }
   }, [refetchCart]);
 

@@ -9,6 +9,9 @@ const useSizeQuery = (action) => {
     queryFn: async () => {
       return await getAllSize();
     },
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
   });
   return { data, ...rest };
 };

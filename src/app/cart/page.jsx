@@ -218,7 +218,7 @@ const Cart = () => {
           </h2>
           <div className="col-span-3 grid grid-cols-3 *:pl-3">
             <h2>Đơn giá</h2>
-            <h2>Số lượng</h2>
+            <h2 className="text-center">Số lượng</h2>
             <h2>Số tiền</h2>
           </div>
         </div>
