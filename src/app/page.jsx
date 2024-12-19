@@ -49,11 +49,6 @@ export default function Home() {
 
   const features = [
     {
-      image: "/images/shipping.webp",
-      title: "Miễn phí vận chuyển",
-      description: "Đơn từ 399K",
-    },
-    {
       image: "/images/exchange_goods.png",
       title: "Đổi hàng tận nhà",
       description: "Trong vòng 15 ngày",
